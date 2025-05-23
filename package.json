@@ -1,0 +1,422 @@
+{
+  "name": "aimastery-vincian-analysis",
+  "displayName": "AIMastery Vincian Analysis",
+  "description": "Analyse de code inspirée des principes de Léonard de Vinci",
+  "version": "2.0.1",
+  "publisher": "serigne-diagne",
+  "icon": "images/VinciRenaissance.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Linters",
+    "Formatters",
+    "Education"
+  ],
+  "keywords": [
+    "code analysis",
+    "leonardo da vinci",
+    "code quality",
+    "ai",
+    "education"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aimastery-vincian-analysis.helloWorld",
+        "title": "Hello World",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery-vincian-analysis.startAnalysis",
+        "title": "Analyser le fichier actuel",
+        "category": "AIMastery",
+        "icon": "$(microscope)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.analyzeProject",
+        "title": "Analyser tout le projet",
+        "category": "AIMastery",
+        "icon": "$(folder)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.analyzeWithMarkers",
+        "title": "Analyse interactive avec marqueurs",
+        "category": "AIMastery",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.generateVincianCode",
+        "title": "Générer du code Vincien",
+        "category": "AIMastery",
+        "icon": "$(wand)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.showVincianDashboard",
+        "title": "Afficher le tableau de bord",
+        "category": "AIMastery",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.startAutoCode",
+        "title": "Lancer l'auto-coding",
+        "category": "AIMastery",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.refreshAnalysis",
+        "title": "Actualiser",
+        "category": "AIMastery",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.newProject",
+        "title": "Nouveau projet Vincien",
+        "category": "AIMastery",
+        "icon": "$(new-file)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.exportResults",
+        "title": "Exporter les résultats",
+        "category": "AIMastery",
+        "icon": "$(export)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.openSettings",
+        "title": "Paramètres Vincien",
+        "category": "AIMastery",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "aimastery-vincian-analysis.showConnectionCanvas",
+        "title": "Afficher la Toile de Connexions",
+        "category": "AIMastery",
+        "icon": "$(graph)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "aimastery-vincian-analysis.startAnalysis",
+        "key": "ctrl+shift+a",
+        "mac": "cmd+shift+a",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "aimastery-vincian-analysis.generateVincianCode",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "aimastery-vincian-analysis.showVincianDashboard",
+        "key": "ctrl+shift+d",
+        "mac": "cmd+shift+d"
+      },
+      {
+        "command": "aimastery-vincian-analysis.analyzeWithMarkers",
+        "key": "ctrl+shift+m",
+        "mac": "cmd+shift+m",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "aimastery-vincian-analysis.newProject",
+        "key": "ctrl+shift+n",
+        "mac": "cmd+shift+n"
+      },
+      {
+        "command": "aimastery-vincian-analysis.exportResults",
+        "key": "ctrl+shift+e",
+        "mac": "cmd+shift+e"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "aimastery-vincian-analysis.startAnalysis",
+          "when": "editorTextFocus",
+          "group": "aimastery@1"
+        },
+        {
+          "command": "aimastery-vincian-analysis.generateVincianCode",
+          "when": "editorHasSelection",
+          "group": "aimastery@2"
+        },
+        {
+          "command": "aimastery-vincian-analysis.analyzeWithMarkers",
+          "when": "editorTextFocus",
+          "group": "aimastery@3"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "aimastery-vincian-analysis.analyzeProject",
+          "when": "explorerResourceIsFolder",
+          "group": "aimastery@1",
+          "icon": "$(folder)"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "aimastery-vincian-analysis.startAnalysis",
+          "when": "editorIsOpen"
+        },
+        {
+          "command": "aimastery-vincian-analysis.generateVincianCode",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "views": {
+      "aimastery-vincian": [
+        {
+          "id": "vincianAnalysisResults",
+          "name": "Résultats d'Analyse",
+          "when": "aimastery-vincian-analysis:hasResults",
+          "icon": "$(list-unordered)"
+        },
+        {
+          "id": "vincianAutocodingTools",
+          "name": "Outils d'Auto-coding",
+          "when": "aimastery-vincian-analysis:enabled",
+          "icon": "$(tools)"
+        },
+        {
+          "id": "vincianProjects",
+          "name": "Projets Vinciens",
+          "when": "aimastery-vincian-analysis:hasProjects",
+          "icon": "$(project)"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aimastery-vincian",
+          "title": "AIMastery Vincien",
+          "icon": "$(symbol-color)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AIMastery Vincian Analysis",
+      "properties": {
+        "aimastery-vincian-analysis.analysisMode": {
+          "type": "string",
+          "enum": [
+            "basic",
+            "comprehensive",
+            "advanced"
+          ],
+          "default": "comprehensive",
+          "description": "Mode d'analyse par défaut"
+        },
+        "aimastery-vincian-analysis.autoSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Sauvegarder automatiquement les résultats d'analyse"
+        },
+        "aimastery-vincian-analysis.aiAssistanceLevel": {
+          "type": "string",
+          "enum": [
+            "none",
+            "basic",
+            "advanced"
+          ],
+          "default": "basic",
+          "description": "Niveau d'assistance IA"
+        },
+        "aimastery-vincian-analysis.includeFileTypes": {
+          "type": "array",
+          "default": [
+            "js",
+            "ts",
+            "jsx",
+            "tsx",
+            "py",
+            "java",
+            "c",
+            "cpp",
+            "cs",
+            "php",
+            "go",
+            "rs",
+            "rb"
+          ],
+          "description": "Types de fichiers à inclure dans l'analyse"
+        },
+        "aimastery-vincian-analysis.excludePatterns": {
+          "type": "array",
+          "default": [
+            "node_modules/**",
+            "*.min.js",
+            "*.map",
+            "dist/**",
+            "build/**"
+          ],
+          "description": "Patterns de fichiers à exclure"
+        },
+        "aimastery-vincian-analysis.enableInteractiveMarkers": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activer les marqueurs interactifs dans l'éditeur"
+        },
+        "aimastery-vincian-analysis.showScoreInStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Afficher le score dans la barre d'état"
+        },
+        "aimastery-vincian-analysis.autoAnalyzeOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Analyser automatiquement lors de la sauvegarde"
+        },
+        "aimastery-vincian-analysis.notificationLevel": {
+          "type": "string",
+          "enum": [
+            "none",
+            "errors",
+            "warnings",
+            "all"
+          ],
+          "default": "all",
+          "description": "Niveau de notifications"
+        },
+        "aimastery-vincian-analysis.exportFormat": {
+          "type": "string",
+          "enum": [
+            "json",
+            "markdown",
+            "html",
+            "csv"
+          ],
+          "default": "markdown",
+          "description": "Format d'export par défaut"
+        },
+        "aimastery-vincian-analysis.theme": {
+          "type": "string",
+          "enum": [
+            "light",
+            "dark",
+            "auto"
+          ],
+          "default": "auto",
+          "description": "Thème de l'interface"
+        },
+        "aimastery-vincian-analysis.enableCodeGeneration": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activer la génération de code Vincien"
+        },
+        "aimastery-vincian-analysis.confidenceThreshold": {
+          "type": "number",
+          "minimum": 0.1,
+          "maximum": 1,
+          "default": 0.7,
+          "description": "Seuil de confiance pour les recommandations IA"
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "vincian-report",
+        "aliases": [
+          "Vincian Report",
+          "vincian"
+        ],
+        "extensions": [
+          ".vincian"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "vincian-report",
+        "scopeName": "source.vincian",
+        "path": "./syntaxes/vincian.tmLanguage.json"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "deploy": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.2",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "16.x",
+    "@types/synaptic": "^1.0.8",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^2.15.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "chart.js": "^4.2.1",
+    "marked": "^4.3.0",
+    "papaparse": "^5.4.1",
+    "synaptic": "^1.1.4"
+  },
+  "activationEvents": [
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onLanguage:java",
+    "onLanguage:c",
+    "onLanguage:cpp",
+    "onLanguage:csharp",
+    "onLanguage:php",
+    "onLanguage:go",
+    "onLanguage:rust",
+    "onLanguage:ruby",
+    "workspaceContains:**/*.{js,ts,py,java,c,cpp,cs,php,go,rs,rb}"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "capabilities": {
+    "virtualWorkspaces": {
+      "supported": "limited",
+      "description": "Fonctionnalités limitées dans les espaces de travail virtuels"
+    },
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "L'extension fonctionne avec des fonctionnalités limitées dans les espaces de travail non fiables"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/votre-organisation/aimastery-vincian-analysis.git"
+  },
+  "bugs": {
+    "url": "https://github.com/votre-organisation/aimastery-vincian-analysis/issues"
+  },
+  "homepage": "https://github.com/votre-organisation/aimastery-vincian-analysis#readme",
+  "author": {
+    "name": "AIMastery Team",
+    "email": "contact@aimastery.com"
+  },
+  "license": "MIT",
+  "galleryBanner": {
+    "color": "#667eea",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/Leonardo-da%20Vinci-gold",
+      "href": "https://en.wikipedia.org/wiki/Leonardo_da_Vinci",
+      "description": "Inspiré par les principes de Léonard de Vinci"
+    }
+  ]
+}

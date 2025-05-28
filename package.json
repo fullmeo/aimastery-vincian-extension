@@ -1,0 +1,290 @@
+{
+  "name": "aimastery-vincian-analysis",
+  "displayName": "AI Mastery - Vincian Analysis",
+  "description": "🎨 Analyse Vincienne du code avec intégration FUZZY-SEA-QUEST révolutionnaire",
+  "version": "6.0.0",
+  "publisher": "Serigne-Diagne",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Education",
+    "Games"
+  ],
+  "keywords": [
+    "ai",
+    "leonardo",
+    "vincian",
+    "analysis",
+    "fuzzy",
+    "gaming",
+    "creativity",
+    "vibe-coding",
+    "proof-of-gaming"
+  ],
+  "activationEvents": [
+    "onCommand:aimastery.vincianAnalysis",
+    "onCommand:aimastery.fuzzySync",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aimastery.vincianAnalysis",
+        "title": "🎨 Analyse Vincienne Enhanced",
+        "category": "AI Mastery"
+      },
+      {
+        "command": "aimastery.fuzzySync",
+        "title": "🌊 Sync avec FUZZY-SEA-QUEST",
+        "category": "AI Mastery"
+      },
+      {
+        "command": "aimastery.openGame",
+        "title": "🎮 Ouvrir FUZZY-SEA-QUEST",
+        "category": "AI Mastery"
+      },
+      {
+        "command": "aimastery.healExtension",
+        "title": "🔧 Auto-Heal via FUZZY Patterns",
+        "category": "AI Mastery"
+      },
+      {
+        "command": "aimastery.vibeMode",
+        "title": "🎵 Changer Vibe Mode",
+        "category": "AI Mastery"
+      },
+      {
+        "command": "aimastery.generateApp",
+        "title": "🏗️ Générer App depuis Vibe",
+        "category": "AI Mastery"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "aimastery.vincianAnalysis",
+        "key": "ctrl+shift+v",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "aimastery.fuzzySync",
+        "key": "ctrl+shift+f",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "aimastery.vibeMode",
+        "key": "ctrl+shift+m"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "aimastery.vincianAnalysis",
+          "group": "ai-mastery@1",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "aimastery.fuzzySync",
+          "group": "ai-mastery@2",
+          "when": "editorTextFocus"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "aimastery.vincianAnalysis",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "aimastery.fuzzySync"
+        },
+        {
+          "command": "aimastery.openGame"
+        },
+        {
+          "command": "aimastery.healExtension"
+        },
+        {
+          "command": "aimastery.vibeMode"
+        },
+        {
+          "command": "aimastery.generateApp"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "aimastery.fuzzySync",
+          "when": "view == aimastery-fuzzy-panel",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Mastery",
+      "properties": {
+        "aimastery.fuzzyIntegration": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activer l'intégration FUZZY-SEA-QUEST révolutionnaire"
+        },
+        "aimastery.subscriptionLevel": {
+          "type": "string",
+          "enum": ["free", "premium", "pro"],
+          "default": "free",
+          "description": "Niveau d'abonnement AI Mastery (affecte FUZZY-SEA-QUEST)"
+        },
+        "aimastery.gameUrl": {
+          "type": "string",
+          "default": "http://localhost:3000",
+          "description": "URL de FUZZY-SEA-QUEST"
+        },
+        "aimastery.autoHeal": {
+          "type": "boolean",
+          "default": true,
+          "description": "Auto-réparation via patterns FUZZY-SEA-QUEST"
+        },
+        "aimastery.vibeMode": {
+          "type": "string",
+          "enum": ["chill", "flow", "creative", "intense"],
+          "default": "flow",
+          "description": "Mode vibe par défaut pour l'analyse"
+        },
+        "aimastery.proofOfGaming": {
+          "type": "boolean",
+          "default": true,
+          "description": "Activer le système Proof of Gaming"
+        },
+        "aimastery.fuzzyTokens": {
+          "type": "number",
+          "default": 1000,
+          "description": "Nombre de tokens FUZZY accumulés"
+        },
+        "aimastery.codeConfidence": {
+          "type": "number",
+          "default": 50,
+          "minimum": 0,
+          "maximum": 100,
+          "description": "Niveau de confiance en programmation (0-100%)"
+        }
+      }
+    },
+    "views": {
+      "ai-mastery": [
+        {
+          "id": "aimastery-fuzzy-panel",
+          "name": "🌊 FUZZY-SEA-QUEST",
+          "when": "aimastery.fuzzyIntegration"
+        },
+        {
+          "id": "aimastery-vibe-status",
+          "name": "🎵 Vibe Status",
+          "when": "aimastery.fuzzyIntegration"
+        },
+        {
+          "id": "aimastery-gaming-proofs",
+          "name": "🎮 Gaming Proofs",
+          "when": "aimastery.proofOfGaming"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ai-mastery",
+          "title": "🎨 AI Mastery + FUZZY",
+          "icon": "$(symbol-color)"
+        }
+      ]
+    },
+    "walkthroughs": [
+      {
+        "id": "fuzzy-sea-quest-intro",
+        "title": "🌊 Découvrir FUZZY-SEA-QUEST",
+        "description": "Apprenez à utiliser le premier jeu de VIBE-CODING au monde !",
+        "steps": [
+          {
+            "id": "open-fuzzy-game",
+            "title": "🎮 Ouvrir le jeu",
+            "description": "Lancez FUZZY-SEA-QUEST et connectez-vous avec VS Code.",
+            "media": {
+              "markdown": "steps/fuzzy-intro.md"
+            }
+          },
+          {
+            "id": "sync-extension",
+            "title": "🔗 Synchroniser",
+            "description": "Connectez votre progression de jeu avec l'extension.",
+            "media": {
+              "markdown": "steps/sync-guide.md"
+            }
+          },
+          {
+            "id": "vibe-analysis",
+            "title": "🎨 Analyse Vincienne",
+            "description": "Utilisez vos vibes pour analyser votre code.",
+            "media": {
+              "markdown": "steps/vincian-analysis.md"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "ws": "^8.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Serigne-Diagne/aimastery-vincian-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/Serigne-Diagne/aimastery-vincian-extension/issues"
+  },
+  "homepage": "https://marketplace.visualstudio.com/items?itemName=Serigne-Diagne.aimastery-vincian-analysis",
+  "icon": "images/fuzzy-icon.png",
+  "galleryBanner": {
+    "color": "#20B2AA",
+    "theme": "dark"
+  },
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/FUZZY-SEA--QUEST-20B2AA",
+      "href": "http://localhost:3000",
+      "description": "Intégration FUZZY-SEA-QUEST"
+    },
+    {
+      "url": "https://img.shields.io/badge/Vibe-Coding-FF6B6B",
+      "href": "#",
+      "description": "Première extension VIBE-CODING"
+    }
+  ],
+  "sponsor": {
+    "url": "https://github.com/sponsors/Serigne-Diagne"
+  }
+}

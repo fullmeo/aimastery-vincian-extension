@@ -1,0 +1,66 @@
+{
+    // See http://go.microsoft.com/fwlink/?LinkId=827846
+    // for the documentation about the extensions.json format
+    "recommendations": [
+        // Code Quality & Linting
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        
+        // Testing & Debugging
+        "ms-vscode.extension-test-runner",
+        "ms-vscode.test-adapter-converter",
+        "ms-vscode.vscode-js-debug",
+        
+        // Development Tools
+        "ms-vscode.vscode-json",
+        "formulahendry.auto-rename-tag",
+        "formulahendry.code-runner",
+        "christian-kohler.path-intellisense",
+        
+        // API & Backend Development (pour votre backend Stripe)
+        "humao.rest-client",              // Tester vos APIs revenue
+        "rangav.vscode-thunder-client",   // Interface graphique API
+        "ms-vscode.vscode-restclient",
+        
+        // 🔥 AJOUTS CRITIQUES POUR AIMASTERY :
+        
+        // Audio & Media (pour Vincian Analysis)
+        "ms-vscode.hexeditor",            // Analyser fichiers audio binaires
+        "ms-vscode.vscode-media-preview", // Prévisualiser résultats audio
+        
+        // Deployment & Cloud (pour backend)
+        "vercel.vercel-vscode",           // Deploy direct Vercel
+        "github.vscode-github-actions",   // CI/CD automation
+        
+        // Extension Development Specific
+        "ms-vscode.vscode-extension-dev-kit", // Kit développement extension
+        "ms-vscode.extension-manager",         // Gestion extensions
+        
+        // AI & Copilot (ESSENTIEL pour développement rapide)
+        "github.copilot",                 // AI coding assistant
+        "github.copilot-chat",            // AI chat intégré
+        
+        // Git & Version Control
+        "eamodio.gitlens",                // Git management avancé
+        "github.vscode-pull-request-github", // PR management
+        
+        // Security & Secrets (pour clés Stripe)
+        "ms-vscode.vscode-secrets",       // Gestion secrets sécurisée
+        "redhat.vscode-yaml",             // Config files
+        
+        // Documentation & Markdown
+        "yzhang.markdown-all-in-one",     // Markdown complet
+        "davidanson.vscode-markdownlint", // Linting Markdown
+        
+        // UI & Visual
+        "ms-vscode.vscode-icons",         // Icônes files
+        "oderwat.indent-rainbow",         // Indentation visuelle
+        "streetsidesoftware.code-spell-checker", // Correcteur orthographique
+        
+        // Performance & Debugging
+        "usernamehw.errorlens",           // Erreurs inline (CRITIQUE pour webhooks)
+        "ms-vscode.vscode-coverage-gutters" // Code coverage
+    ]
+}

@@ -1,0 +1,1167 @@
+// 🌊 AIMASTERY × FUZZY-SEA-QUEST v6.0 - Extension Révolutionnaire
+
+import * as vscode from 'vscode';
+import axios from 'axios';
+import WebSocket from 'ws'; // ✅ CORRIGÉ : Enlever * as
+import * as http from 'http';
+
+// 🌊 Configuration
+const API_BASE_URL = 'https://scorescout.eu/api';
+const STRIPE_PRODUCT_ID = 'prod_SNKrdJEALH9mTI';
+const FUZZY_DEFAULT_PORT = 8080;
+
+// 🎮 Interfaces
+interface GameState {
+    currentVibe: 'chill' | 'flow' | 'creative' | 'intense';
+    codeConfidence: number;
+    playerFuzzy: number;
+    vibeLevel: number;
+    activePlayer: string;
+    gameSession: string;
+}
+
+interface UserSubscription {
+    plan_type: 'free' | 'social_pack' | 'pro_vincien';
+    remaining_credits: number;
+    subscription_status: 'active' | 'cancelled' | 'expired';
+    fuzzy_tokens: number;
+    premium_features: string[];
+}
+
+interface VincianAnalysis {
+    vincian_score: number;
+    principles: {
+        curiosity: number;
+        demonstration: number;
+        sfumato: number;
+        arte_scienza: number;
+        corporalita: number;
+        connessione: number;
+        dimostrazione: number;
+    };
+    codeComplexity: number;
+    creativityScore: number;
+    vincianInsight: string;
+    suggestions: string[];
+    fuzzyEnrichment?: {
+        playerVibe: string;
+        confidence: number;
+        fuzzyTokens: number;
+        vibeBasedSuggestion: string;
+    };
+    local_mode?: boolean;
+    remaining_credits?: number;
+}
+
+// 🌊 Variables globales
+let statusBarItem: vscode.StatusBarItem;
+let fuzzyServer: http.Server | null = null;
+let gameStateWS: WebSocket | null = null;
+let currentGameState: GameState | null = null;
+
+export function activate(context: vscode.ExtensionContext) {
+    console.log('🌊 AIMastery × FUZZY-SEA-QUEST v6.0 activé !');
+
+    // Initialiser l'extension
+    initializeExtension(context);
+    
+    // Démarrer les services
+    startFuzzyServer(context);
+    connectToGameWebSocket();
+    
+    // Status bar
+    statusBarItem = vscode.window.createStatusBarItem(
+        vscode.StatusBarAlignment.Right, 100
+    );
+    updateStatusBar();
+    context.subscriptions.push(statusBarItem);
+
+    // 🌊 NOUVEAU : Reception des messages FUZZY-SEA-QUEST
+    const handleFuzzyMessages = (message: any) => {
+        console.log('🌊 Message FUZZY reçu:', message);
+        
+        switch (message.command) {
+            case 'fuzzy-sync':
+                handleGameStateSync(message.data);
+                break;
+            case 'fuzzy-heal':
+                handleExtensionHealing(message.data);
+                break;
+            case 'check-subscription-status':
+                sendSubscriptionStatus();
+                break;
+            case 'open-subscription-page':
+                openSubscriptionPage();
+                break;
+            case 'player-vibe-changed':
+                handleVibeChange(message.data);
+                break;
+            case 'request-code-analysis':
+                requestCodeAnalysis(message.data);
+                break;
+        }
+    };
+
+    // 🎮 Synchronisation avec FUZZY-SEA-QUEST
+    const handleGameStateSync = (gameState: GameState) => {
+        console.log('🌊 Game State synchronisé:', gameState);
+        
+        currentGameState = gameState;
+        context.globalState.update('fuzzyGameState', gameState);
+        
+        // Mettre à jour l'interface
+        updateExtensionInterface(gameState);
+        updateStatusBar();
+        
+        // Notification utilisateur
+        vscode.window.showInformationMessage(
+            `🎮 FUZZY sync ! Vibe: ${gameState.currentVibe}, Confidence: ${gameState.codeConfidence}%`,
+            'Analyser maintenant'
+        ).then(choice => {
+            if (choice === 'Analyser maintenant') {
+                vscode.commands.executeCommand('aimastery.vincianAnalysis');
+            }
+        });
+        
+        // Sauvegarder le vibe dans la config
+        vscode.workspace.getConfiguration('aimastery').update('vibeMode', gameState.currentVibe, true);
+    };
+
+    // 🔧 Auto-healing via patterns FUZZY
+    const handleExtensionHealing = (healingData: any) => {
+        console.log('🔧 Guérison FUZZY:', healingData);
+        
+        try {
+            // Appliquer les patterns qui marchent
+            applyWorkingPatterns(healingData.workingPatterns);
+            
+            // Tester les fonctionnalités
+            const healingSuccess = testExtensionFeatures();
+            
+            if (healingSuccess) {
+                vscode.window.showInformationMessage(
+                    '✨ Extension guérie grâce aux patterns FUZZY-SEA-QUEST !',
+                    '🎮 Merci FUZZY !'
+                );
+            } else {
+                // Transformer l'erreur en insight créatif
+                const creativeTip = transformErrorToInsight(healingData);
+                vscode.window.showWarningMessage(`🎨 Insight créatif: ${creativeTip}`);
+            }
+            
+        } catch (error) {
+            console.error('Erreur healing:', error);
+            vscode.window.showErrorMessage('❌ Healing FUZZY échoué, mais on apprend !');
+        }
+    };
+
+    // 🎵 Gestion changement de vibe
+    const handleVibeChange = (vibeData: any) => {
+        console.log('🎵 Vibe changé:', vibeData);
+        
+        const { newVibe, confidence } = vibeData;
+        
+        // Mettre à jour la config locale
+        vscode.workspace.getConfiguration('aimastery').update('vibeMode', newVibe, true);
+        
+        // Notification avec suggestion
+        const vibeMessages = {
+            chill: '🧘 Mode Zen activé ! Simplifions votre code...',
+            flow: '🌊 Mode Flow ! Optimisons la fluidité...',
+            creative: '🎨 Mode Créatif ! Innovons ensemble...',
+            intense: '⚔️ Mode Intense ! Performance maximale !'
+        };
+        
+        vscode.window.showInformationMessage(
+            vibeMessages[newVibe] || '🎵 Nouveau vibe activé !',
+            'Analyser avec ce vibe'
+        ).then(choice => {
+            if (choice === 'Analyser avec ce vibe') {
+                vscode.commands.executeCommand('aimastery.vincianAnalysis');
+            }
+        });
+        
+        updateStatusBar();
+    };
+
+    // 📊 Demande d'analyse depuis le jeu
+    const requestCodeAnalysis = async (requestData: any) => {
+        console.log('📊 Analyse demandée par FUZZY:', requestData);
+        
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            // Informer le jeu qu'aucun code n'est ouvert
+            sendToGame({
+                command: 'analysis-response',
+                status: 'no-code',
+                message: 'Aucun code ouvert dans l\'éditeur'
+            });
+            return;
+        }
+        
+        // Lancer l'analyse automatiquement
+        vscode.commands.executeCommand('aimastery.vincianAnalysis');
+    };
+
+    // 🔐 Authentification AIMastery
+    const authenticateWithAIMastery = async (): Promise<UserSubscription | null> => {
+        const config = vscode.workspace.getConfiguration('aimastery');
+        let apiToken = config.get<string>('apiToken');
+        
+        if (!apiToken) {
+            apiToken = await vscode.window.showInputBox({
+                prompt: "Token API AIMastery",
+                placeHolder: "Obtenez votre token sur scorescout.eu/dashboard",
+                password: true,
+                validateInput: (value) => {
+                    if (!value || value.length < 10) {
+                        return 'Token trop court';
+                    }
+                    return null;
+                }
+            });
+            
+            if (!apiToken) return null;
+            await config.update('apiToken', apiToken, true);
+        }
+        
+        try {
+            const response = await axios.get(`${API_BASE_URL}/user/subscription`, {
+                headers: { 'Authorization': `Bearer ${apiToken}` },
+                timeout: 10000
+            });
+            
+            const subscription = response.data;
+            
+            // Informer le jeu du statut d'abonnement
+            sendToGame({
+                command: 'subscription-update',
+                subscription: subscription
+            });
+            
+            return subscription;
+            
+        } catch (error) {
+            console.error('Erreur auth:', error);
+            vscode.window.showErrorMessage('❌ Token invalide. Vérifiez sur scorescout.eu');
+            
+            // Supprimer le token invalide
+            await config.update('apiToken', undefined, true);
+            return null;
+        }
+    };
+
+    // 📊 Obtenir le statut d'abonnement
+    const getSubscriptionStatus = async (): Promise<UserSubscription | null> => {
+        return await authenticateWithAIMastery();
+    };
+
+    // 📤 Envoyer le statut d'abonnement au jeu
+    const sendSubscriptionStatus = async () => {
+        const subscription = await getSubscriptionStatus();
+        
+        const status = {
+            plan_type: subscription?.plan_type || 'free',
+            fuzzy_tokens: subscription?.remaining_credits || 0,
+            premium_features: subscription?.plan_type !== 'free',
+            subscription_active: subscription?.subscription_status === 'active'
+        };
+        
+        sendToGame({
+            command: 'subscription-status',
+            status: status
+        });
+        
+        return status;
+    };
+
+    // 🛒 Ouvrir page d'abonnement
+    const openSubscriptionPage = () => {
+        vscode.env.openExternal(vscode.Uri.parse('https://scorescout.eu/pricing'));
+        
+        vscode.window.showInformationMessage(
+            '🚀 Page de tarifs ouverte ! Débloquez toutes les fonctionnalités FUZZY',
+            'Social Pack (9€)', 'Pro Vincien (15€)'
+        ).then(choice => {
+            if (choice?.includes('Social Pack')) {
+                vscode.env.openExternal(vscode.Uri.parse(`https://scorescout.eu/checkout?product=${STRIPE_PRODUCT_ID}&plan=social_pack`));
+            } else if (choice?.includes('Pro Vincien')) {
+                vscode.env.openExternal(vscode.Uri.parse(`https://scorescout.eu/checkout?product=${STRIPE_PRODUCT_ID}&plan=pro_vincien`));
+            }
+        });
+    };
+
+    // 🎨 Analyse Vincienne principale
+    const performVincianAnalysis = async (code?: string): Promise<VincianAnalysis | null> => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor && !code) {
+            vscode.window.showWarningMessage('🎨 Ouvrez un fichier pour analyser');
+            return null;
+        }
+        
+        const codeToAnalyze = code || editor!.document.getText();
+        const language = editor?.document.languageId || 'plaintext';
+        
+        // Vérifier l'abonnement
+        const subscription = await getSubscriptionStatus();
+        
+        if (subscription && subscription.plan_type === 'free' && subscription.remaining_credits <= 0) {
+            const choice = await vscode.window.showWarningMessage(
+                '💎 Crédits épuisés ! Passez au premium pour plus d\'analyses.',
+                'Voir les plans', 'Analyse locale'
+            );
+            
+            if (choice === 'Voir les plans') {
+                openSubscriptionPage();
+                return null;
+            } else if (choice === 'Analyse locale') {
+                return performLocalAnalysis(codeToAnalyze);
+            }
+            return null;
+        }
+        
+        // Analyse via API ou locale
+        return await vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "🎭 Analyse Vincienne + FUZZY en cours...",
+            cancellable: false
+        }, async (progress) => {
+            try {
+                progress.report({ increment: 30, message: "Analyse des 7 principes..." });
+                
+                if (subscription) {
+                    // Analyse premium via API
+                    const token = vscode.workspace.getConfiguration('aimastery').get<string>('apiToken');
+                    
+                    const response = await axios.post(`${API_BASE_URL}/analyze/vincian-fuzzy`, {
+                        code: codeToAnalyze,
+                        language: language,
+                        fuzzy_data: currentGameState,
+                        include_social: subscription.plan_type !== 'free'
+                    }, {
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        timeout: 30000
+                    });
+                    
+                    progress.report({ increment: 100, message: "Analyse terminée !" });
+                    
+                    const analysis = response.data;
+                    
+                    // Enrichir avec les données FUZZY
+                    if (currentGameState) {
+                        analysis.fuzzyEnrichment = {
+                            playerVibe: currentGameState.currentVibe,
+                            confidence: currentGameState.codeConfidence,
+                            fuzzyTokens: currentGameState.playerFuzzy,
+                            vibeBasedSuggestion: adaptSuggestionToVibe(codeToAnalyze, currentGameState.currentVibe)
+                        };
+                    }
+                    
+                    // Informer le jeu de l'analyse réussie
+                    sendToGame({
+                        command: 'analysis-completed',
+                        analysis: analysis
+                    });
+                    
+                    vscode.window.showInformationMessage(
+                        `✅ Analyse terminée ! Crédits restants: ${analysis.remaining_credits || 0}`
+                    );
+                    
+                    return analysis;
+                    
+                } else {
+                    // Analyse locale
+                    progress.report({ increment: 100, message: "Analyse locale terminée !" });
+                    return performLocalAnalysis(codeToAnalyze);
+                }
+                
+            } catch (error) {
+                console.error('Erreur analyse:', error);
+                
+                if (axios.isAxiosError(error)) {
+                    if (error.response?.status === 403) {
+                        vscode.window.showErrorMessage('🚫 Plan insuffisant pour cette fonctionnalité');
+                        return null;
+                    } else if (error.response?.status === 429) {
+                        vscode.window.showWarningMessage('⏱️ Limite atteinte. Revenez demain !');
+                        return null;
+                    }
+                }
+                
+                // Fallback vers l'analyse locale
+                vscode.window.showWarningMessage('⚠️ Erreur API, passage en mode local');
+                return performLocalAnalysis(codeToAnalyze);
+            }
+        });
+    };
+
+    // 🏠 Analyse locale de secours
+    const performLocalAnalysis = (code: string): VincianAnalysis => {
+        const complexity = calculateComplexity(code);
+        const creativity = calculateCreativity(code);
+        const insight = generateVincianWisdom(code);
+        const suggestions = generateSuggestions(code, currentGameState?.currentVibe);
+
+        const analysis: VincianAnalysis = {
+            vincian_score: Math.min(100, (creativity + (100 - complexity * 10)) / 2),
+            principles: {
+                curiosity: creativity,
+                demonstration: Math.min(100, code.includes('test') ? 90 : 60),
+                sfumato: Math.min(100, code.includes('?') || code.includes('||') ? 80 : 50),
+                arte_scienza: Math.min(100, (creativity + complexity * 10) / 2),
+                corporalita: Math.min(100, code.includes('console') ? 70 : 40),
+                connessione: Math.min(100, (code.match(/import|require/g) || []).length * 20),
+                dimostrazione: Math.min(100, (code.match(/function|class/g) || []).length * 15)
+            },
+            codeComplexity: complexity,
+            creativityScore: creativity,
+            vincianInsight: insight,
+            suggestions: suggestions,
+            local_mode: true
+        };
+
+        // Enrichissement FUZZY
+        if (currentGameState) {
+            analysis.fuzzyEnrichment = {
+                playerVibe: currentGameState.currentVibe,
+                confidence: currentGameState.codeConfidence,
+                fuzzyTokens: currentGameState.playerFuzzy,
+                vibeBasedSuggestion: adaptSuggestionToVibe(code, currentGameState.currentVibe)
+            };
+        }
+
+        return analysis;
+    };
+
+    // 🧮 Fonctions d'analyse
+    const calculateComplexity = (code: string): number => {
+        const lines = code.split('\n').length;
+        const functions = (code.match(/function|class/g) || []).length;
+        const conditions = (code.match(/if|else|switch|case/g) || []).length;
+        const loops = (code.match(/for|while|forEach|map/g) || []).length;
+        
+        return Math.min(10, Math.ceil((lines / 50) + functions * 0.5 + conditions * 0.3 + loops * 0.4));
+    };
+
+    const calculateCreativity = (code: string): number => {
+        const uniqueWords = new Set(code.toLowerCase().match(/\b\w+\b/g) || []).size;
+        const comments = (code.match(/\/\/|\/\*|\*\/|#/g) || []).length;
+        const variableNames = (code.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || []);
+        const creativeNames = variableNames.filter(name => name.length > 3 && !['function', 'return', 'const', 'let', 'var'].includes(name)).length;
+        
+        return Math.min(100, uniqueWords * 2 + comments * 5 + creativeNames * 3);
+    };
+
+    const generateVincianWisdom = (code: string): string => {
+        const wisdoms = [
+            "La simplicité est la sophistication suprême.",
+            "L'apprentissage ne s'épuise jamais, pas plus que l'esprit.",
+            "Les obstacles ne me font pas plier. Chaque obstacle cède à l'effort résolu.",
+            "La curiosité est le moteur de la réussite.",
+            "Qui ne peut faire ce qu'il veut, qu'il veuille ce qu'il peut.",
+            "L'expérience, mère de toute connaissance.",
+            "Il n'y a pas de plus grande erreur que de ne rien faire parce qu'on ne peut faire que peu."
+        ];
+        
+        // Sélection basée sur le contenu du code
+        if (code.includes('function')) return wisdoms[0];
+        if (code.includes('for') || code.includes('while')) return wisdoms[2];
+        if (code.includes('console')) return wisdoms[5];
+        
+        return wisdoms[Math.floor(Math.random() * wisdoms.length)];
+    };
+
+    const generateSuggestions = (code: string, vibe?: string): string[] => {
+        const baseSuggestions = [
+            "🎨 Ajoutez des commentaires créatifs pour expliquer votre vision",
+            "🔧 Séparez les responsabilités en fonctions plus petites", 
+            "⚡ Optimisez les boucles pour de meilleures performances",
+            "🧘 Simplifiez les conditions complexes pour plus de clarté"
+        ];
+
+        if (vibe) {
+            const vibeSuggestion = adaptSuggestionToVibe(code, vibe);
+            return [vibeSuggestion, ...baseSuggestions];
+        }
+
+        return baseSuggestions;
+    };
+
+    const adaptSuggestionToVibe = (code: string, vibe: string): string => {
+        const vibeSuggestions = {
+            chill: "🧘 Simplifiez ce code. Retirez les complexités inutiles pour un flow zen.",
+            flow: "🌊 Rendez ce code plus fluide. Évitez les interruptions et optimisez le flux.",
+            creative: "🎨 Ajoutez de la créativité ! Osez une approche différente et innovante.",
+            intense: "⚔️ Optimisez les performances. Chaque ligne doit être efficace et rapide."
+        };
+        
+        return vibeSuggestions[vibe] || "💡 Suivez votre instinct créatif pour améliorer ce code.";
+    };
+
+    // 🎨 Affichage des résultats
+    const showVincianAnalysisPanel = (analysis: VincianAnalysis) => {
+        const panel = vscode.window.createWebviewPanel(
+            'vincianAnalysis',
+            '🌊 AIMastery × FUZZY Analysis',
+            vscode.ViewColumn.Two,
+            { 
+                enableScripts: true,
+                retainContextWhenHidden: true
+            }
+        );
+
+        panel.webview.html = generateAnalysisHTML(analysis);
+
+        // Gérer les messages du webview
+        panel.webview.onDidReceiveMessage(async message => {
+            switch (message.command) {
+                case 'applyFuzzyOptimization':
+                    await applyFuzzyOptimization(message.vibe, message.analysis);
+                    break;
+                case 'generateVibeCode':
+                    await generateVibeBasedCode(message.analysis);
+                    break;
+                case 'syncWithFuzzyGame':
+                    await requestGameSync();
+                    break;
+                case 'generateSocialContent':
+                    await generateSocialContent(message.analysis);
+                    break;
+                case 'exportAnalysis':
+                    await exportAnalysisToFile(message.analysis);
+                    break;
+                case 'heartbeat':
+                    console.log('💓 Heartbeat from webview');
+                    break;
+            }
+        });
+    };
+
+    // 🌐 Génération HTML pour le webview
+    const generateAnalysisHTML = (analysis: VincianAnalysis): string => {
+        const scoreColor = analysis.vincian_score > 80 ? '#00ff88' : 
+                          analysis.vincian_score > 60 ? '#ffd700' : '#ff6b35';
+
+        return `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>AIMastery Analysis</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    
+                    body { 
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                        padding: 2rem;
+                        min-height: 100vh;
+                        animation: fadeIn 0.5s ease-in-out;
+                    }
+                    
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    
+                    .header {
+                        text-align: center;
+                        margin-bottom: 2rem;
+                        background: rgba(255,255,255,0.1);
+                        padding: 2rem;
+                        border-radius: 20px;
+                        backdrop-filter: blur(15px);
+                        border: 1px solid rgba(255,255,255,0.2);
+                    }
+                    
+                    .score {
+                        font-size: 3rem;
+                        color: ${scoreColor};
+                        font-weight: bold;
+                        margin: 1rem 0;
+                    }
+                    
+                    .metrics-grid {
+                        display: grid;
+                        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                        gap: 1rem;
+                        margin: 1rem 0;
+                    }
+                    
+                    .metric-item {
+                        text-align: center;
+                        background: rgba(255,255,255,0.1);
+                        padding: 1rem;
+                        border-radius: 10px;
+                        backdrop-filter: blur(10px);
+                    }
+                    
+                    .metric-value {
+                        font-size: 1.5rem;
+                        font-weight: bold;
+                        color: #ffd700;
+                        margin-bottom: 0.5rem;
+                    }
+                    
+                    .fuzzy-enhanced {
+                        background: linear-gradient(135deg, #ff6b6b, #feca57);
+                        padding: 1.5rem;
+                        border-radius: 15px;
+                        margin: 1rem 0;
+                        box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+                    }
+                    
+                    .vibe-card {
+                        background: rgba(255,255,255,0.1);
+                        padding: 1.5rem;
+                        border-radius: 15px;
+                        margin: 1rem 0;
+                        backdrop-filter: blur(10px);
+                        border: 1px solid rgba(255,255,255,0.2);
+                    }
+                    
+                    button {
+                        background: linear-gradient(135deg, #8e44ad, #3498db);
+                        color: white;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 25px;
+                        cursor: pointer;
+                        font-size: 1rem;
+                        margin: 0.5rem;
+                        transition: all 0.3s ease;
+                    }
+                    
+                    button:hover {
+                        transform: scale(1.05);
+                        box-shadow: 0 8px 25px rgba(142,68,173,0.4);
+                    }
+                    
+                    .action-buttons {
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 1rem;
+                        margin-top: 2rem;
+                    }
+                    
+                    ul { list-style: none; }
+                    li {
+                        padding: 0.5rem 0;
+                        border-left: 3px solid #ffd700;
+                        padding-left: 1rem;
+                        margin: 0.5rem 0;
+                        background: rgba(255,215,0,0.1);
+                        border-radius: 5px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>🌊 AIMastery × FUZZY Analysis</h1>
+                    <div class="score">${analysis.vincian_score}/100</div>
+                    <p>Analyse Vincienne révolutionnaire</p>
+                    ${analysis.local_mode ? '<div style="color: #ff6b6b;">⚠️ Mode local</div>' : ''}
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-item">
+                        <div class="metric-value">${analysis.codeComplexity}/10</div>
+                        <div class="metric-label">🧠 Complexité</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${analysis.creativityScore}%</div>
+                        <div class="metric-label">🎨 Créativité</div>
+                    </div>
+                    ${analysis.fuzzyEnrichment ? `
+                    <div class="metric-item">
+                        <div class="metric-value">${analysis.fuzzyEnrichment.confidence}%</div>
+                        <div class="metric-label">💫 Confidence</div>
+                    </div>
+                    <div class="metric-item">
+                        <div class="metric-value">${analysis.fuzzyEnrichment.fuzzyTokens.toLocaleString()}</div>
+                        <div class="metric-label">💰 FUZZY</div>
+                    </div>
+                    ` : ''}
+                </div>
+
+                ${analysis.fuzzyEnrichment ? `
+                <div class="fuzzy-enhanced">
+                    <h2>🌊 FUZZY-SEA-QUEST Enhancement</h2>
+                    <p><strong>🎵 Vibe:</strong> ${analysis.fuzzyEnrichment.playerVibe.toUpperCase()}</p>
+                    <p><strong>🎯 Suggestion:</strong> "${analysis.fuzzyEnrichment.vibeBasedSuggestion}"</p>
+                </div>
+                ` : ''}
+                
+                <div class="vibe-card">
+                    <h2>🎨 Sagesse Vincienne</h2>
+                    <p style="font-style: italic; font-size: 1.1rem; text-align: center; color: #ffd700;">
+                        "${analysis.vincianInsight}"
+                    </p>
+                </div>
+                
+                <div class="vibe-card">
+                    <h2>🔧 Suggestions</h2>
+                    <ul>
+                        ${analysis.suggestions.map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="applyFuzzyOptimization()">🌊 Optimisation FUZZY</button>
+                    <button onclick="generateVibeCode()">🎨 Code Vibe</button>
+                    <button onclick="syncWithGame()">🎮 Sync FUZZY</button>
+                    ${!analysis.local_mode ? '<button onclick="generateSocialContent()">📱 Contenu Social</button>' : ''}
+                    <button onclick="exportAnalysis()">💾 Exporter</button>
+                </div>
+                
+                <script>
+                    const vscode = acquireVsCodeApi();
+                    
+                    function applyFuzzyOptimization() {
+                        vscode.postMessage({ 
+                            command: 'applyFuzzyOptimization',
+                            vibe: '${analysis.fuzzyEnrichment?.playerVibe || 'flow'}',
+                            analysis: ${JSON.stringify(analysis)}
+                        });
+                    }
+                    
+                    function generateVibeCode() {
+                        vscode.postMessage({ 
+                            command: 'generateVibeCode',
+                            analysis: ${JSON.stringify(analysis)}
+                        });
+                    }
+                    
+                    function syncWithGame() {
+                        vscode.postMessage({ command: 'syncWithFuzzyGame' });
+                    }
+                    
+                    function generateSocialContent() {
+                        vscode.postMessage({ 
+                            command: 'generateSocialContent',
+                            analysis: ${JSON.stringify(analysis)}
+                        });
+                    }
+                    
+                    function exportAnalysis() {
+                        vscode.postMessage({ 
+                            command: 'exportAnalysis',
+                            analysis: ${JSON.stringify(analysis)}
+                        });
+                    }
+                    
+                    // Heartbeat
+                    setInterval(() => {
+                        vscode.postMessage({ command: 'heartbeat' });
+                    }, 30000);
+                </script>
+            </body>
+            </html>
+        `;
+    };
+
+    // 🌊 Serveur HTTP pour communication FUZZY
+    const startFuzzyServer = (context: vscode.ExtensionContext) => {
+        const config = vscode.workspace.getConfiguration('aimastery');
+        const port = config.get<number>('fuzzyServerPort') || FUZZY_DEFAULT_PORT;
+        
+        fuzzyServer = http.createServer((req, res) => {
+            // Headers CORS
+            res.setHeader('Access-Control-Allow-Origin', '*');
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+            
+            if (req.method === 'OPTIONS') {
+                res.writeHead(200);
+                res.end();
+                return;
+            }
+            
+            if (req.method === 'POST' && req.url === '/fuzzy-message') {
+                let body = '';
+                req.on('data', chunk => body += chunk.toString());
+                req.on('end', () => {
+                    try {
+                        const message = JSON.parse(body);
+                        handleFuzzyMessages(message);
+                        
+                        res.writeHead(200, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ status: 'success', timestamp: Date.now() }));
+                    } catch (error) {
+                        res.writeHead(400);
+                        res.end('Invalid JSON');
+                    }
+                });
+            } else {
+                res.writeHead(404);
+                res.end('Not Found');
+            }
+        });
+        
+        fuzzyServer.listen(port, () => {
+            console.log(`🌊 Serveur FUZZY listening on port ${port}`);
+            vscode.window.showInformationMessage(`🎮 Communication FUZZY activée sur port ${port}`);
+        });
+        
+        context.subscriptions.push({
+            dispose: () => {
+                if (fuzzyServer) {
+                    fuzzyServer.close();
+                    fuzzyServer = null;
+                }
+            }
+        });
+    };
+
+    // 🌐 WebSocket pour communication temps réel
+    const connectToGameWebSocket = () => {
+        const config = vscode.workspace.getConfiguration('aimastery');
+        const gameUrl = config.get<string>('gameUrl') || 'http://localhost:3000';
+        
+        try {
+            const wsUrl = gameUrl.replace('http', 'ws') + '/ws';
+            gameStateWS = new WebSocket(wsUrl);
+            
+            gameStateWS.on('open', () => {
+                console.log('🌊 WebSocket FUZZY connecté');
+                vscode.window.showInformationMessage('🎮 Connexion temps réel FUZZY établie !');
+            });
+            
+            gameStateWS.on('message', (data) => {
+                try {
+                    const message = JSON.parse(data.toString());
+                    handleFuzzyMessages(message);
+                } catch (error) {
+                    console.error('Erreur parsing WebSocket:', error);
+                }
+            });
+            
+            gameStateWS.on('close', () => {
+                console.log('🌊 WebSocket FUZZY fermé');
+                // Tentative de reconnexion après 5 secondes
+                setTimeout(connectToGameWebSocket, 5000);
+            });
+            
+            gameStateWS.on('error', (error) => {
+                console.error('Erreur WebSocket FUZZY:', error);
+            });
+            
+        } catch (error) {
+            console.error('Impossible de connecter au WebSocket FUZZY:', error);
+        }
+    };
+
+    // 📤 Envoyer message au jeu
+    const sendToGame = (message: any) => {
+        if (gameStateWS && gameStateWS.readyState === WebSocket.OPEN) {
+            gameStateWS.send(JSON.stringify(message));
+        } else {
+            console.log('🌊 WebSocket non connecté, impossible d\'envoyer:', message);
+        }
+    };
+
+    // 🔄 Mise à jour interface extension
+    const updateExtensionInterface = (gameState: GameState) => {
+        // Mettre à jour la couleur de thème selon le vibe
+        const vibeColors = {
+            chill: '#81c784',
+            flow: '#64b5f6', 
+            creative: '#ffb74d',
+            intense: '#e57373'
+        };
+        
+        // Note: VS Code ne permet pas de changer dynamiquement les couleurs de thème
+        // Mais on peut mettre à jour d'autres éléments
+        
+        console.log(`🎨 Interface mise à jour avec vibe: ${gameState.currentVibe}`);
+    };
+
+    // 📊 Mise à jour status bar
+    const updateStatusBar = async () => {
+        const subscription = await getSubscriptionStatus();
+        const vibeIcon = getVibeIcon(currentGameState?.currentVibe || 'flow');
+        
+        if (!subscription) {
+            statusBarItem.text = `${vibeIcon} AIMastery - Connexion`;
+            statusBarItem.command = 'aimastery.authenticate';
+            statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+        } else {
+            const credits = subscription.remaining_credits;
+            switch (subscription.plan_type) {
+                case 'free':
+                    statusBarItem.text = `${vibeIcon} Free (${credits}/10)`;
+                    statusBarItem.command = 'aimastery.upgradeAccount';
+                    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+                    break;
+                case 'social_pack':
+                    statusBarItem.text = `${vibeIcon} Social (${credits}/100)`;
+                    statusBarItem.command = 'aimastery.showDashboard';
+                    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.activeBackground');
+                    break;
+                case 'pro_vincien':
+                    statusBarItem.text = `${vibeIcon} Pro (∞)`;
+                    statusBarItem.command = 'aimastery.showDashboard';
+                    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.prominentBackground');
+                    break;
+            }
+        }
+        
+        statusBarItem.show();
+    };
+
+    const getVibeIcon = (vibe: string): string => {
+        const icons = {
+            chill: '🧘',
+            flow: '🌊', 
+            creative: '🎨',
+            intense: '⚔️'
+        };
+        return icons[vibe] || '🌊';
+    };
+
+    // 🔧 Fonctions utilitaires
+    const applyWorkingPatterns = (patterns: any) => {
+        console.log('🌊 Application patterns FUZZY:', patterns);
+        // Ici on pourrait appliquer des patterns de code qui fonctionnent
+    };
+
+    const testExtensionFeatures = (): boolean => {
+        console.log('🧪 Test fonctionnalités extension...');
+        // Tester les fonctionnalités principales
+        return true;
+    };
+
+    const transformErrorToInsight = (error: any): string => {
+        const insights = [
+            "Cette erreur révèle une opportunité créative !",
+            "Comme Leonardo transformait ses erreurs en découvertes...",
+            "L'erreur est le début de l'innovation !",
+            "Chaque bug cache une leçon précieuse."
+        ];
+        return insights[Math.floor(Math.random() * insights.length)];
+    };
+
+    // 🎨 Actions sur le code
+    const applyFuzzyOptimization = async (vibe: string, analysis: any) => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) return;
+        
+        const optimizations = {
+            chill: '// 🧘 Zen optimization applied',
+            flow: '// 🌊 Flow optimization applied',
+            creative: '// 🎨 Creative optimization applied',
+            intense: '// ⚔️ Performance optimization applied'
+        };
+        
+        const comment = optimizations[vibe] || '// 💡 FUZZY optimization applied';
+        
+        await editor.edit(editBuilder => {
+            editBuilder.insert(new vscode.Position(0, 0), comment + '\n');
+        });
+        
+        vscode.window.showInformationMessage(`🌊 Optimisation ${vibe} appliquée !`);
+    };
+
+    const generateVibeBasedCode = async (analysis: any) => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) return;
+        
+        const vibe = currentGameState?.currentVibe || 'flow';
+        const vibeCode = `
+// 🌊 Code généré avec vibe ${vibe.toUpperCase()} by FUZZY-SEA-QUEST
+// 🎨 AIMastery × FUZZY v6.0
+
+function ${vibe}EnhancedFunction() {
+    ${getVibeSpecificCode(vibe)}
+    
+    console.log('🎮 Code enhanced with ${vibe} vibe!');
+}
+`;
+        
+        await editor.edit(editBuilder => {
+            editBuilder.insert(editor.selection.start, vibeCode);
+        });
+        
+        vscode.window.showInformationMessage(`🎨 Code ${vibe} généré !`);
+    };
+
+    const getVibeSpecificCode = (vibe: string): string => {
+        const codes = {
+            chill: `    // 🧘 Code zen et minimal\n    return { status: 'peaceful', energy: 'low', focus: 'high' };`,
+            flow: `    // 🌊 Code fluide et naturel\n    return data.map(item => item.transform()).filter(Boolean);`,
+            creative: `    // 🎨 Code créatif et innovant\n    return [...possibilities].reduce((art, idea) => art.merge(idea), canvas);`,
+            intense: `    // ⚔️ Code optimisé et performant\n    return fastPath ? optimized.execute() : fallback.run();`
+        };
+        return codes[vibe] || '    // 💡 Code inspiré par votre créativité';
+    };
+
+    const requestGameSync = async () => {
+        sendToGame({
+            command: 'request-sync',
+            timestamp: Date.now(),
+            extension_version: '6.0.0'
+        });
+        
+        vscode.window.showInformationMessage('🎮 Demande de sync envoyée à FUZZY-SEA-QUEST');
+    };
+
+    const generateSocialContent = async (analysis: any) => {
+        const subscription = await getSubscriptionStatus();
+        
+        if (!subscription || subscription.plan_type === 'free') {
+            vscode.window.showWarningMessage('📱 Génération contenu social réservée aux plans premium');
+            return;
+        }
+        
+        vscode.window.showInformationMessage('🚧 Génération contenu social en développement');
+    };
+
+    const exportAnalysisToFile = async (analysis: any) => {
+        const uri = await vscode.window.showSaveDialog({
+            filters: {
+                'JSON': ['json'],
+                'Markdown': ['md']
+            },
+            defaultUri: vscode.Uri.file(`vincian-analysis-${Date.now()}.json`)
+        });
+        
+        if (uri) {
+            const content = JSON.stringify(analysis, null, 2);
+            await vscode.workspace.fs.writeFile(uri, Buffer.from(content, 'utf8'));
+            vscode.window.showInformationMessage(`✅ Analyse exportée: ${uri.fsPath}`);
+        }
+    };
+
+    const initializeExtension = (context: vscode.ExtensionContext) => {
+        // Restaurer l'état du jeu si disponible
+        const savedGameState = context.globalState.get('fuzzyGameState') as GameState;
+        if (savedGameState) {
+            currentGameState = savedGameState;
+            console.log('🌊 État FUZZY restauré:', savedGameState);
+        }
+        
+        // Définir le contexte pour les commandes conditionnelles
+        vscode.commands.executeCommand('setContext', 'aimastery.activated', true);
+    };
+
+    // 📝 ENREGISTREMENT DES COMMANDES
+    const commands = [
+        vscode.commands.registerCommand('aimastery.vincianAnalysis', async () => {
+            const analysis = await performVincianAnalysis();
+            if (analysis) {
+                showVincianAnalysisPanel(analysis);
+            }
+        }),
+        
+        vscode.commands.registerCommand('aimastery.fuzzySync', async () => {
+            await requestGameSync();
+        }),
+        
+        vscode.commands.registerCommand('aimastery.authenticate', async () => {
+            await authenticateWithAIMastery();
+            updateStatusBar();
+        }),
+        
+        vscode.commands.registerCommand('aimastery.openGame', () => {
+            const gameUrl = vscode.workspace.getConfiguration('aimastery').get<string>('gameUrl') || 'http://localhost:3000';
+            vscode.env.openExternal(vscode.Uri.parse(gameUrl));
+            vscode.window.showInformationMessage('🎮 FUZZY-SEA-QUEST ouvert !');
+        }),
+        
+        vscode.commands.registerCommand('aimastery.vibeMode', async () => {
+            const vibes = ['🧘 Chill', '🌊 Flow', '🎨 Creative', '⚔️ Intense'];
+            const selectedVibe = await vscode.window.showQuickPick(vibes, {
+                placeHolder: 'Choisissez votre vibe de codage !'
+            });
+            
+            if (selectedVibe) {
+                const vibeName = selectedVibe.split(' ')[1].toLowerCase();
+                await vscode.workspace.getConfiguration('aimastery').update('vibeMode', vibeName, true);
+                vscode.window.showInformationMessage(`🎵 Vibe changé: ${selectedVibe}`);
+                
+                // Informer le jeu du changement
+                sendToGame({
+                    command: 'vibe-change',
+                    newVibe: vibeName,
+                    source: 'extension'
+                });
+                
+                updateStatusBar();
+            }
+        }),
+        
+        vscode.commands.registerCommand('aimastery.healExtension', () => {
+            const mockHealingData = {
+                workingPatterns: {
+                    creativityFlow: 'flow',
+                    confidenceBoost: 90
+                }
+            };
+            handleExtensionHealing(mockHealingData);
+        }),
+        
+        vscode.commands.registerCommand('aimastery.generateApp', async () => {
+            const apps = [
+                '🌊 Ocean Analytics Dashboard',
+                '🎨 Creative Design Tool',
+                '🧘 Zen Productivity App',
+                '⚔️ Performance Monitor'
+            ];
+            
+            const selectedApp = await vscode.window.showQuickPick(apps, {
+                placeHolder: 'Quel type d\'app générer ?'
+            });
+            
+            if (selectedApp) {
+                vscode.window.showInformationMessage(`🏗️ Génération "${selectedApp}" en cours...`);
+                setTimeout(() => {
+                    vscode.window.showInformationMessage(`✅ "${selectedApp}" généré ! 🎉`);
+                }, 2000);
+            }
+        }),
+        
+        vscode.commands.registerCommand('aimastery.showDashboard', async () => {
+            const subscription = await getSubscriptionStatus();
+            
+            const message = subscription ? 
+                `📊 Plan: ${subscription.plan_type}\n💰 Crédits: ${subscription.remaining_credits}\n🎮 FUZZY tokens: ${subscription.fuzzy_tokens || 0}` :
+                'Connectez-vous pour voir votre dashboard';
+                
+            vscode.window.showInformationMessage(message);
+        }),
+        
+        vscode.commands.registerCommand('aimastery.generateSocialContent', async () => {
+            await generateSocialContent(null);
+        }),
+        
+        vscode.commands.registerCommand('aimastery.upgradeAccount', async () => {
+            openSubscriptionPage();
+        })
+    ];
+
+    context.subscriptions.push(...commands);
+
+    // Auto-update status bar toutes les 5 minutes
+    setInterval(() => updateStatusBar(), 300000);
+
+    // 🎉 Message final d'activation
+    vscode.window.showInformationMessage('🌊 AIMastery × FUZZY-SEA-QUEST v6.0 prêt ! 🎮🎨');
+}
+
+export function deactivate() {
+    console.log('🌊 AIMastery × FUZZY-SEA-QUEST v6.0 désactivé');
+    
+    // Nettoyer les connexions
+    if (fuzzyServer) {
+        fuzzyServer.close();
+        fuzzyServer = null;
+    }
+    
+    if (gameStateWS) {
+        gameStateWS.close();
+        gameStateWS = null;
+    }
+}

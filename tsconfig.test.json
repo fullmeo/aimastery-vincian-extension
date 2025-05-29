@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "outDir": "out/test",
+    "lib": [
+      "es2020",
+      "dom",
+      "dom.iterable",
+      "webworker",
+      "webworker.importscripts"
+    ],
+    "types": ["node", "mocha", "chai"],
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src/test/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

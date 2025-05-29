@@ -1,208 +1,56 @@
 {
   "name": "aimastery-vincian-analysis",
-  "displayName": "AIMastery × FUZZY-SEA-QUEST",
-  "description": "🌊 Extension révolutionnaire de vibe-coding ! Analyse Vincienne + Gaming + Freemium",
+  "displayName": "AIMastery Vincian Analysis",
+  "description": "Transform your code & audio with Leonardo da Vinci's 7 principles",
   "version": "6.0.0",
   "publisher": "Serigne-Diagne",
-  "keywords": [
-    "fuzzy-sea-quest",
-    "vibe-coding",
-    "gaming",
-    "vincian",
-    "leonardo-da-vinci",
-    "ai",
-    "analysis",
-    "freemium",
-    "scorescout"
-  ],
-  "icon": "images/VinciRenaissance.png",
-  // Ou utiliser votre logo personnel :
-  // "icon": "images/logo-serigne-diagne-128px.png",
   "engines": {
-    "vscode": "^1.90.0"
+    "vscode": "^1.74.0"
   },
-  "categories": [
-    "Other",
-    "Data Science",
-    "Machine Learning",
-    "Entertainment"
-  ],
-  "activationEvents": [
-    "onStartupFinished"
-  ],
+  "categories": ["Other"],
+  "keywords": ["leonardo", "davinci", "analysis", "audio", "creative", "vincian"],
+  "icon": "images/logo.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "activationEvents": ["*"],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "aimastery.vincianAnalysis",
-        "title": "🎨 Analyse Vincienne Enhanced",
-        "category": "AIMastery"
+        "command": "aimastery.analyzeQuick",
+        "title": "🔍 Quick Vincian Analysis"
       },
       {
-        "command": "aimastery.fuzzySync",
-        "title": "🌊 Sync FUZZY-SEA-QUEST",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.authenticate",
-        "title": "🔐 Connexion AIMastery",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.openGame",
-        "title": "🎮 Ouvrir FUZZY-SEA-QUEST",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.vibeMode",
-        "title": "🎵 Changer Vibe Mode",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.healExtension",
-        "title": "🔧 Auto-Heal FUZZY",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.generateApp",
-        "title": "🏗️ Générer App IA",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.showDashboard",
-        "title": "📊 Dashboard AIMastery",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.generateSocialContent",
-        "title": "📱 Contenu Social AI",
-        "category": "AIMastery"
-      },
-      {
-        "command": "aimastery.upgradeAccount",
-        "title": "⬆️ Upgrade Premium",
-        "category": "AIMastery"
+        "command": "aimastery.dashboard",
+        "title": "📊 Vincian Dashboard"
       }
     ],
-    "menus": {
-      "editor/context": [
-        {
-          "command": "aimastery.vincianAnalysis",
-          "when": "editorHasSelection",
-          "group": "aimastery@1"
-        }
-      ],
-      "commandPalette": [
-        {
-          "command": "aimastery.generateSocialContent",
-          "when": "aimastery.authenticated"
-        }
-      ]
-    },
-    "configuration": {
-      "title": "AIMastery FUZZY",
-      "properties": {
-        "aimastery.apiToken": {
-          "type": "string",
-          "description": "Token API AIMastery (depuis scorescout.eu/dashboard)"
-        },
-        "aimastery.gameUrl": {
-          "type": "string",
-          "default": "http://localhost:3000",
-          "description": "URL FUZZY-SEA-QUEST"
-        },
-        "aimastery.autoSync": {
-          "type": "boolean",
-          "default": true,
-          "description": "Sync automatique avec FUZZY-SEA-QUEST"
-        },
-        "aimastery.vibeMode": {
-          "type": "string",
-          "enum": [
-            "chill",
-            "flow",
-            "creative",
-            "intense"
-          ],
-          "default": "flow",
-          "description": "Mode de vibe actuel pour le coding"
-        },
-        "aimastery.plan": {
-          "type": "string",
-          "enum": [
-            "free",
-            "social_pack",
-            "pro_vincien"
-          ],
-          "default": "free",
-          "description": "Plan AIMastery actuel"
-        },
-        "aimastery.fuzzyServerPort": {
-          "type": "number",
-          "default": 8080,
-          "description": "Port pour communication FUZZY-SEA-QUEST"
-        }
+    "keybindings": [
+      {
+        "command": "aimastery.analyzeQuick",
+        "key": "ctrl+shift+v ctrl+shift+a",
+        "when": "editorTextFocus"
       }
-    },
-    "views": {
-      "explorer": [
-        {
-          "id": "aimasteryExplorer",
-          "name": "🌊 AIMastery FUZZY",
-          "when": "aimastery.activated"
-        }
-      ]
-    },
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "aimastery",
-          "title": "AIMastery",
-          "icon": "$(game)"
-        }
-      ]
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./",
-    "package": "vsce package",
-    "publish": "vsce publish",
-    "fuzzy-dev": "npm run compile && npm run package"
-  },
-  "dependencies": {
-    "axios": "^1.9.0",
-    "ws": "^8.18.2"
+    "watch": "tsc -watch -p ./"
   },
   "devDependencies": {
-    "@types/node": "^16.18.126",
-    "@types/vscode": "^1.100.0",
-    "@types/ws": "^8.18.1",
-    "typescript": "^4.9.5"
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/fullmeo/aimastery-vincian-extension.git"
+    "url": "https://github.com/serigne-diagne/aimastery.git"
   },
   "bugs": {
-    "url": "https://github.com/fullmeo/aimastery-vincian-extension/issues"
+    "url": "https://github.com/serigne-diagne/aimastery/issues"
   },
-  "homepage": "https://scorescout.eu",
-  "license": "MIT",
-  "galleryBanner": {
-    "color": "#20b2aa",
-    "theme": "dark"
-  },
-  "badges": [
-    {
-      "url": "https://img.shields.io/badge/FUZZY--SEA--QUEST-compatible-blue",
-      "href": "https://github.com/fullmeo/fuzzy-octo",
-      "description": "Compatible avec FUZZY-SEA-QUEST"
-    }
-  ],
-  "directories": {
-    "example": "examples"
-  },
-  "author": ""
+  "homepage": "https://github.com/serigne-diagne/aimastery#readme"
 }

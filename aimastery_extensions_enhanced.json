@@ -1,0 +1,119 @@
+{
+	// AIMastery VS Code Extensions - Configuration Optimisée
+	"recommendations": [
+		// 💰 REVENUE & BACKEND DEVELOPMENT (Stripe APIs)
+		"humao.rest-client",              // Tester APIs scorescout.eu
+		"rangav.vscode-thunder-client",   // Interface graphique pour webhooks
+		"ms-vscode.vscode-restclient",    // Alternative REST testing
+		"42crunch.vscode-openapi",        // Documentation API Stripe
+		"redhat.vscode-yaml",             // Config files Stripe
+		
+		// 🚀 DEPLOYMENT & CLOUD (ScoreScout.eu)
+		"vercel.vercel-vscode",           // Deploy direct Vercel
+		"ms-vscode.vscode-docker",        // Containerisation si besoin
+		"ms-azuretools.vscode-docker",    // Docker advanced
+		"github.vscode-github-actions",   // CI/CD automation
+		
+		// 🎨 VINCIAN AI & AUDIO ANALYSIS
+		"ms-vscode.hexeditor",            // Analyse fichiers audio binaires
+		"ms-vscode.vscode-media-preview", // Préview audio/vidéo
+		"formulahendry.code-runner",      // Scripts Vincian Analysis
+		"ms-python.python",               // Si scripts Python pour IA
+		"ms-toolsai.jupyter",             // Notebooks pour data analysis
+		
+		// 🔧 EXTENSION DEVELOPMENT CORE
+		"ms-vscode.vscode-extension-dev-kit", // Kit développement extension
+		"ms-vscode.extension-manager",         // Gestion extensions
+		"ms-vscode.vscode-webpack-tools",      // Build tools
+		"ms-vscode.extension-test-runner",     // Testing extensions
+		"ms-vscode.test-adapter-converter",    // Test adapters
+		"ms-vscode.vscode-js-debug",          // Debug JavaScript
+		
+		// 💎 CODE QUALITY & PRODUCTIVITY
+		"dbaeumer.vscode-eslint",         // Linting JavaScript/TypeScript
+		"esbenp.prettier-vscode",         // Auto-formatting
+		"ms-vscode.vscode-typescript-next", // TypeScript support
+		"bradlc.vscode-tailwindcss",      // CSS framework (si UI)
+		"formulahendry.auto-rename-tag",  // HTML/XML productivity
+		"christian-kohler.path-intellisense", // Auto-completion paths
+		
+		// 🤖 AI & COPILOT
+		"github.copilot",                 // AI coding assistant
+		"github.copilot-chat",            // AI chat intégré
+		"ms-vscode.vscode-ai",            // AI tools additionnels
+		
+		// 📊 GIT & VERSION CONTROL
+		"eamodio.gitlens",                // Git management avancé
+		"github.vscode-pull-request-github", // PR management
+		"github.github-vscode-theme",      // Thème GitHub
+		
+		// 📝 DOCUMENTATION & MARKDOWN
+		"yzhang.markdown-all-in-one",     // Markdown complet
+		"bierner.markdown-mermaid",       // Diagrammes
+		"davidanson.vscode-markdownlint", // Linting Markdown
+		"shd101wyy.markdown-preview-enhanced", // Preview avancé
+		
+		// 🎨 UI & VISUAL
+		"ms-vscode.vscode-icons",         // Icônes files
+		"ms-vscode.vscode-colorize",      // Colorisation
+		"oderwat.indent-rainbow",         // Indentation visuelle
+		"streetsidesoftware.code-spell-checker", // Correcteur orthographique
+		
+		// 🔐 SECURITY & SECRETS (pour clés Stripe)
+		"ms-vscode.vscode-secrets",       // Gestion secrets
+		"hashicorp.hcl",                  // Configuration as code
+		"ms-vscode.vscode-env",           // Variables environnement
+		
+		// 📈 ANALYTICS & MONITORING
+		"ms-vscode.vscode-json",          // JSON support
+		"quicktype.quicktype",            // JSON to Types
+		"ms-vscode.vscode-csv-preview",   // CSV data preview
+		
+		// ⚡ PERFORMANCE & OPTIMIZATION
+		"ms-vscode.vscode-webpack-bundle-analyzer", // Bundle analysis
+		"ms-vscode.vscode-performance",    // Performance monitoring
+		"usernamehw.errorlens",            // Erreurs inline
+		
+		// 🧪 TESTING & DEBUGGING
+		"ms-vscode.vscode-mocha-test-adapter", // Testing Mocha
+		"ms-vscode.vscode-jest",               // Testing Jest
+		"ms-vscode.vscode-coverage-gutters",   // Code coverage
+		
+		// 🌐 WEB DEVELOPMENT (pour pages success/cancel)
+		"ms-vscode.vscode-html-css-support", // HTML/CSS support
+		"ms-vscode.live-server",             // Live preview
+		"ms-vscode.vscode-emmet",            // HTML productivity
+		
+		// 📱 SOCIAL MEDIA INTEGRATION (AIMastery focus)
+		"ms-vscode.vscode-social-preview",   // Preview social cards
+		"ms-vscode.vscode-image-preview",    // Image optimization
+		"ms-vscode.vscode-svg-preview"       // SVG preview
+	],
+	
+	// Configuration spécifique AIMastery
+	"unwantedRecommendations": [
+		// Extensions qui peuvent conflictuer
+		"ms-vscode.vscode-php-debug",
+		"ms-dotnettools.csharp"
+	],
+	
+	// Extensions pour workspace AIMastery
+	"aimastery": {
+		"core": [
+			"humao.rest-client",
+			"ms-vscode.vscode-extension-dev-kit", 
+			"github.copilot",
+			"eamodio.gitlens"
+		],
+		"revenue": [
+			"rangav.vscode-thunder-client",
+			"vercel.vercel-vscode",
+			"ms-vscode.vscode-secrets"
+		],
+		"ai": [
+			"formulahendry.code-runner",
+			"ms-python.python",
+			"ms-toolsai.jupyter"
+		]
+	}
+}

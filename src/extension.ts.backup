@@ -1,0 +1,210 @@
+import * as vscode from 'vscode';
+import fetch from 'node-fetch';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as fs from 'fs';
+
+// Configuration des variables d'environnement
+const envPath = path.join(__dirname, '..', '.env');
+if (fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+    console.log('Variables environnement chargees avec succes');
+} else {
+    console.warn('Avertissement: Fichier .env introuvable');
+}
+
+// Verification des variables d'environnement requises
+const requiredEnvVars = ['OPENAI_API_KEY'];
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+// Configuration API
+const BACKEND_API_URL = 'https://aimastery-backend-ku8lgf82f-aimastery.vercel.app';
+
+// Interface pour l'analyse
+interface AnalysisResult {
+    vincianScore: string;
+    preview: string;
+    socialPreview: string;
+    upgradePrompt: string;
+    premiumFeatures: {
+        fullBreakdown: string;
+        socialMediaPack: string;
+        nftGeneration: string;
+    };
+    analysisId: string;
+}
+
+// Output channel global
+let outputChannel: vscode.OutputChannel;
+
+export function activate(context: vscode.ExtensionContext) {
+    // Creer output channel
+    outputChannel = vscode.window.createOutputChannel('AIMastery Analytics');
+    context.subscriptions.push(outputChannel);
+    
+    console.log('AIMastery v5.0.1 active!');
+    outputChannel.appendLine('AIMastery Extension Analytics Initialized');
+    
+    // Afficher warning pour variables manquantes APRES activation
+    if (missingVars.length > 0) {
+        vscode.window.showWarningMessage(
+            `Variables manquantes: ${missingVars.join(', ')}. Certaines fonctionnalites limitees.`
+        );
+        outputChannel.appendLine(`Variables manquantes: ${missingVars.join(', ')}`);
+    }
+    
+    // Test API Backend command
+    const testAPICommand = vscode.commands.registerCommand('aimastery.testAPI', async () => {
+        try {
+            outputChannel.appendLine('Testing API...');
+            
+            const response = await fetch(`${BACKEND_API_URL}/api/user/test123/plan`);
+            const data = await response.json();
+            
+            vscode.window.showInformationMessage(
+                `API Success! Plan: ${JSON.stringify(data)}`
+            );
+            
+            outputChannel.appendLine(`API Response: ${JSON.stringify(data)}`);
+        } catch (error) {
+            vscode.window.showErrorMessage(`API Failed: ${error}`);
+            outputChannel.appendLine(`API Error: ${error}`);
+        }
+    });
+
+    // Test Social Pack 9 euros
+    const testSocialPackCommand = vscode.commands.registerCommand('aimastery.testSocialPack', async () => {
+        try {
+            outputChannel.appendLine('Testing Social Pack Checkout...');
+            
+            const response = await fetch(`${BACKEND_API_URL}/api/payments/create-checkout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    planType: 'social_pack',
+                    userId: 'test123'
+                })
+            });
+
+            const data = await response.json() as any;
+            
+            if (data.url) {
+                vscode.window.showInformationMessage(
+                    'Social Pack Checkout (9 euros) cree!',
+                    'Ouvrir Stripe'
+                ).then(selection => {
+                    if (selection === 'Ouvrir Stripe') {
+                        vscode.env.openExternal(vscode.Uri.parse(data.url));
+                    }
+                });
+                
+                outputChannel.appendLine(`Social Pack URL: ${data.url}`);
+            } else {
+                outputChannel.appendLine(`Social Pack Response: ${JSON.stringify(data)}`);
+            }
+            
+        } catch (error) {
+            vscode.window.showErrorMessage(`Social Pack Failed: ${error}`);
+            outputChannel.appendLine(`Social Pack Error: ${error}`);
+        }
+    });
+
+    // Test Pro Vincien 15 euros
+    const testProVincienCommand = vscode.commands.registerCommand('aimastery.testProVincien', async () => {
+        try {
+            outputChannel.appendLine('Testing Pro Vincien Checkout...');
+            
+            const response = await fetch(`${BACKEND_API_URL}/api/payments/create-checkout`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    planType: 'pro_vincien',
+                    userId: 'test123'
+                })
+            });
+
+            const data = await response.json() as any;
+            
+            if (data.url) {
+                vscode.window.showInformationMessage(
+                    'Pro Vincien Checkout (15 euros) cree!',
+                    'Ouvrir Stripe'
+                ).then(selection => {
+                    if (selection === 'Ouvrir Stripe') {
+                        vscode.env.openExternal(vscode.Uri.parse(data.url));
+                    }
+                });
+                
+                outputChannel.appendLine(`Pro Vincien URL: ${data.url}`);
+            } else {
+                outputChannel.appendLine(`Pro Vincien Response: ${JSON.stringify(data)}`);
+            }
+            
+        } catch (error) {
+            vscode.window.showErrorMessage(`Pro Vincien Failed: ${error}`);
+            outputChannel.appendLine(`Pro Vincien Error: ${error}`);
+        }
+    });
+
+    // Analyse Audio
+    const analyzeCommand = vscode.commands.registerCommand('aimastery.analyzeAudio', async () => {
+        const analysis: AnalysisResult = {
+            vincianScore: "8.7/10",
+            preview: "Golden Ratio detected - Sfumato technique present - Ready for NFT generation",
+            socialPreview: "3 social media posts ready - 1 Instagram story - LinkedIn article draft",
+            upgradePrompt: "Unlock v5.0 Premium: NFT Generation + Social Media Automation",
+            premiumFeatures: {
+                fullBreakdown: "Complete 7-principle Vincian analysis with detailed scoring",
+                socialMediaPack: "Auto-generate Instagram + LinkedIn + TikTok + YouTube content",
+                nftGeneration: "Transform your audio into unique NFT artwork (5-50 euros value)"
+            },
+            analysisId: Date.now().toString()
+        };
+
+        vscode.window.showInformationMessage(
+            `Analyse terminee! Score: ${analysis.vincianScore}`,
+            'Test API',
+            'Test Social Pack'
+        ).then(selection => {
+            if (selection === 'Test API') {
+                vscode.commands.executeCommand('aimastery.testAPI');
+            } else if (selection === 'Test Social Pack') {
+                vscode.commands.executeCommand('aimastery.testSocialPack');
+            }
+        });
+        
+        outputChannel.appendLine(`Audio Analysis: Score ${analysis.vincianScore} - ID: ${analysis.analysisId}`);
+    });
+
+    // Ajouter toutes les commandes
+    context.subscriptions.push(
+        testAPICommand,
+        testSocialPackCommand, 
+        testProVincienCommand,
+        analyzeCommand
+    );
+    
+    // Welcome message
+    setTimeout(() => {
+        vscode.window.showInformationMessage(
+            'AIMastery v5.0 pret! Testez vos APIs revenue.',
+            'Test API',
+            'Test 9 euros',
+            'Test 15 euros'
+        ).then(selection => {
+            switch(selection) {
+                case 'Test API':
+                    vscode.commands.executeCommand('aimastery.testAPI');
+                    break;
+                case 'Test 9 euros':
+                    vscode.commands.executeCommand('aimastery.testSocialPack');
+                    break;
+                case 'Test 15 euros':
+                    vscode.commands.executeCommand('aimastery.testProVincien');
+                    break;
+            }
+        });
+    }, 1000);
+}
+
+export function deactivate() {}

@@ -1,0 +1,62 @@
+Parfait ! 🎉 Restructurons AIMastery vers un **modèle freemium**. Voici le plan d'action :
+
+## **🔧 Actions dans Stripe Dashboard :**
+
+### **1. Garder vos produits actuels**
+```
+✅ Social Pack - 9€/mois (déjà créé)
+⏳ Pro Vincien - 15€/mois (à créer)
+```
+
+### **2. Pas besoin d'un "produit gratuit" dans Stripe**
+Le plan gratuit sera géré **côté application** (pas de paiement = plan gratuit)
+
+## **📋 Nouvelle structure tarifaire :**## **🎯 Prochaines actions dans Stripe :**
+
+### **1. Créer le produit "Pro Vincien"**
+Dans votre Dashboard Stripe :
+- **Cliquez "Ajouter un produit"**
+- **Nom** : "AIMastery Pro Vincien"
+- **Prix** : 15,00 EUR/mois
+- **Période d'essai** : 14 jours
+- **Features** : Liste des fonctionnalités premium
+
+### **2. Configurer les métadonnées Pro**
+```
+plan_type → pro_vincien
+features → unlimited,analytics_advanced,priority_support
+trial_days → 14
+monthly_credits → unlimited
+```
+
+## **🚀 Avantages de cette approche freemium :**
+
+### **✅ Pour les utilisateurs :**
+- **Pas de pression** : Essai permanent
+- **Découverte progressive** : Voient la valeur avant de payer
+- **Choix flexible** : 3 niveaux selon les besoins
+
+### **✅ Pour votre business :**
+- **Adoption massive** : Barrière d'entrée = 0
+- **Conversion naturelle** : 2-5% des gratuits deviennent payants
+- **Retention élevée** : Users investis avant de payer
+- **Growth viral** : Plus d'users = plus de recommandations
+
+## **📊 Métriques clés à tracker :**
+
+```javascript
+// KPIs freemium
+const metrics = {
+    conversion_rate: "Gratuit → Payant",
+    time_to_upgrade: "Délai moyen avant upgrade", 
+    feature_usage: "Features les plus utilisées",
+    churn_rate: "Taux de désabonnement",
+    ltv: "Valeur vie client"
+};
+```
+
+## **🎯 Prochaine étape :**
+
+Voulez-vous qu'on **crée le produit Pro Vincien** dans Stripe maintenant, ou préférez-vous d'abord **ajuster les features** du Social Pack existant ?
+
+La stratégie freemium va **multiplier votre adoption** ! 🚀

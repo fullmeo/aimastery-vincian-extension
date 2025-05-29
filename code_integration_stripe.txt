@@ -1,0 +1,46 @@
+Parfait ! Je vais vous créer un **code d'intégration complet** pour AIMastery adapté à votre extension VS Code.Voilà ! 🎉 J'ai créé un **code d'intégration complet** pour AIMastery. Voici les points clés :
+
+## **🔧 Ce que le code inclut :**
+
+### **1. Interface VS Code native**
+- **Status bar** dynamique (Free → "Upgrade" / Pro → "✓ AIMastery Pro")
+- **Quick Pick menu** pour choisir entre Social Pack et Pro Vincien
+- **Redirection automatique** vers Stripe Checkout
+
+### **2. Gestion complète des abonnements**
+- **Webhooks** pour tous les événements importants
+- **Période d'essai** automatique (7j/14j selon le plan)
+- **Métadonnées** pour tracking utilisateur
+
+### **3. Contrôle des fonctionnalités**
+- **Vérification d'accès** par feature
+- **Limites d'usage** selon le plan (gratuit: 10/mois, social: 100/mois, pro: illimité)
+- **Messages d'upgrade** contextuels
+
+## **🚀 Actions à prendre :**
+
+### **1. Remplacer les placeholders**
+```javascript
+// Vos vraies clés
+sk_live_... → Votre clé secrète Stripe
+price_xxxxxxxxxxxxx → Vos vrais Price IDs
+https://votre-api.com → Votre domaine
+```
+
+### **2. Créer votre serveur**
+- **Node.js + Express** pour les routes
+- **Base de données** pour stocker les abonnements users
+- **Deploy** sur Heroku/Vercel/Railway
+
+### **3. Configurer les webhooks**
+Dans Stripe Dashboard → Webhooks → Add endpoint :
+```
+https://votre-api.com/webhook
+```
+
+### **4. Tester l'intégration**
+- **Cartes de test** Stripe
+- **Mode sandbox** d'abord
+- **Vérifier les webhooks**
+
+Voulez-vous que je vous aide avec une partie spécifique (serveur, webhooks, ou autre) ?

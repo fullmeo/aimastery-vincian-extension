@@ -1,0 +1,158 @@
+{
+  "name": "aimastery-cymatic-analyzer",
+  "displayName": "AIMastery V4 - Cymatic Analyzer",
+  "description": "🎵 Analyse cymatique révolutionnaire avec génération de contenu social automatique",
+  "version": "4.0.0",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Data Science"
+  ],
+  "keywords": [
+    "music",
+    "audio",
+    "analysis",
+    "cymatic",
+    "vincian",
+    "social media",
+    "content generation",
+    "AI"
+  ],
+  "activationEvents": [
+    "onCommand:aimastery.analyzeAudio",
+    "onCommand:aimastery.openSettings",
+    "onFileSystem:file",
+    "onLanguage:audio"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aimastery.analyzeAudio",
+        "title": "🎵 Analyser avec AIMastery V4",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.analyzeAudioFromContext",
+        "title": "🎵 Analyser ce fichier audio",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.openSettings",
+        "title": "⚙️ Paramètres AIMastery",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.upgrade",
+        "title": "💎 Passer à Premium",
+        "category": "AIMastery"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "aimastery.analyzeAudioFromContext",
+          "when": "resourceExtname =~ /\\.(mp3|wav|flac|m4a|aac)$/i",
+          "group": "aimastery"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "aimastery.analyzeAudio"
+        },
+        {
+          "command": "aimastery.openSettings"
+        },
+        {
+          "command": "aimastery.upgrade"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "aimastery.analyzeAudio",
+        "key": "ctrl+alt+a",
+        "mac": "cmd+alt+a"
+      }
+    ],
+    "configuration": {
+      "title": "AIMastery V4",
+      "properties": {
+        "aimastery.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Clé API personnelle (optionnel)",
+          "scope": "application"
+        },
+        "aimastery.userTier": {
+          "type": "string",
+          "enum": ["free", "premium"],
+          "default": "free",
+          "description": "Tier d'abonnement actuel",
+          "scope": "application"
+        },
+        "aimastery.autoUpgrade": {
+          "type": "boolean",
+          "default": true,
+          "description": "Proposer automatiquement la mise à niveau Premium",
+          "scope": "application"
+        },
+        "aimastery.analytics": {
+          "type": "boolean",
+          "default": true,
+          "description": "Partager les données d'usage anonymes",
+          "scope": "application"
+        },
+        "aimastery.maxFileSize": {
+          "type": "number",
+          "default": 10,
+          "description": "Taille maximale des fichiers en MB",
+          "minimum": 1,
+          "maximum": 50,
+          "scope": "application"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0",
+    "@vscode/vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.2"
+  },
+  "publisher": "aimastery",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/aimastery-vscode-extension"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/aimastery-vscode-extension/issues"
+  },
+  "homepage": "https://your-app.vercel.app",
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1a1a2e",
+    "theme": "dark"
+  }
+}

@@ -1,0 +1,30 @@
+// AJOUTER ces imports au début du fichier extension.ts
+import { AIMasteryAPITester } from './api-test';
+
+// AJOUTER ces commandes dans la fonction activate()
+export function activate(context: vscode.ExtensionContext) {
+    // ... code existant ...
+
+    // API Tester pour revenue backend
+    const apiTester = new AIMasteryAPITester();
+
+    // Commande test API backend
+    let testAPICommand = vscode.commands.registerCommand('aimastery.testAPI', async () => {
+        await apiTester.testUserPlan('test123');
+    });
+
+    // Commande test Social Pack €9
+    let testSocialPackCommand = vscode.commands.registerCommand('aimastery.testSocialPack', async () => {
+        await apiTester.testSocialPackUpgrade();
+    });
+
+    // Commande test Pro Vincien €15
+    let testProVincienCommand = vscode.commands.registerCommand('aimastery.testProVincien', async () => {
+        await apiTester.testProVincienUpgrade();
+    });
+
+    // Ajouter aux subscriptions
+    context.subscriptions.push(testAPICommand, testSocialPackCommand, testProVincienCommand);
+
+    // ... reste du code existant ...
+}

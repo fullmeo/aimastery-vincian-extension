@@ -1,0 +1,132 @@
+{
+	// AIMastery VS Code Tasks - Automatisation complète
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "🚀 Build Extension AIMastery",
+			"type": "shell",
+			"command": "vsce package",
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"problemMatcher": "$tsc"
+		},
+		{
+			"label": "💰 Test Stripe APIs",
+			"type": "shell", 
+			"command": "curl",
+			"args": [
+				"-X", "GET",
+				"https://scorescout.eu/health",
+				"-H", "Content-Type: application/json"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always"
+			}
+		},
+		{
+			"label": "🔧 Start Local Webhook Server",
+			"type": "shell",
+			"command": "node",
+			"args": ["server.js"],
+			"options": {
+				"env": {
+					"NODE_ENV": "development",
+					"PORT": "3000"
+				}
+			},
+			"group": "serve",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "🌐 Start ngrok Tunnel", 
+			"type": "shell",
+			"command": "ngrok",
+			"args": ["http", "3000"],
+			"group": "serve",
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"panel": "new"
+			}
+		},
+		{
+			"label": "📊 Generate Revenue Report",
+			"type": "shell",
+			"command": "curl",
+			"args": [
+				"-X", "GET", 
+				"https://scorescout.eu/admin/metrics",
+				"-H", "Authorization: Bearer ${env:ADMIN_TOKEN}"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always"
+			}
+		},
+		{
+			"label": "🎯 Full AIMastery Workflow",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"🔧 Start Local Webhook Server",
+				"🌐 Start ngrok Tunnel",
+				"💰 Test Stripe APIs",
+				"🚀 Build Extension AIMastery"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+		{
+			"label": "🧪 Test Extension in New Window",
+			"type": "shell",
+			"command": "code",
+			"args": [
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"--new-window"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "silent"
+			}
+		},
+		{
+			"label": "📦 Package & Publish Extension",
+			"type": "shell",
+			"command": "vsce",
+			"args": ["publish"],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always"
+			},
+			"dependsOn": "🚀 Build Extension AIMastery"
+		},
+		{
+			"label": "🔄 Sync Stripe Products",
+			"type": "shell",
+			"command": "node",
+			"args": ["scripts/sync-stripe-products.js"],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always"
+			}
+		}
+	]
+}

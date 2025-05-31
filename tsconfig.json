@@ -1,22 +1,29 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
     "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
     "outDir": "out",
-    "lib": [
-      "ES2020"
-    ],
-    "sourceMap": true,
     "rootDir": "src",
+    "sourceMap": true,
     "strict": true,
-    "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
   },
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules",
-    ".vscode-test"
+    ".vscode-test",
+    "out",
+    "aimastery-backend-api",
+    "api",
+    "backend",
+    "server",
+    "test",
+    "docs",
+    "backup",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ]
 }
-

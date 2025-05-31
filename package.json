@@ -1,56 +1,135 @@
 {
   "name": "aimastery-vincian-analysis",
   "displayName": "AIMastery Vincian Analysis",
-  "description": "Transform your code & audio with Leonardo da Vinci's 7 principles",
+  "description": "Transformez votre code avec les 7 principes de Leonardo da Vinci + Blockchain Gaming",
   "version": "6.0.0",
   "publisher": "Serigne-Diagne",
   "engines": {
     "vscode": "^1.74.0"
   },
-  "categories": ["Other"],
-  "keywords": ["leonardo", "davinci", "analysis", "audio", "creative", "vincian"],
-  "icon": "images/logo.png",
-  "galleryBanner": {
-    "color": "#1e1e1e",
-    "theme": "dark"
-  },
-  "activationEvents": ["*"],
+  "categories": [
+    "Other",
+    "Education",
+    "Programming Languages"
+  ],
+  "keywords": [
+    "leonardo",
+    "davinci",
+    "analysis",
+    "creativity",
+    "blockchain",
+    "gaming",
+    "vincian",
+    "aimastery"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "aimastery.analyzeQuick",
-        "title": "🔍 Quick Vincian Analysis"
+        "command": "aimastery.testStripe",
+        "title": "💰 AIMastery: Test Stripe Checkout",
+        "category": "AIMastery"
       },
       {
-        "command": "aimastery.dashboard",
-        "title": "📊 Vincian Dashboard"
+        "command": "aimastery.analytics",
+        "title": "📊 AIMastery: Analytics Dashboard",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.vincianAnalysis",
+        "title": "🎨 AIMastery: Analyse Vincienne",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.fuzzySync",
+        "title": "🌊 AIMastery: FUZZY-SEA-QUEST Sync",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.creatorPro",
+        "title": "👑 AIMastery: Creator Pro Mode",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.autoCode",
+        "title": "🤖 AIMastery: Auto-Code Magique",
+        "category": "AIMastery"
+      },
+      {
+        "command": "aimastery.blockchainGaming",
+        "title": "🎮 AIMastery: Blockchain Gaming (Votre Axie)",
+        "category": "AIMastery"
       }
     ],
-    "keybindings": [
-      {
-        "command": "aimastery.analyzeQuick",
-        "key": "ctrl+shift+v ctrl+shift+a",
-        "when": "editorTextFocus"
-      }
-    ]
+    "views": {
+      "explorer": [
+        {
+          "id": "aimasteryView",
+          "name": "🎭 AIMastery Creative Ecosystem",
+          "when": "true"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "aimastery.testStripe",
+          "when": "true"
+        },
+        {
+          "command": "aimastery.analytics",
+          "when": "true"
+        },
+        {
+          "command": "aimastery.vincianAnalysis",
+          "when": "true"
+        },
+        {
+          "command": "aimastery.fuzzySync",
+          "when": "true"
+        },
+        {
+          "command": "aimastery.creatorPro",
+          "when": "true"
+        },
+        {
+          "command": "aimastery.autoCode",
+          "when": "true"
+        },
+        {
+          "command": "aimastery.blockchainGaming",
+          "when": "true"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "package": "vsce package",
+    "publish": "vsce publish"
   },
   "devDependencies": {
     "@types/vscode": "^1.74.0",
-    "@types/node": "16.x",
-    "typescript": "^4.9.4"
+    "@types/node": "18.x",
+    "typescript": "^5.2.0"
   },
+  "dependencies": {},
   "repository": {
     "type": "git",
-    "url": "https://github.com/serigne-diagne/aimastery.git"
+    "url": "https://github.com/Serigne-Diagne/aimastery-vincian-analysis"
   },
+  "homepage": "https://github.com/Serigne-Diagne/aimastery-vincian-analysis#readme",
   "bugs": {
-    "url": "https://github.com/serigne-diagne/aimastery/issues"
+    "url": "https://github.com/Serigne-Diagne/aimastery-vincian-analysis/issues"
   },
-  "homepage": "https://github.com/serigne-diagne/aimastery#readme"
+  "license": "MIT",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  }
 }

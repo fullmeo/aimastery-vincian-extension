@@ -57,10 +57,7 @@
         // UI & Visual
         "ms-vscode.vscode-icons",         // Icônes files
         "oderwat.indent-rainbow",         // Indentation visuelle
-        "streetsidesoftware.code-spell-checker", // Correcteur orthographique
-        
-        // Performance & Debugging
-        "usernamehw.errorlens",           // Erreurs inline (CRITIQUE pour webhooks)
+        "usernamehw.errorlens", // Erreurs inline (CRITIQUE pour webhooks)
         "ms-vscode.vscode-coverage-gutters" // Code coverage
     ]
 }

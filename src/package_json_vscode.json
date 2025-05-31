@@ -143,12 +143,12 @@
   "publisher": "aimastery",
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-username/aimastery-vscode-extension"
+    "url": "https://github.com/Serigne-Diagne/aimastery-vincian-analysis.git"
   },
   "bugs": {
     "url": "https://github.com/your-username/aimastery-vscode-extension/issues"
   },
-  "homepage": "https://your-app.vercel.app",
+  "homepage": "https://github.com/Serigne-Diagne/aimastery-vincian-analysis#readme",
   "license": "MIT",
   "icon": "images/icon.png",
   "galleryBanner": {

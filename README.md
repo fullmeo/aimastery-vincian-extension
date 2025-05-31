@@ -1,25 +1,25 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/fullmeo/aimastery/main/.github/logo.png" alt="Aimastery Logo" width="200">
-</p>
+<!-- # Aimastery - aimastery-vincian-analysis
 
-<h1 align="center">Aimastery - aimastery-vincian-analysis</h1>
+![Aimastery Logo](https://raw.githubusercontent.com/fullmeo/aimastery/main/.github/logo.png)
+ -->
+<div align="center">
 
-<p align="center">
-  ![Github top language](https://img.shields.io/github/languages/top/fullmeo/aimastery?color=56BEB8)
-  ![Github language count](https://img.shields.io/github/languages/count/fullmeo/aimastery?color=56BEB8)
-  ![Repository size](https://img.shields.io/github/repo-size/fullmeo/aimastery?color=56BEB8)
-  ![License](https://img.shields.io/github/license/fullmeo/aimastery?color=56BEB8)
-</p>
+![Github top language](https://img.shields.io/github/languages/top/fullmeo/aimastery?color=56BEB8)
+![Github language count](https://img.shields.io/github/languages/count/fullmeo/aimastery?color=56BEB8)
+![Repository size](https://img.shields.io/github/repo-size/fullmeo/aimastery?color=56BEB8)
+![License](https://img.shields.io/github/license/fullmeo/aimastery?color=56BEB8)
 
-<p align="center">
-  <a href="#dart-about">About</a> &#xa0; | &#xa0; 
+</div>
+
+<div align="center">
+  <a href="#dart-about">About</a> &#xa0; | &#xa0;
   <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
   <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
   <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
   <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
   <a href="#memo-license">License</a> &#xa0; | &#xa0;
   <a href="https://github.com/fullmeo" target="_blank">Author</a>
-</p>
+</div>
 
 <br>
 
@@ -126,7 +126,8 @@ Made with :heart: by [Serigne Diagne](https://github.com/fullmeo)
 6. ✨ **Simplicité** - Clarté expressive
 7. 🔭 **Perspective** - Profondeur temporelle
 
-### 🎺 **Résultat :** 
+### 🎺 **Résultat :**
+
 Un score sur 10 + visualisations artistiques + recommandations d'amélioration + contenu social automatique !
 
 ---
@@ -200,6 +201,7 @@ Si vous êtes **Serigne Diagne** (créateur), vous bénéficiez de :
 🎺 **Presets exclusifs** pour trompette optimisés  
 
 ### 🔐 **Activation Creator Pro :**
+
 ```
 Ctrl+Shift+P → "AIMastery: Activate Creator Pro"
 ```
@@ -209,12 +211,14 @@ Ctrl+Shift+P → "AIMastery: Activate Creator Pro"
 ## 💰 **Plans et Pricing**
 
 ### 🆓 **Free Trial (7 jours)**
+
 - ✅ 3 analyses gratuites
 - ✅ Tous les principes Da Vinci
 - ✅ Visualisations de base
 - ✅ Export PNG
 
 ### 📱 **Social Pack - €9/mois**
+
 - ✅ 50 analyses/mois
 - ✅ Génération contenu social automatique
 - ✅ Templates Instagram/LinkedIn/TikTok
@@ -222,6 +226,7 @@ Ctrl+Shift+P → "AIMastery: Activate Creator Pro"
 - ✅ Analytics engagement
 
 ### 💎 **Pro Vincien - €15/mois**
+
 - ✅ **Analyses illimitées**
 - ✅ Génération NFT automatique
 - ✅ Export haute qualité (4K)
@@ -230,6 +235,7 @@ Ctrl+Shift+P → "AIMastery: Activate Creator Pro"
 - ✅ Presets instruments avancés
 
 ### 👑 **Creator Pro - GRATUIT** *(Serigne Diagne uniquement)*
+
 - ✅ **Tous les privilèges illimités**
 - ✅ Dashboard revenus en temps réel
 - ✅ Analytics utilisateurs avancées
@@ -257,6 +263,7 @@ L'extension génère automatiquement du contenu pour vos réseaux sociaux :
 ### 🎨 **Génération NFT Avancée**
 
 Chaque analyse génère un NFT unique avec :
+
 - Visualisation artistique Da Vinci
 - Métadonnées de l'analyse complète
 - Score et date horodatés
@@ -280,12 +287,14 @@ Chaque analyse génère un NFT unique avec :
 ## 📈 **Statistiques d'Usage Réelles**
 
 ### 🎺 **Usage Personnel Serigne Diagne :**
+
 - **47 analyses** personnelles de trompette
 - **Score moyen** : 8.4/10 (en progression constante)
 - **Meilleure performance** : 9.2/10
 - **Temps d'amélioration** : +23% en 3 mois
 
 ### 💰 **Métriques Business :**
+
 - **€247 MRR** (Monthly Recurring Revenue)
 - **32% conversion** trial → payant
 - **247 utilisateurs** actifs
@@ -347,18 +356,21 @@ Chaque analyse génère un NFT unique avec :
 ## 🌍 **Roadmap 2025**
 
 ### 🚀 **Q2 2025 - v6.0 "Community Edition"**
+
 - 🤝 Collaboration entre musiciens
 - 🏆 Leaderboards communautaires  
 - 🎓 Certification NFT "Maître Vincien"
 - 🌐 Marketplace de presets instruments
 
 ### 🎯 **Q3 2025 - v7.0 "AI Composer"**
+
 - 🤖 Génération automatique de mélodies
 - 🎼 Composition assistée Da Vinci
 - 🎹 Intégration DAW (FL Studio, Ableton)
 - 🎤 Analyse vocal temps réel
 
 ### 💎 **Q4 2025 - v8.0 "Enterprise"**
+
 - 🏢 Version studios professionnels
 - 📊 Analytics d'équipe avancées
 - 💼 Licences corporate
@@ -385,7 +397,7 @@ Chaque analyse génère un NFT unique avec :
 
 ### 🐛 **Support :**
 
-- 📧 **Email** : serigne.diagne@aimastery.com
+- 📧 **Email** : <serigne.diagne@aimastery.com>
 - 🐛 **Issues** : [GitHub Issues](https://github.com/serigne-diagne/aimastery/issues)
 - ❓ **FAQ** : [aimastery.com/faq](https://aimastery.com/faq)
 - 💬 **Chat en direct** : Dans l'extension VS Code
@@ -405,11 +417,13 @@ Chaque analyse génère un NFT unique avec :
 ## 🏅 **Récompenses & Reconnaissance**
 
 ### 🏆 **Prix reçus :**
+
 - 🥇 **"Most Innovative Extension 2024"** - VS Code Community
 - 🎵 **"Best Music Tool"** - Dev Awards 2024  
 - 🎨 **"Creative Developer Choice"** - Renaissance Tech Summit
 
 ### 📊 **Métriques de succès :**
+
 - **4.8/5 étoiles** (247 reviews)
 - **15 versions** publiées depuis v0.1.0
 - **€247 MRR** en croissance constante
@@ -437,7 +451,9 @@ Chaque analyse génère un NFT unique avec :
 
 **MIT License** - Voir [LICENSE](https://github.com/serigne-diagne/aimastery/blob/main/LICENSE)
 
-**Copyright © 2024-2025 Serigne Diagne & AIMastery Team**
+### Copyright
+
+Copyright © 2024-2025 Serigne Diagne & AIMastery Team
 
 ---
 

@@ -1,99 +1,146 @@
-<!-- # Aimastery - aimastery-vincian-analysis
-
-![Aimastery Logo](https://raw.githubusercontent.com/fullmeo/aimastery/main/.github/logo.png)
- -->
 <div align="center">
 
-![Github top language](https://img.shields.io/github/languages/top/fullmeo/aimastery?color=56BEB8)
-![Github language count](https://img.shields.io/github/languages/count/fullmeo/aimastery?color=56BEB8)
-![Repository size](https://img.shields.io/github/repo-size/fullmeo/aimastery?color=56BEB8)
-![License](https://img.shields.io/github/license/fullmeo/aimastery?color=56BEB8)
+# 🎺 AIMastery Vincian Analysis v6.0
 
-</div>
-
-<div align="center">
-  <a href="#dart-about">About</a> &#xa0; | &#xa0;
-  <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
-  <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
-  <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
-  <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
-  <a href="#memo-license">License</a> &#xa0; | &#xa0;
-  <a href="https://github.com/fullmeo" target="_blank">Author</a>
-</div>
-
-<br>
-
-## :dart: About ##
-
-[Description dÃ©taillÃ©e du projet]
-
-## :sparkles: Features ##
-
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
-
-## :rocket: Technologies ##
-
-The following tools were used in this project:
-
-- [Technology 1](https://example.com)
-- [Technology 2](https://example.com)
-- [Technology 3](https://example.com)
-
-## :white_check_mark: Requirements ##
-
-Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
-
-## :checkered_flag: Starting ##
-
-```bash
-# Clone this project
-$ git clone https://github.com/fullmeo/aimastery
-
-# Access
-$ cd [project-name]
-
-# Install dependencies
-$ yarn
-
-# Run the project
-$ yarn start
-
-# The server will initialize in the <http://localhost:3000>
-```
-
-## :memo: License ##
-
-This project is under license from MIT. For more details, see the [LICENSE](LICENSE.md) file.
-
-Made with :heart: by [Serigne Diagne](https://github.com/fullmeo)
-
-&#xa0;
-
-## Auteur
-
-- **Nom :** Diagne
-- **PrÃ©nom :** Serigne
-- [Profil GitHub](https://github.com/fullmeo)
-
-<a href="#top">Back to top</a>
-
-# 🎺 AIMastery Vincian Analysis v5.3 - Creator Pro Edition
-
-<div align="center">
-
-![AIMastery Banner](https://img.shields.io/badge/AIMastery-Vincian%20Analysis%20v5.3-gold?style=for-the-badge&logo=visualstudiocode&logoColor=white)
-![Version](https://img.shields.io/badge/version-5.3.0-blue?style=for-the-badge)
-![Creator](https://img.shields.io/badge/Creator-Serigne%20Diagne-orange?style=for-the-badge)
-![Rating](https://img.shields.io/badge/rating-★★★★★-yellow?style=for-the-badge)
+![AIMastery Banner](https://img.shields.io/badge/AIMastery-Vincian%20Analysis%20v6.0-gold?style=for-the-badge&logo=visualstudiocode&logoColor=white)
+![Version](https://img.shields.io/badge/version-6.0.0-blue?style=for-the-badge)
+![License](https://img.shields.io/badge/license-MIT-green?style=for-the-badge)
 
 **🎨 Transformez votre audio en art avec les 7 principes de Léonard de Vinci**
 
-**🎺 Par un trompettiste-développeur qui utilise sa propre extension quotidiennement**
+[🚀 Installation](#installation) • [✨ Fonctionnalités](#-fonctionnalités) • [📚 Documentation](#-documentation) • [💡 À propos](#-à-propos)
 
-[🚀 Installation](#installation) • [🎬 Démo Vidéo](#démonstration) • [👑 Creator Pro](#creator-pro) • [💰 Pricing](#pricing)
+</div>
 
+---
+
+## ✨ Fonctionnalités
+
+### 🎵 Analyse Audio Avancée
+- Analyse des fichiers audio avec les 7 principes de Léonard de Vinci
+- Détection automatique des caractéristiques musicales
+- Génération de rapports détaillés
+
+### 🎨 Création de Contenu
+- Génération de contenu pour les réseaux sociaux
+- Export des analyses dans différents formats
+- Intégration avec les plateformes de création
+
+### 🛠️ Outils Professionnels
+- Tableau de bord personnalisable
+- Suivi des performances
+- Gestion des abonnements et des fonctionnalités premium
+
+---
+
+## 🚀 Installation
+
+### Prérequis
+- [Visual Studio Code](https://code.visualstudio.com/) (version 1.60.0 ou supérieure)
+- [Node.js](https://nodejs.org/) (version 14.x ou supérieure)
+- [Git](https://git-scm.com/)
+
+### Installation depuis le Marketplace
+1. Ouvrez VS Code
+2. Allez dans l'onglet Extensions (Ctrl+Shift+X)
+3. Recherchez "AIMastery Vincian Analysis"
+4. Cliquez sur Installer
+
+### Installation depuis le code source
+```bash
+# Cloner le dépôt
+git clone https://github.com/fullmeo/aimastery-vincian-extension.git
+cd aimastery-vincian-extension
+
+# Installer les dépendances
+npm install
+
+# Compiler l'extension
+npm run compile
+
+# Lancer VS Code avec l'extension
+code .
+```
+
+---
+
+## 📚 Documentation
+
+### Commandes Disponibles
+- `AIMastery: Analyze Audio File` - Analyse complète d'un fichier audio
+- `AIMastery: Quick Vincian Score` - Score rapide d'un extrait audio
+- `AIMastery: Generate Social Content` - Génère du contenu pour les réseaux sociaux
+
+### Configuration
+Créez un fichier `.vscode/settings.json` dans votre espace de travail pour personnaliser les paramètres :
+
+```json
+{
+  "aimastery.apiKey": "votre_cle_api",
+  "aimastery.theme": "dark",
+  "aimastery.autoSave": true
+}
+```
+
+---
+
+## 🛠️ Développement
+
+### Structure du Projet
+```
+src/
+├── extension.ts          # Point d'entrée de l'extension
+├── services/             # Services principaux
+│   ├── AnalyticsEngine.ts
+│   ├── VincianAnalysisEngine.ts
+│   └── ...
+└── utils/               # Utilitaires
+```
+
+### Scripts NPM
+- `npm run compile` - Compile le code TypeScript
+- `npm run watch` - Surveillance des modifications et recompilation automatique
+- `npm run test` - Exécute les tests
+- `npm run package` - Crée un fichier VSIX pour la distribution
+
+---
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! Voici comment procéder :
+
+1. Forkez le projet
+2. Créez une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
+3. Committez vos modifications (`git commit -m 'Ajouter une fonctionnalité incroyable'`)
+4. Poussez vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrez une Pull Request
+
+---
+
+## 📄 Licence
+
+Ce projet est sous licence MIT - voir le fichier [LICENSE](LICENSE) pour plus de détails.
+
+---
+
+## 💡 À Propos
+
+### L'Histoire
+Développée par un trompettiste passionné de technologie, AIMastery Vincian Analysis est née du désir de combiner l'art musical et l'analyse technique.
+
+### L'Équipe
+- **Serigne Diagne** - Développeur Principal - [@fullmeo](https://github.com/fullmeo)
+
+### Remerciements
+- À la communauté VS Code pour son écosystème incroyable
+- À tous les testeurs et contributeurs
+
+---
+
+<div align="center">
+  <a href="#top">Retour en haut</a> • 
+  <a href="https://github.com/fullmeo/aimastery-vincian-extension/issues">Signaler un bug</a> • 
+  <a href="https://github.com/fullmeo/aimastery-vincian-extension/discussions">Discussions</a>
 </div>
 
 ---

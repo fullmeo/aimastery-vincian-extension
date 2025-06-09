@@ -4,6 +4,8 @@
     "module": "commonjs",
     "target": "es2020",
     "outDir": "out/test",
+    "sourceMap": true,
+    "rootDir": ".",
     "lib": [
       "es2020",
       "dom",
@@ -11,14 +13,30 @@
       "webworker",
       "webworker.importscripts"
     ],
-    "types": ["node", "mocha", "chai"],
+    "types": [
+      "node",
+      "mocha",
+      "chai",
+      "@types/vscode"
+    ],
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@types/vscode"
+    ]
   },
   "include": [
-    "src/test/**/*.ts"
+    "src/**/*.ts",
+    "test/**/*.ts",
+    ".vscode-test/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".vscode-test/**/node_modules"
   ]
 }

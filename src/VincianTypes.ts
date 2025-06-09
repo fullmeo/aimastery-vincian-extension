@@ -33,3 +33,33 @@ export interface Recommendation {
   codeSnippet?: string;
   priority: 'low' | 'medium' | 'high';
 }
+
+export interface SelfAnalysisResult {
+    workingFunctions: WorkingFunction[];
+    codePatterns: CodePattern[];
+    healthScore: number;
+    improvementOpportunities: string[];
+}
+
+export interface WorkingFunction {
+    name: string;
+    startLine: number;
+    endLine: number;
+    lineCount: number;
+    code: string;
+    hasErrorHandling: boolean;
+    returnsSomething: boolean;
+    usesRealLogic: boolean;
+}
+
+export interface CodePattern {
+    name: string;
+    template: string;
+    useCase: string;
+    frequency: number;
+}
+
+export interface ReproductionContext {
+    commandName: string;
+    context: string;
+}

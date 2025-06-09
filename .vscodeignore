@@ -1,32 +1,106 @@
-.vscode/**
+diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\.vscodeignore
+out/
+# Build artifacts - Exclude source and intermediate files
+out/
+src/**
 .vscode-test/**
+**/*.map
+**/*.tsbuildinfo
+
+# Development files - Not needed in production
+.vscode/
 .gitignore
 .yarnrc
 vsc-extension-quickstart.md
 **/tsconfig.json
 **/.eslintrc.json
-**/*.map
-**/*.ts
-!src/**/*.ts
-node_modules/**
-npm-debug.log
-yarn-error.log
+webpack.config.js
+.eslintrc.js
+.prettierrc*
+.editorconfig
+
+# Node.js - Exclude all node modules and logs
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ✅ INCLURE LES IMAGES ESSENTIELLES
+# Garder seulement les images nécessaires
+!images/logo-serigne-diagne-128px.png
+!images/VinciRenaissance.png
+
+# Exclure les autres images de développement
+images/screenshots/
+images/dev/
+images/temp/
+images/**/*.psd
+images/**/*.ai
+images/**/*.sketch
+
+# OS generated files
 .DS_Store
-*.vsix
-.env*
-backup/**
-temp/**
-test/**
-docs/**
-README.md
-CHANGELOG.md
-.git/**
-.github/**
+Thumbs.db
+desktop.ini
+
+# Documentation
+docs/
+examples/
+samples/
+
+# Tests
+test/
+tests/
 **/*.test.*
 **/*.spec.*
-coverage/**
-.nyc_output/**
-aimastery-backend-api/**
-api/**
-backend/**
-server/**
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Exclude source maps in production
+**/*.js.map
+**/*.ts.map
+
+# Webpack artifacts
+webpack-stats.json
+webpack.config.dev.js
+
+# Only include essential production files:
+# ✅ dist/ (bundled code)
+# ✅ package.json (metadata)
+# ✅ README.md (documentation)
+# ✅ CHANGELOG.md (version history)
+# ✅ LICENSE (legal)
+# ✅ icon files (if any)
+
+# Fichiers de développement
+.env
+.env.*
+*.env
+
+# Fichiers de cache
+node_modules/
+.vscode-test/
+.nyc_output/
+coverage/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+out/test/
+src/test/
+**/*.map
+
+# Git
+.gitignore
+.gitattributes

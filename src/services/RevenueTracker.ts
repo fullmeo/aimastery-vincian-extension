@@ -2,27 +2,35 @@ import * as vscode from 'vscode';
 
 export interface RevenueEvent {
     id: string;
-    timestamp: Date;
-    amount: number;
-    currency: string;
     userId: string;
-    plan: 'free' | 'pro' | 'enterprise';
+    amount: number;
+    plan: 'free' | 'basic' | 'premium' | 'enterprise';
     status: 'completed' | 'pending' | 'failed';
+    timestamp: Date;
     metadata?: Record<string, any>;
 }
 
-export class RevenueTracker {
-    private context: vscode.ExtensionContext;
-    private events: RevenueEvent[] = [];
-    private static instance: RevenueTracker;
+export interface RevenueReport {
+    totalRevenue: number;
+    eventCount: number;
+    userCount: number;
+    events: RevenueEvent[];
+    startDate: Date;
+    endDate: Date;
+}
 
-    private constructor(context: vscode.ExtensionContext) {
-        this.context = context;
+export class RevenueTracker {
+    private static instance: RevenueTracker;
+    private events: RevenueEvent[] = [];
+    private context: vscode.ExtensionContext;
+
+    private constructor(context?: vscode.ExtensionContext) {
+        this.context = context!;
         this.loadEvents();
     }
 
     public static getInstance(context?: vscode.ExtensionContext): RevenueTracker {
-        if (!RevenueTracker.instance && context) {
+        if (!RevenueTracker.instance) {
             RevenueTracker.instance = new RevenueTracker(context);
         }
         return RevenueTracker.instance;
@@ -43,7 +51,7 @@ export class RevenueTracker {
     public async trackRevenue(event: Omit<RevenueEvent, 'id' | 'timestamp'>): Promise<string> {
         const newEvent: RevenueEvent = {
             ...event,
-            id: crypto.randomUUID(),
+            id: Math.random().toString(36).substring(2) + Date.now().toString(36),
             timestamp: new Date()
         };
 
@@ -54,7 +62,6 @@ export class RevenueTracker {
         if (event.status === 'completed' && event.plan !== 'free') {
             await vscode.commands.executeCommand('aimastery.updateUserPlan', event.plan);
         }
-
         return newEvent.id;
     }
 
@@ -117,7 +124,7 @@ export class RevenueTracker {
 
     public async getTopCustomers(limit: number = 10): Promise<Array<{userId: string, totalSpent: number}>> {
         const userSpending = new Map<string, number>();
-        
+             
         this.events
             .filter(event => event.status === 'completed')
             .forEach(event => {
@@ -130,13 +137,4 @@ export class RevenueTracker {
             .slice(0, limit)
             .map(([userId, totalSpent]) => ({ userId, totalSpent }));
     }
-}
-
-export interface RevenueReport {
-    totalRevenue: number;
-    eventCount: number;
-    userCount: number;
-    events: RevenueEvent[];
-    startDate: Date;
-    endDate: Date;
 }

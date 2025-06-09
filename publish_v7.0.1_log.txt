@@ -1,0 +1,2 @@
+[09/06/2025 14:46:00,62] Starting publication process for v7.0.1 
+[09/06/2025 14:46:00,64] Checking prerequisites 

@@ -1,0 +1,7 @@
+# Créer/améliorer .vscodeignore
+node_modules/**
+src/**
+.vscode/**
+.gitignore
+tsconfig.json
+*.map

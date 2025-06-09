@@ -1,29 +1,53 @@
 {
+  // Specifies the compiler options required to compile the project.
   "compilerOptions": {
-    "target": "ES2020",
+    // Specifies the module code generation: 'commonjs' is standard for VS Code extensions.
     "module": "commonjs",
-    "lib": ["ES2020"],
+    // Specifies the ECMAScript target version. 'ES2020' is a modern and widely supported target.
+    "target": "ES2020",
+    // The output directory for compiled files.
     "outDir": "out",
-    "rootDir": "src",
+    // List of library files to be included in the compilation.
+    "lib": [
+      "ES2020"
+    ],
+    // Generates corresponding '.map' files for debugging.
     "sourceMap": true,
+    // Specifies the root directory of input files.
+    "rootDir": "src",
+    // Enables all strict type-checking options.
     "strict": true,
-    "skipLibCheck": true,
+    // Disallow inconsistently-cased references to the same file.
+    "forceConsistentCasingInFileNames": true,
+    // Enables interoperability between CommonJS and ES Modules.
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    // Allows importing modules with a '.json' extension, which is useful for configuration files.
+    "resolveJsonModule": true,
+    // Skip type checking of all declaration files (*.d.ts) from dependencies.
+    "skipLibCheck": true,
+    // Specifies the type declarations to be included in the compilation.
+    "types": [
+      "vscode",
+      "node"
+    ]
   },
-  "include": ["src/**/*"],
+  // Specifies the files to be included in the program.
+  "include": [
+    "src/**/*"
+  ],
+  // Specifies a list of files to be excluded from compilation.
   "exclude": [
     "node_modules",
     ".vscode-test",
     "out",
-    "aimastery-backend-api",
-    "api",
-    "backend",
-    "server",
-    "test",
-    "docs",
-    "backup",
+    "tests/**/*",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    // These type definition files seem to be for a different context (e.g., a webview)
+    // and are excluded from the main extension compilation.
+    // Consider using a separate tsconfig.json for the code that uses these types.
+    "src/core/types/dom.d.ts",
+    "src/core/types/web-audio.d.ts",
+    "src/core/types/webgl.d.ts"
   ]
 }

@@ -1,6 +1,6 @@
 {
   "name": "aimastery-vincian-analysis",
-  "version": "7.1.0",
+  "version": "7.1.1",
   "publisher": "Serigne-Diagne",
   "displayName": "AI Mastery: Vincian Analysis",
   "description": "Self-analyzing VS Code extension with integrated Local AI for intelligent code analysis",

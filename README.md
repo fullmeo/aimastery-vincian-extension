@@ -1,11 +1,19 @@
 # 🧬 AI Mastery: Vincian Analysis Extension
 
 <div align="center">
-  <img src="images/logo_v6.1.0.png" alt="AI Mastery Logo" width="128" height="128">
+  <img src="images/logo.png" alt="AI Mastery Logo" width="128" height="128">
   
-  **Extension d'analyse de code auto-diagnostique avec IA locale intégrée**
+  **Extension d'analyse de code auto-diagnostic avec IA locale intégrée**
   
   *Inspiré par le génie analytique de Léonard de Vinci* 🎨
+</div>
+
+<div align="center">
+
+[![GitHub](https://img.shields.io/badge/GitHub-fullmeo-181717?logo=github)](https://github.com/fullmeo)
+[![VS Code](https://img.shields.io/badge/VS%20Code-Marketplace-007ACC?logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=Serigne-Diagne.aimastery-vincian-analysis)
+[![Version](https://img.shields.io/badge/Version-7.1.1-brightgreen)](#)
+
 </div>
 
 ---
@@ -14,7 +22,7 @@
 
 | | |
 |---|---|
-| **🔢 Version** | 7.1.0 |
+| **🔢 Version** | 7.1.1 |
 | **👨‍💻 Éditeur** | Serigne-Diagne |
 | **📦 ID** | `aimastery-vincian-analysis` |
 | **🎯 Catégorie** | Analyse de Code & Outils IA |
@@ -32,7 +40,7 @@ function analyzeCode() {
 }
 ```
 
-## 🚀 **Nouveautés v7.1.0**
+## 🚀 **Nouveautés v7.1.1**
 
 ### 🎨 **Renaissance Interface**
 - 🖼️ Logo professionnel Leonardo-inspired
@@ -51,6 +59,12 @@ function analyzeCode() {
 - 🧠 **Local AI Engine**: Analyse intelligente
 - 🛡️ **Security Detection**: Vulnérabilités automatiques
 - 💡 **Smart Suggestions**: Améliorations contextuelles
+
+### 🛡️ **Marketplace & Sécurité**
+- 🔒 **Protection .env**: Fichiers sensibles exclus du package
+- 🚫 **Badges SVG**: Suppression références externes marketplace
+- 📧 **Contact Pro**: Informations développeur authentiques
+- ✅ **Validation**: Conformité marketplace VS Code
 
 ## ✨ **Fonctionnalités**
 
@@ -153,3 +167,23 @@ L'extension utilise une palette inspirée de la Renaissance :
 *"Simplicitas est ultimum sophisticationis"* - Leonardo da Vinci
 
 </div>
+
+## 🔗 **Ressources Utiles**
+
+- 📚 **[Documentation](https://github.com/fullmeo/aimastery-vincian-analysis#readme)**
+- 🐛 **[Issues & Support](https://github.com/fullmeo/aimastery-vincian-analysis/issues)**
+- 💡 **[Feature Requests](https://github.com/fullmeo/aimastery-vincian-analysis/issues/new?template=feature_request.md)**
+- 🔄 **[Changelog](https://github.com/fullmeo/aimastery-vincian-analysis/releases)**
+- ⭐ **[Star on GitHub](https://github.com/fullmeo/aimastery-vincian-analysis)**
+
+## 🗺️ **Roadmap & Contributions**
+
+### 🔜 **Prochaines Versions**
+- 📊 **v7.2.0**: [Métriques avancées](https://github.com/fullmeo/aimastery-vincian-analysis/issues/1)
+- 🎨 **v7.3.0**: [Thèmes personnalisables](https://github.com/fullmeo/aimastery-vincian-analysis/issues/2)
+- 🌐 **v8.0.0**: [Support multi-langages](https://github.com/fullmeo/aimastery-vincian-analysis/issues/3)
+
+### 🤝 **Contribuer**
+- 🍴 **[Fork le projet](https://github.com/fullmeo/aimastery-vincian-analysis/fork)**
+- 💡 **[Proposer des idées](https://github.com/fullmeo/aimastery-vincian-analysis/discussions)**
+- 🐛 **[Reporter des bugs](https://github.com/fullmeo/aimastery-vincian-analysis/issues/new)**

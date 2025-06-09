@@ -147,43 +147,38 @@ L'extension utilise une palette inspirée de la Renaissance :
 
 ## 💡 **Support & Contact**
 
-- 🐛 **Issues & Bugs**: GitHub Repository
+- 🐛 **Issues & Bugs**: [GitHub Repository](https://github.com/fullmeo/aimastery-vincian-extension)
 - 📧 **Contact Professionnel**: serignetrumpet@gmail.com
 - 💼 **LinkedIn**: [Serigne Diagne](https://www.linkedin.com/in/serigne-diagne-ab3b9981?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+- 📚 **Documentation**: [Wiki Complet](https://github.com/fullmeo/aimastery-vincian-extension/wiki)
 
-## 👨‍💻 **À Propos du Développeur**
+## 🔗 **Ressources Utiles**
 
-**Serigne Diagne** - Développeur passionné d'IA et d'extensions VS Code
-- 📧 serignetrumpet@gmail.com
-- 💼 [Profil LinkedIn Complet](https://www.linkedin.com/in/serigne-diagne-ab3b9981?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+- 📚 **[Documentation](https://github.com/fullmeo/aimastery-vincian-extension#readme)**
+- 🐛 **[Issues & Support](https://github.com/fullmeo/aimastery-vincian-extension/issues)**
+- 💡 **[Feature Requests](https://github.com/fullmeo/aimastery-vincian-extension/issues/new?template=feature_request.md)**
+- 🔄 **[Changelog](https://github.com/fullmeo/aimastery-vincian-extension/releases)**
+- ⭐ **[Star on GitHub](https://github.com/fullmeo/aimastery-vincian-extension)**
+
+## 🗺️ **Roadmap & Contributions**
+
+### 🔜 **Prochaines Versions**
+- 📊 **v7.2.0**: [Métriques avancées](https://github.com/fullmeo/aimastery-vincian-extension/issues/1)
+- 🎨 **v7.3.0**: [Thèmes personnalisables](https://github.com/fullmeo/aimastery-vincian-extension/issues/2)
+- 🌐 **v8.0.0**: [Support multi-langages](https://github.com/fullmeo/aimastery-vincian-extension/issues/3)
+
+### 🤝 **Contribuer**
+- 🍴 **[Fork le projet](https://github.com/fullmeo/aimastery-vincian-extension/fork)**
+- 💡 **[Proposer des idées](https://github.com/fullmeo/aimastery-vincian-extension/discussions)**
+- 🐛 **[Reporter des bugs](https://github.com/fullmeo/aimastery-vincian-extension/issues/new)**
 
 ---
 
 <div align="center">
   
 **🎨 Développé avec passion par Serigne Diagne**  
-📧 serignetrumpet@gmail.com | 💼 LinkedIn: serigne-diagne-ab3b9981
+🐙 [@fullmeo](https://github.com/fullmeo) | 📧 serignetrumpet@gmail.com | 💼 LinkedIn: serigne-diagne-ab3b9981
 
 *"Simplicitas est ultimum sophisticationis"* - Leonardo da Vinci
 
 </div>
-
-## 🔗 **Ressources Utiles**
-
-- 📚 **[Documentation](https://github.com/fullmeo/aimastery-vincian-analysis#readme)**
-- 🐛 **[Issues & Support](https://github.com/fullmeo/aimastery-vincian-analysis/issues)**
-- 💡 **[Feature Requests](https://github.com/fullmeo/aimastery-vincian-analysis/issues/new?template=feature_request.md)**
-- 🔄 **[Changelog](https://github.com/fullmeo/aimastery-vincian-analysis/releases)**
-- ⭐ **[Star on GitHub](https://github.com/fullmeo/aimastery-vincian-analysis)**
-
-## 🗺️ **Roadmap & Contributions**
-
-### 🔜 **Prochaines Versions**
-- 📊 **v7.2.0**: [Métriques avancées](https://github.com/fullmeo/aimastery-vincian-analysis/issues/1)
-- 🎨 **v7.3.0**: [Thèmes personnalisables](https://github.com/fullmeo/aimastery-vincian-analysis/issues/2)
-- 🌐 **v8.0.0**: [Support multi-langages](https://github.com/fullmeo/aimastery-vincian-analysis/issues/3)
-
-### 🤝 **Contribuer**
-- 🍴 **[Fork le projet](https://github.com/fullmeo/aimastery-vincian-analysis/fork)**
-- 💡 **[Proposer des idées](https://github.com/fullmeo/aimastery-vincian-analysis/discussions)**
-- 🐛 **[Reporter des bugs](https://github.com/fullmeo/aimastery-vincian-analysis/issues/new)**

@@ -14,7 +14,7 @@
 
 | | |
 |---|---|
-| **🔢 Version** | 7.0.0 |
+| **🔢 Version** | 7.1.0 |
 | **👨‍💻 Éditeur** | Serigne-Diagne |
 | **📦 ID** | `aimastery-vincian-analysis` |
 | **🎯 Catégorie** | Analyse de Code & Outils IA |
@@ -32,7 +32,7 @@ function analyzeCode() {
 }
 ```
 
-## 🚀 **Nouveautés v7.0.0**
+## 🚀 **Nouveautés v7.1.0**
 
 ### 🎨 **Renaissance Interface**
 - 🖼️ Logo professionnel Leonardo-inspired
@@ -131,17 +131,25 @@ L'extension utilise une palette inspirée de la Renaissance :
 
 ---
 
-## 💡 **Support**
+## 💡 **Support & Contact**
 
-- 🐛 **Issues**: [GitHub Repository](#)
-- 📧 **Contact**: serigne.diagne@example.com
-- 📚 **Documentation**: [Wiki complet](#)
+- 🐛 **Issues & Bugs**: GitHub Repository
+- 📧 **Contact Professionnel**: serignetrumpet@gmail.com
+- 💼 **LinkedIn**: [Serigne Diagne](https://www.linkedin.com/in/serigne-diagne-ab3b9981?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
+
+## 👨‍💻 **À Propos du Développeur**
+
+**Serigne Diagne** - Développeur passionné d'IA et d'extensions VS Code
+- 📧 serignetrumpet@gmail.com
+- 💼 [Profil LinkedIn Complet](https://www.linkedin.com/in/serigne-diagne-ab3b9981?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 
 ---
 
 <div align="center">
   
 **🎨 Développé avec passion par Serigne Diagne**  
+📧 serignetrumpet@gmail.com | 💼 LinkedIn: serigne-diagne-ab3b9981
+
 *"Simplicitas est ultimum sophisticationis"* - Leonardo da Vinci
 
 </div>

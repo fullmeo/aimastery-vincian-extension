@@ -275,7 +275,12 @@
           "items": {
             "type": "string"
           },
-          "default": ["node_modules", ".git", "dist", "build"],
+          "default": [
+            "node_modules",
+            ".git",
+            "dist",
+            "build"
+          ],
           "description": "Patterns to exclude from analysis"
         },
         "aimastery.projectConsolidator.enableAutoCleanup": {
@@ -332,20 +337,33 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:vscode": "node ./out/test/runTest.js",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "clean": "rimraf out dist *.vsix"
   },
   "devDependencies": {
     "@babel/parser": "^7.28.4",
     "@babel/types": "^7.28.4",
+    "@types/jest": "^30.0.0",
     "@types/node": "^16.18.126",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
     "@typescript-eslint/typescript-estree": "^8.43.0",
     "eslint": "^8.28.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "jest": "^30.2.0",
+    "prettier": "^3.6.2",
     "tree-sitter": "^0.21.1",
     "tree-sitter-typescript": "^0.23.2",
+    "ts-jest": "^29.4.5",
     "ts-loader": "^9.5.2",
     "typescript": "^4.9.4",
     "webpack": "^5.99.9",

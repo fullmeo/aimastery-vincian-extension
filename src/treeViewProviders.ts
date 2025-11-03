@@ -1,8 +1,10 @@
 import * as vscode from 'vscode';
 
 export class VincianAnalysisProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> =
+    new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> =
+    this._onDidChangeTreeData.event;
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -18,8 +20,10 @@ export class VincianAnalysisProvider implements vscode.TreeDataProvider<vscode.T
 }
 
 export class VincianAutocodingProvider implements vscode.TreeDataProvider<vscode.TreeItem> {
-  private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> = new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
-  readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> = this._onDidChangeTreeData.event;
+  private _onDidChangeTreeData: vscode.EventEmitter<vscode.TreeItem | undefined | null | void> =
+    new vscode.EventEmitter<vscode.TreeItem | undefined | null | void>();
+  readonly onDidChangeTreeData: vscode.Event<vscode.TreeItem | undefined | null | void> =
+    this._onDidChangeTreeData.event;
 
   refresh(): void {
     this._onDidChangeTreeData.fire();
@@ -46,13 +50,13 @@ export class VincianAnalyzer {
         { category: 'Sfumato', message: 'Handles edge cases well', score: 7 },
         { category: 'Arte/Scienza', message: 'Good balance of creativity and technique', score: 8 },
         { category: 'Corporalità', message: 'Solid structure', score: 8 },
-        { category: 'Connessione', message: 'Components work well together', score: 9 }
+        { category: 'Connessione', message: 'Components work well together', score: 9 },
       ],
       suggestions: [
         { priority: 'Élevée', message: 'Consider adding more validation for user inputs' },
         { priority: 'Moyenne', message: 'Functions could be more modular' },
-        { priority: 'Faible', message: 'Variable names could be more descriptive' }
-      ]
+        { priority: 'Faible', message: 'Variable names could be more descriptive' },
+      ],
     };
   }
 }

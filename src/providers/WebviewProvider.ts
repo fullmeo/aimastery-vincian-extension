@@ -1,47 +1,47 @@
 import * as vscode from 'vscode';
 
 export class VincianWebviewProvider implements vscode.WebviewViewProvider {
-    private _view?: vscode.WebviewView;
-    
-    constructor(private readonly _extensionUri: vscode.Uri) {}
-    
-    public resolveWebviewView(
-        webviewView: vscode.WebviewView,
-        context: vscode.WebviewViewResolveContext,
-        _token: vscode.CancellationToken
-    ) {
-        this._view = webviewView;
-        
-        webviewView.webview.options = {
-            enableScripts: true,
-            localResourceRoots: [this._extensionUri]
-        };
-        
-        webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-        
-        // Gestion des messages du webview
-        webviewView.webview.onDidReceiveMessage(message => {
-            switch (message.command) {
-                case 'runAnalysis':
-                    vscode.commands.executeCommand('aimastery-vincian-analysis.startAnalysis');
-                    break;
-                case 'runAutoCode':
-                    vscode.commands.executeCommand('aimastery-vincian-analysis.startAutoCode');
-                    break;
-            }
-        });
+  private _view?: vscode.WebviewView;
+
+  constructor(private readonly _extensionUri: vscode.Uri) {}
+
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
+  ) {
+    this._view = webviewView;
+
+    webviewView.webview.options = {
+      enableScripts: true,
+      localResourceRoots: [this._extensionUri],
+    };
+
+    webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+
+    // Gestion des messages du webview
+    webviewView.webview.onDidReceiveMessage(message => {
+      switch (message.command) {
+        case 'runAnalysis':
+          vscode.commands.executeCommand('aimastery-vincian-analysis.startAnalysis');
+          break;
+        case 'runAutoCode':
+          vscode.commands.executeCommand('aimastery-vincian-analysis.startAutoCode');
+          break;
+      }
+    });
+  }
+
+  public showDashboard() {
+    if (this._view) {
+      this._view.show(true);
+    } else {
+      vscode.commands.executeCommand('vincianAnalysisResults.focus');
     }
-    
-    public showDashboard() {
-        if (this._view) {
-            this._view.show(true);
-        } else {
-            vscode.commands.executeCommand('vincianAnalysisResults.focus');
-        }
-    }
-    
-    private _getHtmlForWebview(webview: vscode.Webview) {
-        return `
+  }
+
+  private _getHtmlForWebview(webview: vscode.Webview) {
+    return `
             <!DOCTYPE html>
             <html>
             <head>
@@ -82,5 +82,5 @@ export class VincianWebviewProvider implements vscode.WebviewViewProvider {
             </body>
             </html>
         `;
-    }
+  }
 }

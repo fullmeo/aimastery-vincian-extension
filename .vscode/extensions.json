@@ -43,7 +43,6 @@
         "github.copilot-chat",            // AI chat intégré
         
         // Git & Version Control
-        "eamodio.gitlens",                // Git management avancé
         "github.vscode-pull-request-github", // PR management
         
         // Security & Secrets (pour clés Stripe)

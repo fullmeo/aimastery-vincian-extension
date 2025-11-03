@@ -12,7 +12,7 @@ function getAnalysisWebview(analysis: any): string {
     </head>
     <body>
       <h1>🎨 AIMastery v4.0 - Vincian Analysis</h1>
-      <div class="score">${analysis?.vincianScore || "8.5/10"}</div>
+      <div class="score">${analysis?.vincianScore || '8.5/10'}</div>
       <p>🎉 Major update with NFT generation & social media automation!</p>
       <button onclick="vscode.postMessage({command: 'upgrade', productType: 'social_pack'})">
         🚀 Get Social Pack - 5€
@@ -23,7 +23,11 @@ function getAnalysisWebview(analysis: any): string {
   `;
 }
 
-function getStripeCheckoutWebview(clientSecret: string, amount: number, productType: string): string {
+function getStripeCheckoutWebview(
+  clientSecret: string,
+  amount: number,
+  productType: string
+): string {
   return `
     <!DOCTYPE html>
     <html>
@@ -48,11 +52,11 @@ function getStripeCheckoutWebview(clientSecret: string, amount: number, productT
     <body>
       <div class="checkout-container">
         <h2>🔓 Unlock ${productType}</h2>
-        <p>Amount: ${amount/100}€</p>
+        <p>Amount: ${amount / 100}€</p>
         
         <form id="payment-form">
           <div id="payment-element"></div>
-          <button id="submit">Pay ${amount/100}€</button>
+          <button id="submit">Pay ${amount / 100}€</button>
         </form>
       </div>
       

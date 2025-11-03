@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagramme UML Vincien</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .golden-ratio {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #fff3cd;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Architecture Vincienne - MelodyMint Ecosystem</h1>
+        <p class="subtitle">Diagramme UML basé sur les proportions du nombre d'or (φ = 1.618)</p>
+        
+        <div class="golden-ratio">
+            <strong>φ = 1.618033988...</strong><br>
+            Ratio parfait détecté
+        </div>
+
+        <svg viewBox="0 0 1000 800" xmlns="http://www.w3.org/2000/svg">
+            <!-- Définitions -->
+            <defs>
+                <!-- Gradient doré -->
+                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#FFD700;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                </linearGradient>
+                
+                <!-- Gradient bleu -->
+                <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+                </linearGradient>
+
+                <!-- Pattern Fibonacci -->
+                <pattern id="fibonacciPattern" x="0" y="0" width="50" height="50" patternUnits="userSpaceOnUse">
+                    <circle cx="5" cy="5" r="1" fill="#ccc"/>
+                    <circle cx="8" cy="8" r="1" fill="#ccc"/>
+                    <circle cx="13" cy="13" r="2" fill="#ccc"/>
+                    <circle cx="21" cy="21" r="3" fill="#ccc"/>
+                    <circle cx="34" cy="34" r="5" fill="#ccc"/>
+                </pattern>
+
+                <!-- Ombre -->
+                <filter id="shadow">
+                    <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.2"/>
+                </filter>
+            </defs>
+
+            <!-- Cercle de Vitruve (fond) -->
+            <circle cx="500" cy="400" r="380" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+            <circle cx="500" cy="400" r="235" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+            <circle cx="500" cy="400" r="145" fill="none" stroke="#e0e0e0" stroke-width="1" stroke-dasharray="5,5"/>
+
+            <!-- Spirale de Fibonacci -->
+            <path d="M 500 400 Q 550 350, 600 400 T 650 500 Q 600 600, 500 600 T 400 500 Q 350 400, 400 300 T 500 200"
+                  fill="none" stroke="#FFD700" stroke-width="2" stroke-dasharray="5,5" opacity="0.5"/>
+
+            <!-- Classe principale - TokenCore (Centre) -->
+            <g transform="translate(500, 400)">
+                <rect x="-100" y="-60" width="200" height="120" rx="10" fill="url(#goldGradient)" filter="url(#shadow)"/>
+                <text x="0" y="-30" text-anchor="middle" font-weight="bold" font-size="16" fill="white">TokenCore</text>
+                <line x1="-90" y1="-20" x2="90" y2="-20" stroke="white" stroke-width="1"/>
+                <text x="-80" y="0" font-size="12" fill="white">+ mint()</text>
+                <text x="-80" y="20" font-size="12" fill="white">+ burn()</text>
+                <text x="-80" y="40" font-size="12" fill="white">+ transfer()</text>
+            </g>
+
+            <!-- Interface IVincianAnalyzer (Haut - φ ratio) -->
+            <g transform="translate(500, 180)">
+                <rect x="-120" y="-50" width="240" height="100" rx="10" fill="none" stroke="#4A90E2" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="0" y="-20" text-anchor="middle" font-style="italic" font-size="14" fill="#4A90E2">«interface»</text>
+                <text x="0" y="0" text-anchor="middle" font-weight="bold" font-size="16" fill="#4A90E2">IVincianAnalyzer</text>
+                <line x1="-110" y1="10" x2="110" y2="10" stroke="#4A90E2" stroke-width="1"/>
+                <text x="-100" y="30" font-size="12" fill="#666">+ analyzeHarmony()</text>
+                <text x="-100" y="45" font-size="12" fill="#666">+ calculateGoldenRatio()</text>
+            </g>
+
+            <!-- Classe CymaticVisualizer (Gauche) -->
+            <g transform="translate(280, 400)">
+                <rect x="-90" y="-60" width="180" height="120" rx="10" fill="url(#blueGradient)" filter="url(#shadow)"/>
+                <text x="0" y="-30" text-anchor="middle" font-weight="bold" font-size="16" fill="white">CymaticVisualizer</text>
+                <line x1="-80" y1="-20" x2="80" y2="-20" stroke="white" stroke-width="1"/>
+                <text x="-70" y="0" font-size="12" fill="white">+ renderWave()</text>
+                <text x="-70" y="20" font-size="12" fill="white">+ analyzeFreq()</text>
+                <text x="-70" y="40" font-size="12" fill="white">- harmonics: []</text>
+            </g>
+
+            <!-- Classe TradingBot (Droite) -->
+            <g transform="translate(720, 400)">
+                <rect x="-90" y="-60" width="180" height="120" rx="10" fill="url(#blueGradient)" filter="url(#shadow)"/>
+                <text x="0" y="-30" text-anchor="middle" font-weight="bold" font-size="16" fill="white">TradingBot</text>
+                <line x1="-80" y1="-20" x2="80" y2="-20" stroke="white" stroke-width="1"/>
+                <text x="-70" y="0" font-size="12" fill="white">+ executeTrade()</text>
+                <text x="-70" y="20" font-size="12" fill="white">+ fibonacciGrid()</text>
+                <text x="-70" y="40" font-size="12" fill="white">- positions: Map</text>
+            </g>
+
+            <!-- Classe RewardSystem (Bas gauche) -->
+            <g transform="translate(350, 600)">
+                <rect x="-80" y="-50" width="160" height="100" rx="10" fill="#8B4513" filter="url(#shadow)"/>
+                <text x="0" y="-20" text-anchor="middle" font-weight="bold" font-size="16" fill="white">RewardSystem</text>
+                <line x1="-70" y1="-10" x2="70" y2="-10" stroke="white" stroke-width="1"/>
+                <text x="-60" y="10" font-size="12" fill="white">+ calculate()</text>
+                <text x="-60" y="30" font-size="12" fill="white">+ distribute()</text>
+            </g>
+
+            <!-- Classe NFTCertificate (Bas droite) -->
+            <g transform="translate(650, 600)">
+                <rect x="-80" y="-50" width="160" height="100" rx="10" fill="#8B4513" filter="url(#shadow)"/>
+                <text x="0" y="-20" text-anchor="middle" font-weight="bold" font-size="16" fill="white">NFTCertificate</text>
+                <line x1="-70" y1="-10" x2="70" y2="-10" stroke="white" stroke-width="1"/>
+                <text x="-60" y="10" font-size="12" fill="white">+ mint()</text>
+                <text x="-60" y="30" font-size="12" fill="white">+ validate()</text>
+            </g>
+
+            <!-- Relations avec annotations -->
+            <!-- Implémentation interface -->
+            <line x1="500" y1="230" x2="500" y2="340" stroke="#4A90E2" stroke-width="2" stroke-dasharray="10,5"/>
+            <polygon points="500,340 495,330 505,330" fill="#4A90E2"/>
+            <text x="510" y="285" font-size="12" fill="#666">implements</text>
+
+            <!-- Composition -->
+            <line x1="370" y1="400" x2="400" y2="400" stroke="#333" stroke-width="2"/>
+            <polygon points="370,400 380,395 380,405" fill="#333"/>
+            <text x="375" y="390" font-size="11" fill="#666">1</text>
+            <text x="385" y="420" font-size="11" fill="#666">analyzes</text>
+
+            <line x1="600" y1="400" x2="630" y2="400" stroke="#333" stroke-width="2"/>
+            <polygon points="630,400 620,395 620,405" fill="#333"/>
+            <text x="615" y="390" font-size="11" fill="#666">1..*</text>
+            <text x="615" y="420" font-size="11" fill="#666">trades</text>
+
+            <!-- Agrégation -->
+            <line x1="430" y1="460" x2="370" y2="550" stroke="#333" stroke-width="2"/>
+            <polygon points="430,460 435,470 425,470" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="390" y="500" font-size="11" fill="#666">rewards</text>
+
+            <line x1="570" y1="460" x2="630" y2="550" stroke="#333" stroke-width="2"/>
+            <polygon points="570,460 575,470 565,470" fill="white" stroke="#333" stroke-width="2"/>
+            <text x="590" y="500" font-size="11" fill="#666">certifies</text>
+
+            <!-- Annotations Fibonacci -->
+            <text x="50" y="50" font-size="14" fill="#666" font-weight="bold">Proportions de Fibonacci:</text>
+            <text x="50" y="70" font-size="12" fill="#666">• Classes principales: 5</text>
+            <text x="50" y="90" font-size="12" fill="#666">• Relations: 8</text>
+            <text x="50" y="110" font-size="12" fill="#666">• Méthodes totales: 13</text>
+            
+            <!-- Score Vincien -->
+            <rect x="800" y="30" width="150" height="80" rx="5" fill="#f0f0f0" stroke="#ccc"/>
+            <text x="875" y="55" text-anchor="middle" font-weight="bold" font-size="14" fill="#333">Score Vincien</text>
+            <text x="875" y="80" text-anchor="middle" font-size="24" fill="#FFD700" font-weight="bold">98/100</text>
+            <text x="875" y="100" text-anchor="middle" font-size="11" fill="#666">Excellence</text>
+        </svg>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #FFD700, #FFA500);"></div>
+                <span>Classe Core (φ)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #4A90E2, #357ABD);"></div>
+                <span>Classes Satellites</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #8B4513;"></div>
+                <span>Services Auxiliaires</span>
+            </div>
+            <div class="legend-item">
+                <svg width="40" height="20">
+                    <line x1="0" y1="10" x2="40" y2="10" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+                </svg>
+                <span>Interface</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

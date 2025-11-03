@@ -1,0 +1,83 @@
+
+> aimastery-vincian-analysis@7.1.2 compile
+> webpack
+
+    [webpack-cli] Compiler starting... 
+    [webpack-cli] Compiler is using config: 'C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\webpack.config.js'
+asset [1m[32mextension.js[39m[22m 55.5 KiB [1m[33m[compared for emit][39m[22m (name: main) 1 related asset
+modules with errors 53.6 KiB [1m[31m[true errors][39m[22m
+  [1m./src/extension.ts[39m[22m 11.4 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m [1m[31m[2 errors][39m[22m
+  [1m./src/self-analyzing-extension.ts[39m[22m 36.4 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m [1m[31m[6 errors][39m[22m
+  [1m./src/providers/ViewProviders.ts[39m[22m 5.81 KiB [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m [1m[31m[3 errors][39m[22m
+[1mexternal "vscode"[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+[1mexternal "fs"[39m[22m 42 bytes [1m[33m[built][39m[22m [1m[33m[code generated][39m[22m
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\extension.ts[39m[22m
+[1m./src/extension.ts[39m[22m [1m[32m2:9-21[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\extension.ts(2,10)
+      TS2459: Module '"./self-analyzing-extension"' declares 'SelfAnalyzer' locally, but it is not exported.[39m[22m
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\extension.ts[39m[22m
+[1m./src/extension.ts[39m[22m [1m[32m2:23-47[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\extension.ts(2,24)
+      TS2459: Module '"./self-analyzing-extension"' declares 'generateSelfAnalysisHTML' locally, but it is not exported.[39m[22m
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts[39m[22m
+[1m./src/self-analyzing-extension.ts[39m[22m [1m[32m529:4-15[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts(529,5)
+      TS2393: [1m[31mDuplicate[39m[22m[1m function implementation.[39m[22m
+ @ ./src/extension.ts 28:35-72
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts[39m[22m
+[1m./src/self-analyzing-extension.ts[39m[22m [1m[32m531:20-31[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts(531,21)
+      TS2339: Property 'analyzeCode' does not exist on type 'SelfAnalyzer'.[39m[22m
+ @ ./src/extension.ts 28:35-72
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts[39m[22m
+[1m./src/self-analyzing-extension.ts[39m[22m [1m[32m541:37-48[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts(541,38)
+      TS2339: Property 'analyzeCode' does not exist on type 'SelfAnalyzer'.[39m[22m
+ @ ./src/extension.ts 28:35-72
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts[39m[22m
+[1m./src/self-analyzing-extension.ts[39m[22m [1m[32m559:4-15[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts(559,5)
+      TS2393: [1m[31mDuplicate[39m[22m[1m function implementation.[39m[22m
+ @ ./src/extension.ts 28:35-72
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts[39m[22m
+[1m./src/self-analyzing-extension.ts[39m[22m [1m[32m561:20-31[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts(561,21)
+      TS2339: Property 'analyzeCode' does not exist on type 'SelfAnalyzer'.[39m[22m
+ @ ./src/extension.ts 28:35-72
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts[39m[22m
+[1m./src/self-analyzing-extension.ts[39m[22m [1m[32m601:24-35[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\self-analyzing-extension.ts(601,25)
+      TS2339: Property 'analyzeCode' does not exist on type 'SelfAnalyzer'.[39m[22m
+ @ ./src/extension.ts 28:35-72
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\providers\ViewProviders.ts[39m[22m
+[1m./src/providers/ViewProviders.ts[39m[22m [1m[32m3:9-21[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\providers\ViewProviders.ts(3,10)
+      TS2459: Module '"../self-analyzing-extension"' declares 'SelfAnalyzer' locally, but it is not exported.[39m[22m
+ @ ./src/extension.ts 29:24-60
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\providers\ViewProviders.ts[39m[22m
+[1m./src/providers/ViewProviders.ts[39m[22m [1m[32m68:49-56[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\providers\ViewProviders.ts(68,50)
+      TS7006: Parameter 'pattern' implicitly has an 'any' type.[39m[22m
+ @ ./src/extension.ts 29:24-60
+
+[1m[31mERROR[39m[22m in [1mC:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\providers\ViewProviders.ts[39m[22m
+[1m./src/providers/ViewProviders.ts[39m[22m [1m[32m106:61-72[39m[22m
+[1m[tsl] [1m[31mERROR[39m[22m[1m in C:\Users\diase\OneDrive\Musique\Documents\aimastery\vincian_analyzer_vs-extension\aimastery-vincian-analysis\src\providers\ViewProviders.ts(106,62)
+      TS7006: Parameter 'improvement' implicitly has an 'any' type.[39m[22m
+ @ ./src/extension.ts 29:24-60
+
+[1m[33m11 errors have detailed information that is not shown.
+Use 'stats.errorDetails: true' resp. '--stats-error-details' to show it.[39m[22m
+
+webpack 5.99.9 compiled with [1m[31m11 errors[39m[22m in 11799 ms
+    [webpack-cli] Compiler finished

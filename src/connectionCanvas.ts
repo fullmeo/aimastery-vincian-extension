@@ -3,303 +3,310 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 export interface ProjectNode {
-    id: string;
-    name: string;
-    path: string;
-    type: 'file' | 'function' | 'class';
-    extension?: string;
-    size: number;
-    dependencies: number;
-    complexity?: number;
+  id: string;
+  name: string;
+  path: string;
+  type: 'file' | 'function' | 'class';
+  extension?: string;
+  size: number;
+  dependencies: number;
+  complexity?: number;
 }
 
 export interface DependencyLink {
-    source: string;
-    target: string;
-    type: 'import' | 'call' | 'extends' | 'implements';
-    strength: number;
+  source: string;
+  target: string;
+  type: 'import' | 'call' | 'extends' | 'implements';
+  strength: number;
 }
 
 export interface ProjectGraphData {
-    nodes: ProjectNode[];
-    links: DependencyLink[];
-    stats: {
-        totalFiles: number;
-        totalConnections: number;
-        avgComplexity: number;
-        circularDependencies: string[];
-    };
+  nodes: ProjectNode[];
+  links: DependencyLink[];
+  stats: {
+    totalFiles: number;
+    totalConnections: number;
+    avgComplexity: number;
+    circularDependencies: string[];
+  };
 }
 
 export class ConnectionCanvas {
-    private fileExtensions = ['.ts', '.js', '.tsx', '.jsx', '.py', '.java', '.cs', '.php'];
-    
-    constructor(private context: vscode.ExtensionContext) {}
-    
-    async analyzeProjectConnections(): Promise<ProjectGraphData> {
-        const workspaceFolders = vscode.workspace.workspaceFolders;
-        if (!workspaceFolders || workspaceFolders.length === 0) {
-            throw new Error('Aucun workspace ouvert');
+  private fileExtensions = ['.ts', '.js', '.tsx', '.jsx', '.py', '.java', '.cs', '.php'];
+
+  constructor(private context: vscode.ExtensionContext) {}
+
+  async analyzeProjectConnections(): Promise<ProjectGraphData> {
+    const workspaceFolders = vscode.workspace.workspaceFolders;
+    if (!workspaceFolders || workspaceFolders.length === 0) {
+      throw new Error('Aucun workspace ouvert');
+    }
+
+    const rootPath = workspaceFolders[0].uri.fsPath;
+    const files = await this.getAllProjectFiles(rootPath);
+
+    const nodes: ProjectNode[] = [];
+    const links: DependencyLink[] = [];
+    const dependencyMap = new Map<string, string[]>();
+
+    // Analyser chaque fichier
+    for (const filePath of files) {
+      const fileContent = await this.readFileContent(filePath);
+      const node = await this.createNodeFromFile(filePath, fileContent);
+      nodes.push(node);
+
+      // Analyser les dépendances
+      const dependencies = this.extractDependencies(fileContent, filePath);
+      dependencyMap.set(filePath, dependencies);
+
+      // Créer les liens
+      for (const dep of dependencies) {
+        const targetPath = this.resolveDependencyPath(dep, filePath, files);
+        if (targetPath) {
+          links.push({
+            source: filePath,
+            target: targetPath,
+            type: this.getDependencyType(dep),
+            strength: this.calculateLinkStrength(fileContent, dep),
+          });
         }
+      }
+    }
 
-        const rootPath = workspaceFolders[0].uri.fsPath;
-        const files = await this.getAllProjectFiles(rootPath);
-        
-        const nodes: ProjectNode[] = [];
-        const links: DependencyLink[] = [];
-        const dependencyMap = new Map<string, string[]>();
+    // Calculer les statistiques
+    const stats = this.calculateStats(nodes, links, dependencyMap);
 
-        // Analyser chaque fichier
-        for (const filePath of files) {
-            const fileContent = await this.readFileContent(filePath);
-            const node = await this.createNodeFromFile(filePath, fileContent);
-            nodes.push(node);
+    return { nodes, links, stats };
+  }
 
-            // Analyser les dépendances
-            const dependencies = this.extractDependencies(fileContent, filePath);
-            dependencyMap.set(filePath, dependencies);
+  private async getAllProjectFiles(rootPath: string): Promise<string[]> {
+    const files: string[] = [];
 
-            // Créer les liens
-            for (const dep of dependencies) {
-                const targetPath = this.resolveDependencyPath(dep, filePath, files);
-                if (targetPath) {
-                    links.push({
-                        source: filePath,
-                        target: targetPath,
-                        type: this.getDependencyType(dep),
-                        strength: this.calculateLinkStrength(fileContent, dep)
-                    });
-                }
+    const scanDirectory = async (dirPath: string) => {
+      try {
+        const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
+
+        for (const entry of entries) {
+          const fullPath = path.join(dirPath, entry.name);
+
+          if (entry.isDirectory()) {
+            // Ignorer certains dossiers
+            if (!['node_modules', '.git', 'dist', 'build', 'out'].includes(entry.name)) {
+              await scanDirectory(fullPath);
             }
-        }
-
-        // Calculer les statistiques
-        const stats = this.calculateStats(nodes, links, dependencyMap);
-
-        return { nodes, links, stats };
-    }
-
-    private async getAllProjectFiles(rootPath: string): Promise<string[]> {
-        const files: string[] = [];
-        
-        const scanDirectory = async (dirPath: string) => {
-            try {
-                const entries = await fs.promises.readdir(dirPath, { withFileTypes: true });
-                
-                for (const entry of entries) {
-                    const fullPath = path.join(dirPath, entry.name);
-                    
-                    if (entry.isDirectory()) {
-                        // Ignorer certains dossiers
-                        if (!['node_modules', '.git', 'dist', 'build', 'out'].includes(entry.name)) {
-                            await scanDirectory(fullPath);
-                        }
-                    } else if (entry.isFile()) {
-                        const ext = path.extname(entry.name);
-                        if (this.fileExtensions.includes(ext)) {
-                            files.push(fullPath);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.warn(`Erreur lors de la lecture du dossier ${dirPath}:`, error);
+          } else if (entry.isFile()) {
+            const ext = path.extname(entry.name);
+            if (this.fileExtensions.includes(ext)) {
+              files.push(fullPath);
             }
-        };
-
-        await scanDirectory(rootPath);
-        return files;
-    }
-
-    private async readFileContent(filePath: string): Promise<string> {
-        try {
-            return await fs.promises.readFile(filePath, 'utf-8');
-        } catch {
-            return '';
+          }
         }
+      } catch (error) {
+        console.warn(`Erreur lors de la lecture du dossier ${dirPath}:`, error);
+      }
+    };
+
+    await scanDirectory(rootPath);
+    return files;
+  }
+
+  private async readFileContent(filePath: string): Promise<string> {
+    try {
+      return await fs.promises.readFile(filePath, 'utf-8');
+    } catch {
+      return '';
     }
+  }
 
-    private async createNodeFromFile(filePath: string, content: string): Promise<ProjectNode> {
-        const fileName = path.basename(filePath);
-        const extension = path.extname(fileName).slice(1);
-        
-        return {
-            id: filePath,
-            name: fileName,
-            path: filePath,
-            type: 'file',
-            extension,
-            size: content.length,
-            dependencies: this.extractDependencies(content, filePath).length,
-            complexity: this.calculateFileComplexity(content)
-        };
-    }
+  private async createNodeFromFile(filePath: string, content: string): Promise<ProjectNode> {
+    const fileName = path.basename(filePath);
+    const extension = path.extname(fileName).slice(1);
 
-    private extractDependencies(content: string, filePath: string): string[] {
-        const dependencies: string[] = [];
-        
-        // Expressions régulières pour différents types d'imports
-        const patterns = [
-            // ES6/TypeScript imports
-            /import\s+.*?\s+from\s+['"]([^'"]+)['"]/g,
-            /import\s+['"]([^'"]+)['"]/g,
-            // CommonJS require
-            /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-            // Dynamic imports
-            /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
-            // Python imports (commenté car peut créer des faux positifs)
-            // /from\s+([^\s]+)\s+import/g,
-            // /import\s+([^\s;]+)/g
-        ];
+    return {
+      id: filePath,
+      name: fileName,
+      path: filePath,
+      type: 'file',
+      extension,
+      size: content.length,
+      dependencies: this.extractDependencies(content, filePath).length,
+      complexity: this.calculateFileComplexity(content),
+    };
+  }
 
-        for (const pattern of patterns) {
-            let match;
-            while ((match = pattern.exec(content)) !== null) {
-                const dep = match[1];
-                // CORRECTION: Inclure aussi les dépendances relatives qui commencent par '.'
-                if (dep && !dependencies.includes(dep)) {
-                    dependencies.push(dep);
-                }
-            }
+  private extractDependencies(content: string, filePath: string): string[] {
+    const dependencies: string[] = [];
+
+    // Expressions régulières pour différents types d'imports
+    const patterns = [
+      // ES6/TypeScript imports
+      /import\s+.*?\s+from\s+['"]([^'"]+)['"]/g,
+      /import\s+['"]([^'"]+)['"]/g,
+      // CommonJS require
+      /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
+      // Dynamic imports
+      /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g,
+      // Python imports (commenté car peut créer des faux positifs)
+      // /from\s+([^\s]+)\s+import/g,
+      // /import\s+([^\s;]+)/g
+    ];
+
+    for (const pattern of patterns) {
+      let match;
+      while ((match = pattern.exec(content)) !== null) {
+        const dep = match[1];
+        // CORRECTION: Inclure aussi les dépendances relatives qui commencent par '.'
+        if (dep && !dependencies.includes(dep)) {
+          dependencies.push(dep);
         }
-
-        return dependencies;
+      }
     }
 
-    private resolveDependencyPath(dependency: string, fromFile: string, allFiles: string[]): string | null {
-        const fromDir = path.dirname(fromFile);
-        
-        // Essayer de résoudre les imports relatifs
-        if (dependency.startsWith('.')) {
-            const resolved = path.resolve(fromDir, dependency);
-            
-            // Chercher avec différentes extensions
-            for (const ext of this.fileExtensions) {
-                const withExt = resolved + ext;
-                if (allFiles.includes(withExt)) {
-                    return withExt;
-                }
-            }
-            
-            // Chercher index files
-            for (const ext of this.fileExtensions) {
-                const indexFile = path.join(resolved, `index${ext}`);
-                if (allFiles.includes(indexFile)) {
-                    return indexFile;
-                }
-            }
+    return dependencies;
+  }
+
+  private resolveDependencyPath(
+    dependency: string,
+    fromFile: string,
+    allFiles: string[]
+  ): string | null {
+    const fromDir = path.dirname(fromFile);
+
+    // Essayer de résoudre les imports relatifs
+    if (dependency.startsWith('.')) {
+      const resolved = path.resolve(fromDir, dependency);
+
+      // Chercher avec différentes extensions
+      for (const ext of this.fileExtensions) {
+        const withExt = resolved + ext;
+        if (allFiles.includes(withExt)) {
+          return withExt;
         }
+      }
 
-        // Pour les modules externes, chercher dans les fichiers du projet
-        const possibleMatches = allFiles.filter(file => 
-            path.basename(file, path.extname(file)) === dependency ||
-            file.includes(dependency)
-        );
-
-        return possibleMatches[0] || null;
-    }
-
-    private getDependencyType(dependency: string): 'import' | 'call' | 'extends' | 'implements' {
-        // Logique simplifiée pour déterminer le type de dépendance
-        if (dependency.includes('extends') || dependency.includes('inherit')) {
-            return 'extends';
+      // Chercher index files
+      for (const ext of this.fileExtensions) {
+        const indexFile = path.join(resolved, `index${ext}`);
+        if (allFiles.includes(indexFile)) {
+          return indexFile;
         }
-        if (dependency.includes('implements') || dependency.includes('interface')) {
-            return 'implements';
+      }
+    }
+
+    // Pour les modules externes, chercher dans les fichiers du projet
+    const possibleMatches = allFiles.filter(
+      file => path.basename(file, path.extname(file)) === dependency || file.includes(dependency)
+    );
+
+    return possibleMatches[0] || null;
+  }
+
+  private getDependencyType(dependency: string): 'import' | 'call' | 'extends' | 'implements' {
+    // Logique simplifiée pour déterminer le type de dépendance
+    if (dependency.includes('extends') || dependency.includes('inherit')) {
+      return 'extends';
+    }
+    if (dependency.includes('implements') || dependency.includes('interface')) {
+      return 'implements';
+    }
+    if (dependency.includes('()') || dependency.includes('call')) {
+      return 'call';
+    }
+    return 'import';
+  }
+
+  private calculateLinkStrength(content: string, dependency: string): number {
+    // Compter les occurrences de la dépendance dans le fichier
+    const regex = new RegExp(dependency.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    const matches = content.match(regex) || [];
+    return Math.min(matches.length, 10); // Max 10 pour la visualisation
+  }
+
+  private calculateFileComplexity(content: string): number {
+    let complexity = 1; // Complexité de base
+
+    // Compter les structures de contrôle
+    const patterns = [
+      /\bif\s*\(/g,
+      /\belse\s+if\s*\(/g,
+      /\bwhile\s*\(/g,
+      /\bfor\s*\(/g,
+      /\bdo\s*\{/g,
+      /\bswitch\s*\(/g,
+      /\bcase\s+/g,
+      /\bcatch\s*\(/g,
+      /\?\s*.*?\s*:/g, // Opérateur ternaire
+      /&&|\|\|/g, // Opérateurs logiques
+    ];
+
+    for (const pattern of patterns) {
+      const matches = content.match(pattern) || [];
+      complexity += matches.length;
+    }
+
+    return complexity;
+  }
+
+  private calculateStats(
+    nodes: ProjectNode[],
+    links: DependencyLink[],
+    dependencyMap: Map<string, string[]>
+  ) {
+    const totalFiles = nodes.length;
+    const totalConnections = links.length;
+    const avgComplexity = nodes.reduce((sum, node) => sum + (node.complexity || 0), 0) / totalFiles;
+
+    // Détecter les dépendances circulaires (algorithme simple)
+    const circularDependencies = this.detectCircularDependencies(dependencyMap);
+
+    return {
+      totalFiles,
+      totalConnections,
+      avgComplexity: Math.round(avgComplexity * 100) / 100,
+      circularDependencies,
+    };
+  }
+
+  private detectCircularDependencies(dependencyMap: Map<string, string[]>): string[] {
+    const visited = new Set<string>();
+    const recursionStack = new Set<string>();
+    const cycles: string[] = [];
+
+    const dfs = (node: string, path: string[]): boolean => {
+      if (recursionStack.has(node)) {
+        cycles.push(`Cycle: ${path.join(' → ')} → ${node}`);
+        return true;
+      }
+
+      if (visited.has(node)) {
+        return false;
+      }
+
+      visited.add(node);
+      recursionStack.add(node);
+
+      const dependencies = dependencyMap.get(node) || [];
+      for (const dep of dependencies) {
+        if (dfs(dep, [...path, node])) {
+          return true;
         }
-        if (dependency.includes('()') || dependency.includes('call')) {
-            return 'call';
-        }
-        return 'import';
+      }
+
+      recursionStack.delete(node);
+      return false;
+    };
+
+    for (const [node] of dependencyMap) {
+      if (!visited.has(node)) {
+        dfs(node, []);
+      }
     }
 
-    private calculateLinkStrength(content: string, dependency: string): number {
-        // Compter les occurrences de la dépendance dans le fichier
-        const regex = new RegExp(dependency.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-        const matches = content.match(regex) || [];
-        return Math.min(matches.length, 10); // Max 10 pour la visualisation
-    }
+    return cycles;
+  }
 
-    private calculateFileComplexity(content: string): number {
-        let complexity = 1; // Complexité de base
-        
-        // Compter les structures de contrôle
-        const patterns = [
-            /\bif\s*\(/g,
-            /\belse\s+if\s*\(/g,
-            /\bwhile\s*\(/g,
-            /\bfor\s*\(/g,
-            /\bdo\s*\{/g,
-            /\bswitch\s*\(/g,
-            /\bcase\s+/g,
-            /\bcatch\s*\(/g,
-            /\?\s*.*?\s*:/g, // Opérateur ternaire
-            /&&|\|\|/g // Opérateurs logiques
-        ];
-
-        for (const pattern of patterns) {
-            const matches = content.match(pattern) || [];
-            complexity += matches.length;
-        }
-
-        return complexity;
-    }
-
-    private calculateStats(nodes: ProjectNode[], links: DependencyLink[], dependencyMap: Map<string, string[]>) {
-        const totalFiles = nodes.length;
-        const totalConnections = links.length;
-        const avgComplexity = nodes.reduce((sum, node) => sum + (node.complexity || 0), 0) / totalFiles;
-        
-        // Détecter les dépendances circulaires (algorithme simple)
-        const circularDependencies = this.detectCircularDependencies(dependencyMap);
-
-        return {
-            totalFiles,
-            totalConnections,
-            avgComplexity: Math.round(avgComplexity * 100) / 100,
-            circularDependencies
-        };
-    }
-
-    private detectCircularDependencies(dependencyMap: Map<string, string[]>): string[] {
-        const visited = new Set<string>();
-        const recursionStack = new Set<string>();
-        const cycles: string[] = [];
-
-        const dfs = (node: string, path: string[]): boolean => {
-            if (recursionStack.has(node)) {
-                cycles.push(`Cycle: ${path.join(' → ')} → ${node}`);
-                return true;
-            }
-
-            if (visited.has(node)) {
-                return false;
-            }
-
-            visited.add(node);
-            recursionStack.add(node);
-
-            const dependencies = dependencyMap.get(node) || [];
-            for (const dep of dependencies) {
-                if (dfs(dep, [...path, node])) {
-                    return true;
-                }
-            }
-
-            recursionStack.delete(node);
-            return false;
-        };
-
-        for (const [node] of dependencyMap) {
-            if (!visited.has(node)) {
-                dfs(node, []);
-            }
-        }
-
-        return cycles;
-    }
-
-    getConnectionCanvasHtml(graphData: ProjectGraphData): string {
-        return `
+  getConnectionCanvasHtml(graphData: ProjectGraphData): string {
+    return `
         <!DOCTYPE html>
         <html>
         <head>
@@ -580,5 +587,5 @@ export class ConnectionCanvas {
         </body>
         </html>
         `;
-    }
+  }
 }

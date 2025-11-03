@@ -1,6 +1,6 @@
 {
   "name": "aimastery-vincian-analysis",
-  "version": "7.1.2",
+  "version": "7.2.1",
   "publisher": "Serigne-Diagne",
   "displayName": "AI Mastery: Vincian Analysis",
   "description": "Self-analyzing VS Code extension with integrated Local AI for intelligent code analysis",
@@ -71,6 +71,36 @@
         "command": "aimastery.refreshData",
         "title": "Refresh Data",
         "icon": "$(refresh)"
+      },
+      {
+        "command": "aimastery.refreshProjectAnalysis",
+        "title": "🔍 Refresh Project Analysis",
+        "category": "AI Mastery",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aimastery.projectCleanupWizard",
+        "title": "🧹 Project Cleanup Wizard",
+        "category": "AI Mastery",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "aimastery.deleteDuplicates",
+        "title": "🗑️ Delete Duplicate Files",
+        "category": "AI Mastery",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "aimastery.generateProjectReport",
+        "title": "📄 Generate Project Report",
+        "category": "AI Mastery",
+        "icon": "$(file-text)"
+      },
+      {
+        "command": "aimastery.analyzeFolder",
+        "title": "📁 Analyze Folder",
+        "category": "AI Mastery",
+        "icon": "$(folder)"
       }
     ],
     "keybindings": [
@@ -110,6 +140,11 @@
           "command": "aimastery.projectAnalysis",
           "when": "explorerResourceIsFolder",
           "group": "2_workspace@1"
+        },
+        {
+          "command": "aimastery.analyzeFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "2_workspace@2"
         }
       ],
       "commandPalette": [
@@ -136,6 +171,21 @@
           "command": "aimastery.refreshData",
           "when": "view == aimasteryFuzzy",
           "group": "navigation"
+        },
+        {
+          "command": "aimastery.refreshProjectAnalysis",
+          "when": "view == aimastery-project-analysis",
+          "group": "navigation@1"
+        },
+        {
+          "command": "aimastery.projectCleanupWizard",
+          "when": "view == aimastery-project-analysis",
+          "group": "navigation@2"
+        },
+        {
+          "command": "aimastery.generateProjectReport",
+          "when": "view == aimastery-project-analysis",
+          "group": "navigation@3"
         }
       ]
     },
@@ -185,6 +235,53 @@
           "type": "boolean",
           "default": true,
           "description": "Enable real-time code analysis while typing"
+        },
+        "aimastery.telemetry.enabled": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "**Privacy Notice**: Enable anonymous usage telemetry to help improve AI Mastery. We collect only extension usage events (command executions, analysis counts). No code content, file names, or personal data is collected. [Privacy Policy](https://docs.scorescout.eu/aimastery/privacy)"
+        },
+        "aimastery.notifications.delay": {
+          "type": "number",
+          "default": 2000,
+          "minimum": 500,
+          "maximum": 10000,
+          "markdownDescription": "Delay (in milliseconds) before showing milestone notification messages (500ms - 10s). Default: 2000ms (2 seconds)"
+        },
+        "aimastery.notifications.showMilestones": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show achievement notifications when reaching milestones (first analysis, power user, etc.)"
+        },
+        "aimastery.projectConsolidator.autoAnalyzeOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically analyze projects when workspace opens"
+        },
+        "aimastery.projectConsolidator.showDuplicateWarnings": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show warnings for duplicate files"
+        },
+        "aimastery.projectConsolidator.maxFileSizeMB": {
+          "type": "number",
+          "default": 10,
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Maximum file size to analyze (MB)"
+        },
+        "aimastery.projectConsolidator.excludePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": ["node_modules", ".git", "dist", "build"],
+          "description": "Patterns to exclude from analysis"
+        },
+        "aimastery.projectConsolidator.enableAutoCleanup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic cleanup of detected issues"
         }
       }
     },
@@ -208,6 +305,11 @@
         {
           "id": "aimasteryFuzzy",
           "name": "🧬 Fuzzy Analysis",
+          "when": "workspaceFolderCount != 0"
+        },
+        {
+          "id": "aimastery-project-analysis",
+          "name": "📊 Project Analysis",
           "when": "workspaceFolderCount != 0"
         }
       ]
@@ -234,11 +336,16 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/node": "16.x",
+    "@babel/parser": "^7.28.4",
+    "@babel/types": "^7.28.4",
+    "@types/node": "^16.18.126",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.45.0",
+    "@typescript-eslint/typescript-estree": "^8.43.0",
     "eslint": "^8.28.0",
+    "tree-sitter": "^0.21.1",
+    "tree-sitter-typescript": "^0.23.2",
     "ts-loader": "^9.5.2",
     "typescript": "^4.9.4",
     "webpack": "^5.99.9",
@@ -267,5 +374,10 @@
       "🖼️ Added professional logo integration",
       "📊 Updated performance benchmarks"
     ]
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "osc-js": "^2.4.1",
+    "ws": "^8.18.2"
   }
 }

@@ -7,548 +7,607 @@ import { VincianAnalysisProvider, VincianAutocodingProvider } from './treeViewPr
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-    // Créer une instance de l'analyseur vincien
-    const vincianAnalyzer = new VincianAnalyzer();
+  // Créer une instance de l'analyseur vincien
+  const vincianAnalyzer = new VincianAnalyzer();
 
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log('Congratulations, your extension "aimastery-vincian-analysis" is now active!');
+  // Use the console to output diagnostic information (console.log) and errors (console.error)
+  // This line of code will only be executed once when your extension is activated
+  console.log('Congratulations, your extension "aimastery-vincian-analysis" is now active!');
 
-    // Le reste de votre code reste le même
-    const disposable = vscode.commands.registerCommand('aimastery-vincian-analysis.helloWorld', () => {
-        // The code you place here will be executed every time your command is executed
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Hello World from AIMastery Vincian Analysis!');
-    });
+  // Le reste de votre code reste le même
+  const disposable = vscode.commands.registerCommand(
+    'aimastery-vincian-analysis.helloWorld',
+    () => {
+      // The code you place here will be executed every time your command is executed
+      // Display a message box to the user
+      vscode.window.showInformationMessage('Hello World from AIMastery Vincian Analysis!');
+    }
+  );
 
-    context.subscriptions.push(disposable);
+  context.subscriptions.push(disposable);
 
-    // Commande: Lancer l'analyse vincienne
-    let analyzeCommand = vscode.commands.registerCommand('aimastery-vincian-analysis.startAnalysis', async () => {
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            vscode.window.showErrorMessage('Ouvrez un fichier pour effectuer une analyse vincienne');
-            return;
-        }
-        
-        vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: "Analyse vincienne en cours...",
-            cancellable: false
-        }, async (progress) => {
-            progress.report({ increment: 0 });
-            
-            try {
-                const document = editor.document;
-                const text = document.getText();
-                const results = await vincianAnalyzer.analyzeCode(text, document.languageId);
-                
-                // Afficher les résultats dans une nouvelle vue
-                const panel = vscode.window.createWebviewPanel(
-                    'vincianResults',
-                    'Analyse Vincienne',
-                    vscode.ViewColumn.Beside,
-                    { enableScripts: true }
-                );
-                
-                panel.webview.html = getResultsHtml(results);
-                
-                vscode.window.showInformationMessage(`Analyse vincienne terminée: Score ${results.score}/100`);
-                progress.report({ increment: 100 });
-                
-                return results;
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : String(error);
-                vscode.window.showErrorMessage(`Erreur lors de l'analyse: ${errorMessage}`);
-                return null;
-            }
-        });
-    });
+  // Commande: Lancer l'analyse vincienne
+  let analyzeCommand = vscode.commands.registerCommand(
+    'aimastery-vincian-analysis.startAnalysis',
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showErrorMessage('Ouvrez un fichier pour effectuer une analyse vincienne');
+        return;
+      }
 
-    context.subscriptions.push(analyzeCommand);
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: 'Analyse vincienne en cours...',
+          cancellable: false,
+        },
+        async progress => {
+          progress.report({ increment: 0 });
 
-    // Commande: Lancer l'auto-coding
-    let autoCodeCommand = vscode.commands.registerCommand('aimastery-vincian-analysis.startAutoCode', async () => {
-        vscode.window.showInformationMessage('Lancement de l\'auto-coding AIMastery...');
-        
-        try {
-            // Remplacez ceci par l'équivalent de votre script PowerShell
-            // Par exemple:
-            // - Appel d'une API
-            // - Manipulation de fichiers
-            // - Analyse de code
-            
-            vscode.window.showInformationMessage('Auto-coding terminé avec succès!');
-        } catch (error) {
-            // Correction du typage de l'erreur
+          try {
+            const document = editor.document;
+            const text = document.getText();
+            const results = await vincianAnalyzer.analyzeCode(text, document.languageId);
+
+            // Afficher les résultats dans une nouvelle vue
+            const panel = vscode.window.createWebviewPanel(
+              'vincianResults',
+              'Analyse Vincienne',
+              vscode.ViewColumn.Beside,
+              { enableScripts: true }
+            );
+
+            panel.webview.html = getResultsHtml(results);
+
+            vscode.window.showInformationMessage(
+              `Analyse vincienne terminée: Score ${results.score}/100`
+            );
+            progress.report({ increment: 100 });
+
+            return results;
+          } catch (error) {
             const errorMessage = error instanceof Error ? error.message : String(error);
-            vscode.window.showErrorMessage(`Erreur: ${errorMessage}`);
+            vscode.window.showErrorMessage(`Erreur lors de l'analyse: ${errorMessage}`);
+            return null;
+          }
         }
-    });
+      );
+    }
+  );
 
-    context.subscriptions.push(autoCodeCommand);
+  context.subscriptions.push(analyzeCommand);
 
-    // Commande: Afficher le tableau de bord vincien
-    let dashboardCommand = vscode.commands.registerCommand('aimastery-vincian-analysis.showVincianDashboard', () => {
-        // Créer une WebView
-        const panel = vscode.window.createWebviewPanel(
-            'vincianDashboard',
-            'Tableau de bord Vincien',
-            vscode.ViewColumn.Active,
-            { enableScripts: true }
-        );
-        
-        // Définir le HTML du tableau de bord
-        const dashboardHtml = getDashboardHtml();
-        panel.webview.html = dashboardHtml;
-        
-        // Gérer les messages du WebView
-        panel.webview.onDidReceiveMessage(
-            async message => {
-                switch (message.command) {
-                    case 'dashboard-loaded':
-                        // Le tableau de bord a fini de charger
-                        console.log('Tableau de bord vincien chargé');
-                        break;
-                        
-                    case 'start-analysis':
-                        // Lancer l'analyse
-                        vscode.commands.executeCommand('aimastery-vincian-analysis.startAnalysis');
-                        break;
-                        
-                    case 'start-autocoding':
-                        // Lancer l'auto-coding
-                        vscode.commands.executeCommand('aimastery-vincian-analysis.startAutoCode');
-                        break;
-                        
-                    case 'refresh-files':
-                        // Récupérer la liste des fichiers du workspace
-                        const workspaceFolders = vscode.workspace.workspaceFolders;
-                        if (workspaceFolders) {
-                            try {
-                                vscode.window.withProgress({
-                                    location: vscode.ProgressLocation.Notification,
-                                    title: "Chargement des fichiers...",
-                                    cancellable: false
-                                }, async (progress) => {
-                                    // Expand the file types to include more relevant file extensions
-                                    const files = await vscode.workspace.findFiles(
-                                        '**/*.{js,ts,jsx,tsx,html,css,py,java,c,cpp,cs,php,go,rs,rb}', 
-                                        '**/node_modules/**'
-                                    );
-                                    
-                                    // Tri par nom de fichier pour une meilleure lisibilité
-                                    files.sort((a, b) => {
-                                        const nameA = a.fsPath.split(/[\\/]/).pop() || '';
-                                        const nameB = b.fsPath.split(/[\\/]/).pop() || '';
-                                        return nameA.localeCompare(nameB);
-                                    });
-                                    
-                                    const filesList = files.map(file => {
-                                        return {
-                                            path: file.fsPath,
-                                            name: file.fsPath.split(/[\\/]/).pop() || '',
-                                            extension: file.fsPath.split('.').pop() || '',
-                                            directory: file.fsPath.replace(/[^\\\/]*$/, '') // Ajout du répertoire parent
-                                        };
-                                    });
-                                    
-                                    panel.webview.postMessage({
-                                        type: 'filesList',
-                                        files: filesList
-                                    });
-                                    
-                                    vscode.window.showInformationMessage(`${filesList.length} fichiers trouvés.`);
-                                });
-                            } catch (error) {
-                                const errorMessage = error instanceof Error ? error.message : String(error);
-                                vscode.window.showErrorMessage(`Erreur lors de la récupération des fichiers: ${errorMessage}`);
-                            }
-                        } else {
-                            panel.webview.postMessage({
-                                type: 'filesList',
-                                files: [],
-                                error: "Aucun dossier de travail ouvert"
-                            });
-                            vscode.window.showWarningMessage("Aucun dossier de travail ouvert");
-                        }
-                        break;
-                        
-                    case 'open-file':
-                        // Ouvrir un fichier
-                        if (message.path) {
-                            const uri = vscode.Uri.file(message.path);
-                            vscode.window.showTextDocument(uri);
-                        }
-                        break;
-                        
-                    case 'show-full-results':
-                        // Afficher les résultats détaillés
-                        if (message.id) {
-                            vscode.window.showInformationMessage(`Affichage des résultats détaillés pour l'analyse #${message.id}`);
-                        }
-                        break;
-                        
-                    case 'analyze-selected-files':
-                        const selectedPaths = message.paths || [];
-                        if (selectedPaths.length === 0) {
-                            vscode.window.showInformationMessage('Veuillez sélectionner au moins un fichier à analyser');
-                            return;
-                        }
-                        
-                        vscode.window.withProgress({
-                            location: vscode.ProgressLocation.Notification,
-                            title: "Analyse des fichiers sélectionnés...",
-                            cancellable: false
-                        }, async (progress) => {
-                            try {
-                                // Analyser chaque fichier
-                                for (let i = 0; i < selectedPaths.length; i++) {
-                                    const path = selectedPaths[i];
-                                    const doc = await vscode.workspace.openTextDocument(path);
-                                    const text = doc.getText();
-                                    
-                                    progress.report({ 
-                                        increment: (100 / selectedPaths.length),
-                                        message: `Analyse ${i+1}/${selectedPaths.length}: ${path.split(/[\\/]/).pop()}` 
-                                    });
-                                    
-                                    // Analyser le fichier
-                                    await vincianAnalyzer.analyzeCode(text, doc.languageId);
-                                }
-                                
-                                vscode.window.showInformationMessage(`Analyse terminée pour ${selectedPaths.length} fichiers`);
-                            } catch (error) {
-                                const errorMessage = error instanceof Error ? error.message : String(error);
-                                vscode.window.showErrorMessage(`Erreur lors de l'analyse multiple: ${errorMessage}`);
-                            }
-                        });
-                        break;
-                }
-            },
-            undefined,
-            context.subscriptions
-        );
-    });
+  // Commande: Lancer l'auto-coding
+  let autoCodeCommand = vscode.commands.registerCommand(
+    'aimastery-vincian-analysis.startAutoCode',
+    async () => {
+      vscode.window.showInformationMessage("Lancement de l'auto-coding AIMastery...");
 
-    context.subscriptions.push(dashboardCommand);
+      try {
+        // Remplacez ceci par l'équivalent de votre script PowerShell
+        // Par exemple:
+        // - Appel d'une API
+        // - Manipulation de fichiers
+        // - Analyse de code
 
-    // Enregistrement des vues d'arborescence
-    const analysisProvider = new VincianAnalysisProvider();
-    const autocodingProvider = new VincianAutocodingProvider();
+        vscode.window.showInformationMessage('Auto-coding terminé avec succès!');
+      } catch (error) {
+        // Correction du typage de l'erreur
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        vscode.window.showErrorMessage(`Erreur: ${errorMessage}`);
+      }
+    }
+  );
 
-    // Enregistrement des vues
-    vscode.window.registerTreeDataProvider('vincianAnalysisResults', analysisProvider);
-    vscode.window.registerTreeDataProvider('vincianAutocodingTools', autocodingProvider);
+  context.subscriptions.push(autoCodeCommand);
 
-    // Exposer les providers pour pouvoir les mettre à jour
-    context.subscriptions.push(
-        vscode.commands.registerCommand('aimastery-vincian-analysis.refreshAnalysis', () => analysisProvider.refresh())
-    );
+  // Commande: Afficher le tableau de bord vincien
+  let dashboardCommand = vscode.commands.registerCommand(
+    'aimastery-vincian-analysis.showVincianDashboard',
+    () => {
+      // Créer une WebView
+      const panel = vscode.window.createWebviewPanel(
+        'vincianDashboard',
+        'Tableau de bord Vincien',
+        vscode.ViewColumn.Active,
+        { enableScripts: true }
+      );
 
-    // Commande: Générer du code Vincien
-    let generateCode = vscode.commands.registerCommand('aimastery-vincian-analysis.generateVincianCode', async () => {
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            vscode.window.showErrorMessage('Ouvrez un fichier pour générer du code Vincien');
-            return;
-        }
-        
-        const document = editor.document;
-        const selection = editor.selection;
-        const text = document.getText(selection);
-        
-        if (!text) {
-            vscode.window.showInformationMessage('Sélectionnez du code à transformer ou un commentaire décrivant le code souhaité');
-            return;
-        }
-        
-        // Afficher un sélecteur de principe Vincien à privilégier
-        const principle = await vscode.window.showQuickPick([
-            { label: "Curiosità", description: "Privilégier l'exploration et l'expérimentation" },
-            { label: "Dimostrazione", description: "Privilégier la validation et la preuve" },
-            { label: "Sensazione", description: "Privilégier la clarté et l'esthétique" },
-            { label: "Sfumato", description: "Privilégier la gestion de l'ambiguïté" },
-            { label: "Arte/Scienza", description: "Équilibrer art et science" },
-            { label: "Corporalità", description: "Privilégier la structure et la robustesse" },
-            { label: "Connessione", description: "Privilégier l'interconnexion et la modularité" }
-        ], { 
-            placeHolder: 'Choisissez un principe Vincien à privilégier pour la génération' 
-        });
-        
-        if (!principle) {
-            return;
-        }
-        
-        vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: `Génération de code selon ${principle.label}...`,
-            cancellable: false
-        }, async (progress) => {
-            try {
-                // Simuler une génération de code (à remplacer par un appel à une API d'IA)
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                // Exemple simple - dans une vraie implémentation, utilisez une API d'IA
-                let newCode = "";
-                
-                if (principle.label === "Curiosità") {
-                    newCode = generateCuriositaCode(text, document.languageId);
-                } else if (principle.label === "Sensazione") {
-                    newCode = generateSensazioneCode(text, document.languageId);
-                } else {
-                    // Code par défaut pour les autres principes
-                    newCode = `// Code optimisé selon le principe ${principle.label}\n\n${text}`;
-                }
-                
-                // Afficher le code généré dans une webview
-                const panel = vscode.window.createWebviewPanel(
-                    'vincianGeneratedCode',
-                    `Code Vincien: ${principle.label}`,
-                    vscode.ViewColumn.Beside,
-                    { enableScripts: true }
-                );
-                
-                panel.webview.html = getGeneratedCodeHtml(text, newCode, principle.label);
-                
-                // Ajouter un bouton pour appliquer le code
-                panel.webview.onDidReceiveMessage(
-                    async message => {
-                        if (message.command === 'apply-code') {
-                            editor.edit(editBuilder => {
-                                editBuilder.replace(selection, message.code);
-                            });
-                            vscode.window.showInformationMessage(`Code selon ${principle.label} appliqué !`);
-                        }
+      // Définir le HTML du tableau de bord
+      const dashboardHtml = getDashboardHtml();
+      panel.webview.html = dashboardHtml;
+
+      // Gérer les messages du WebView
+      panel.webview.onDidReceiveMessage(
+        async message => {
+          switch (message.command) {
+            case 'dashboard-loaded':
+              // Le tableau de bord a fini de charger
+              console.log('Tableau de bord vincien chargé');
+              break;
+
+            case 'start-analysis':
+              // Lancer l'analyse
+              vscode.commands.executeCommand('aimastery-vincian-analysis.startAnalysis');
+              break;
+
+            case 'start-autocoding':
+              // Lancer l'auto-coding
+              vscode.commands.executeCommand('aimastery-vincian-analysis.startAutoCode');
+              break;
+
+            case 'refresh-files':
+              // Récupérer la liste des fichiers du workspace
+              const workspaceFolders = vscode.workspace.workspaceFolders;
+              if (workspaceFolders) {
+                try {
+                  vscode.window.withProgress(
+                    {
+                      location: vscode.ProgressLocation.Notification,
+                      title: 'Chargement des fichiers...',
+                      cancellable: false,
                     },
-                    undefined,
-                    context.subscriptions
-                );
-                
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : String(error);
-                vscode.window.showErrorMessage(`Erreur lors de la génération: ${errorMessage}`);
-            }
-        });
-    });
+                    async progress => {
+                      // Expand the file types to include more relevant file extensions
+                      const files = await vscode.workspace.findFiles(
+                        '**/*.{js,ts,jsx,tsx,html,css,py,java,c,cpp,cs,php,go,rs,rb}',
+                        '**/node_modules/**'
+                      );
 
-    context.subscriptions.push(generateCode);
+                      // Tri par nom de fichier pour une meilleure lisibilité
+                      files.sort((a, b) => {
+                        const nameA = a.fsPath.split(/[\\/]/).pop() || '';
+                        const nameB = b.fsPath.split(/[\\/]/).pop() || '';
+                        return nameA.localeCompare(nameB);
+                      });
 
-    // Commande: Analyse interactive avec marqueurs
-    let interactiveAnalysisCommand = vscode.commands.registerCommand('aimastery-vincian-analysis.analyzeWithMarkers', async () => {
-        const editor = vscode.window.activeTextEditor;
-        if (!editor) {
-            vscode.window.showErrorMessage('Ouvrez un fichier pour l\'analyse interactive');
-            return;
-        }
-        
-        vscode.window.withProgress({
-            location: vscode.ProgressLocation.Notification,
-            title: "Analyse interactive en cours...",
-            cancellable: false
-        }, async (progress) => {
-            progress.report({ increment: 0 });
-            
-            try {
-                const document = editor.document;
-                const text = document.getText();
-                const results = await vincianAnalyzer.analyzeCode(text, document.languageId);
-                
-                // Créer les décorations pour chaque principe
-                const decorationTypes = createPrincipleDecorations();
-                
-                // Analyser le code et créer des régions pour chaque principe
-                const decorationsMap = new Map<string, vscode.DecorationOptions[]>();
-                for (const type of Object.keys(decorationTypes)) {
-                    decorationsMap.set(type, []);
-                }
-                
-                // Simuler l'analyse du code ligne par ligne (idéalement à intégrer avec l'IA)
-                const lines = text.split('\n');
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i];
-                    
-                    // Analyser chaque ligne (simulation)
-                    const lineNumber = i;
-                    const principle = analyzeLineForPrinciple(line);
-                    
-                    if (principle) {
-                        const range = new vscode.Range(
-                            new vscode.Position(lineNumber, 0),
-                            new vscode.Position(lineNumber, line.length)
-                        );
-                        
-                        const decoration = { 
-                            range,
-                            hoverMessage: new vscode.MarkdownString(`**${principle}** - ${getPrincipleDescription(principle)}`)
+                      const filesList = files.map(file => {
+                        return {
+                          path: file.fsPath,
+                          name: file.fsPath.split(/[\\/]/).pop() || '',
+                          extension: file.fsPath.split('.').pop() || '',
+                          directory: file.fsPath.replace(/[^\\\/]*$/, ''), // Ajout du répertoire parent
                         };
-                        
-                        const decorations = decorationsMap.get(principle);
-                        if (decorations) {
-                            decorations.push(decoration);
-                        }
-                    }
-                }
-                
-                // Appliquer les décorations
-                for (const [type, decorations] of decorationsMap.entries()) {
-                    const decorationType = decorationTypes[type as keyof typeof decorationTypes];
-                    if (decorationType) {
-                        editor.setDecorations(decorationType, decorations);
-                    }
-                }
-                
-                // Créer une webview avec la légende et les contrôles
-                const panel = vscode.window.createWebviewPanel(
-                    'vincianInteractiveAnalysis',
-                    'Analyse Interactive Vincienne',
-                    vscode.ViewColumn.Beside,
-                    { enableScripts: true }
-                );
-                
-                panel.webview.html = getInteractiveAnalysisHtml(results);
-                
-                // Gérer la fermeture du panneau pour nettoyer les décorations
-                panel.onDidDispose(() => {
-                    for (const type of Object.values(decorationTypes)) {
-                        editor.setDecorations(type, []);
-                    }
-                }, null, context.subscriptions);
-                
-                // Gérer les messages du panneau
-                panel.webview.onDidReceiveMessage(
-                    async message => {
-                        if (message.command === 'toggle-principle') {
-                            const principle = message.principle;
-                            const show = message.show;
-                            
-                            const decorationType = decorationTypes[principle as keyof typeof decorationTypes];
-                            const decorations = show ? (decorationsMap.get(principle) || []) : [];
-                            
-                            if (decorationType) {
-                                editor.setDecorations(decorationType, decorations);
-                            }
-                        }
-                    },
-                    undefined,
-                    context.subscriptions
-                );
-                
-                progress.report({ increment: 100 });
-            } catch (error) {
-                const errorMessage = error instanceof Error ? error.message : String(error);
-                vscode.window.showErrorMessage(`Erreur lors de l'analyse interactive: ${errorMessage}`);
-            }
-        });
-    });
+                      });
 
-    context.subscriptions.push(interactiveAnalysisCommand);
+                      panel.webview.postMessage({
+                        type: 'filesList',
+                        files: filesList,
+                      });
 
-    // Créer les types de décoration pour chaque principe
-    function createPrincipleDecorations() {
-        return {
-            "Curiosità": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(255, 99, 71, 0.2)',
-                border: '1px dashed rgb(255, 99, 71)',
-                overviewRulerColor: 'rgba(255, 99, 71, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(255, 99, 71, 0.1)' }
-            }),
-            "Dimostrazione": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(65, 105, 225, 0.2)',
-                border: '1px dashed rgb(65, 105, 225)',
-                overviewRulerColor: 'rgba(65, 105, 225, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(65, 105, 225, 0.1)' }
-            }),
-            "Sensazione": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(60, 179, 113, 0.2)',
-                border: '1px dashed rgb(60, 179, 113)',
-                overviewRulerColor: 'rgba(60, 179, 113, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(60, 179, 113, 0.1)' }
-            }),
-            "Sfumato": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(138, 43, 226, 0.2)',
-                border: '1px dashed rgb(138, 43, 226)',
-                overviewRulerColor: 'rgba(138, 43, 226, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(138, 43, 226, 0.1)' }
-            }),
-            "Arte/Scienza": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(255, 165, 0, 0.2)',
-                border: '1px dashed rgb(255, 165, 0)',
-                overviewRulerColor: 'rgba(255, 165, 0, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(255, 165, 0, 0.1)' }
-            }),
-            "Corporalità": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(70, 130, 180, 0.2)',
-                border: '1px dashed rgb(70, 130, 180)',
-                overviewRulerColor: 'rgba(70, 130, 180, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(70, 130, 180, 0.1)' }
-            }),
-            "Connessione": vscode.window.createTextEditorDecorationType({
-                backgroundColor: 'rgba(50, 205, 50, 0.2)',
-                border: '1px dashed rgb(50, 205, 50)',
-                overviewRulerColor: 'rgba(50, 205, 50, 0.8)',
-                overviewRulerLane: vscode.OverviewRulerLane.Right,
-                light: { backgroundColor: 'rgba(50, 205, 50, 0.1)' }
-            })
-        };
+                      vscode.window.showInformationMessage(`${filesList.length} fichiers trouvés.`);
+                    }
+                  );
+                } catch (error) {
+                  const errorMessage = error instanceof Error ? error.message : String(error);
+                  vscode.window.showErrorMessage(
+                    `Erreur lors de la récupération des fichiers: ${errorMessage}`
+                  );
+                }
+              } else {
+                panel.webview.postMessage({
+                  type: 'filesList',
+                  files: [],
+                  error: 'Aucun dossier de travail ouvert',
+                });
+                vscode.window.showWarningMessage('Aucun dossier de travail ouvert');
+              }
+              break;
+
+            case 'open-file':
+              // Ouvrir un fichier
+              if (message.path) {
+                const uri = vscode.Uri.file(message.path);
+                vscode.window.showTextDocument(uri);
+              }
+              break;
+
+            case 'show-full-results':
+              // Afficher les résultats détaillés
+              if (message.id) {
+                vscode.window.showInformationMessage(
+                  `Affichage des résultats détaillés pour l'analyse #${message.id}`
+                );
+              }
+              break;
+
+            case 'analyze-selected-files':
+              const selectedPaths = message.paths || [];
+              if (selectedPaths.length === 0) {
+                vscode.window.showInformationMessage(
+                  'Veuillez sélectionner au moins un fichier à analyser'
+                );
+                return;
+              }
+
+              vscode.window.withProgress(
+                {
+                  location: vscode.ProgressLocation.Notification,
+                  title: 'Analyse des fichiers sélectionnés...',
+                  cancellable: false,
+                },
+                async progress => {
+                  try {
+                    // Analyser chaque fichier
+                    for (let i = 0; i < selectedPaths.length; i++) {
+                      const path = selectedPaths[i];
+                      const doc = await vscode.workspace.openTextDocument(path);
+                      const text = doc.getText();
+
+                      progress.report({
+                        increment: 100 / selectedPaths.length,
+                        message: `Analyse ${i + 1}/${selectedPaths.length}: ${path.split(/[\\/]/).pop()}`,
+                      });
+
+                      // Analyser le fichier
+                      await vincianAnalyzer.analyzeCode(text, doc.languageId);
+                    }
+
+                    vscode.window.showInformationMessage(
+                      `Analyse terminée pour ${selectedPaths.length} fichiers`
+                    );
+                  } catch (error) {
+                    const errorMessage = error instanceof Error ? error.message : String(error);
+                    vscode.window.showErrorMessage(
+                      `Erreur lors de l'analyse multiple: ${errorMessage}`
+                    );
+                  }
+                }
+              );
+              break;
+          }
+        },
+        undefined,
+        context.subscriptions
+      );
     }
+  );
 
-    // Fonctions d'analyse (simulation à remplacer par IA)
-    function analyzeLineForPrinciple(line: string): string | null {
-        // Simulation simple - à remplacer par une analyse IA réelle
-        if (line.includes('class') || line.includes('interface')) {
-            return "Corporalità";
-        } else if (line.includes('import') || line.includes('require')) {
-            return "Connessione";
-        } else if (line.includes('if') || line.includes('switch') || line.includes('try')) {
-            return "Sfumato";
-        } else if (line.includes('test') || line.includes('assert')) {
-            return "Dimostrazione";
-        } else if (line.includes('//') || line.includes('/*') || line.includes('*')) {
-            return "Sensazione";
-        } else if (line.includes('new') || line.includes('function')) {
-            return "Arte/Scienza";
-        } else if (line.includes('for') || line.includes('while') || line.includes('forEach')) {
-            return "Curiosità";
+  context.subscriptions.push(dashboardCommand);
+
+  // Enregistrement des vues d'arborescence
+  const analysisProvider = new VincianAnalysisProvider();
+  const autocodingProvider = new VincianAutocodingProvider();
+
+  // Enregistrement des vues
+  vscode.window.registerTreeDataProvider('vincianAnalysisResults', analysisProvider);
+  vscode.window.registerTreeDataProvider('vincianAutocodingTools', autocodingProvider);
+
+  // Exposer les providers pour pouvoir les mettre à jour
+  context.subscriptions.push(
+    vscode.commands.registerCommand('aimastery-vincian-analysis.refreshAnalysis', () =>
+      analysisProvider.refresh()
+    )
+  );
+
+  // Commande: Générer du code Vincien
+  let generateCode = vscode.commands.registerCommand(
+    'aimastery-vincian-analysis.generateVincianCode',
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showErrorMessage('Ouvrez un fichier pour générer du code Vincien');
+        return;
+      }
+
+      const document = editor.document;
+      const selection = editor.selection;
+      const text = document.getText(selection);
+
+      if (!text) {
+        vscode.window.showInformationMessage(
+          'Sélectionnez du code à transformer ou un commentaire décrivant le code souhaité'
+        );
+        return;
+      }
+
+      // Afficher un sélecteur de principe Vincien à privilégier
+      const principle = await vscode.window.showQuickPick(
+        [
+          { label: 'Curiosità', description: "Privilégier l'exploration et l'expérimentation" },
+          { label: 'Dimostrazione', description: 'Privilégier la validation et la preuve' },
+          { label: 'Sensazione', description: "Privilégier la clarté et l'esthétique" },
+          { label: 'Sfumato', description: "Privilégier la gestion de l'ambiguïté" },
+          { label: 'Arte/Scienza', description: 'Équilibrer art et science' },
+          { label: 'Corporalità', description: 'Privilégier la structure et la robustesse' },
+          { label: 'Connessione', description: "Privilégier l'interconnexion et la modularité" },
+        ],
+        {
+          placeHolder: 'Choisissez un principe Vincien à privilégier pour la génération',
         }
-        return null;
-    }
+      );
 
-    // Obtenir la description d'un principe
-    function getPrincipleDescription(principle: string): string {
-        const descriptions: Record<string, string> = {
-            "Curiosità": "Exploration, expérimentation et découverte",
-            "Dimostrazione": "Validation, test et preuve",
-            "Sensazione": "Clarté, lisibilité et esthétique du code",
-            "Sfumato": "Gestion de l'ambiguïté et des cas limites",
-            "Arte/Scienza": "Équilibre entre créativité et rigueur technique",
-            "Corporalità": "Structure, robustesse et cohésion",
-            "Connessione": "Interconnexion, modularité et réutilisabilité"
-        };
-        
-        return descriptions[principle] || "Principe vincien";
-    }
+      if (!principle) {
+        return;
+      }
 
-    // Interface HTML pour l'analyse interactive
-    function getInteractiveAnalysisHtml(results: any) {
-        const principles = [
-            { id: "Curiosità", color: "rgb(255, 99, 71)" },
-            { id: "Dimostrazione", color: "rgb(65, 105, 225)" },
-            { id: "Sensazione", color: "rgb(60, 179, 113)" },
-            { id: "Sfumato", color: "rgb(138, 43, 226)" },
-            { id: "Arte/Scienza", color: "rgb(255, 165, 0)" },
-            { id: "Corporalità", color: "rgb(70, 130, 180)" },
-            { id: "Connessione", color: "rgb(50, 205, 50)" }
-        ];
-        
-        // Créer les contrôles pour chaque principe
-        const principlesControls = principles.map(p => `
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: `Génération de code selon ${principle.label}...`,
+          cancellable: false,
+        },
+        async progress => {
+          try {
+            // Simuler une génération de code (à remplacer par un appel à une API d'IA)
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Exemple simple - dans une vraie implémentation, utilisez une API d'IA
+            let newCode = '';
+
+            if (principle.label === 'Curiosità') {
+              newCode = generateCuriositaCode(text, document.languageId);
+            } else if (principle.label === 'Sensazione') {
+              newCode = generateSensazioneCode(text, document.languageId);
+            } else {
+              // Code par défaut pour les autres principes
+              newCode = `// Code optimisé selon le principe ${principle.label}\n\n${text}`;
+            }
+
+            // Afficher le code généré dans une webview
+            const panel = vscode.window.createWebviewPanel(
+              'vincianGeneratedCode',
+              `Code Vincien: ${principle.label}`,
+              vscode.ViewColumn.Beside,
+              { enableScripts: true }
+            );
+
+            panel.webview.html = getGeneratedCodeHtml(text, newCode, principle.label);
+
+            // Ajouter un bouton pour appliquer le code
+            panel.webview.onDidReceiveMessage(
+              async message => {
+                if (message.command === 'apply-code') {
+                  editor.edit(editBuilder => {
+                    editBuilder.replace(selection, message.code);
+                  });
+                  vscode.window.showInformationMessage(`Code selon ${principle.label} appliqué !`);
+                }
+              },
+              undefined,
+              context.subscriptions
+            );
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            vscode.window.showErrorMessage(`Erreur lors de la génération: ${errorMessage}`);
+          }
+        }
+      );
+    }
+  );
+
+  context.subscriptions.push(generateCode);
+
+  // Commande: Analyse interactive avec marqueurs
+  let interactiveAnalysisCommand = vscode.commands.registerCommand(
+    'aimastery-vincian-analysis.analyzeWithMarkers',
+    async () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        vscode.window.showErrorMessage("Ouvrez un fichier pour l'analyse interactive");
+        return;
+      }
+
+      vscode.window.withProgress(
+        {
+          location: vscode.ProgressLocation.Notification,
+          title: 'Analyse interactive en cours...',
+          cancellable: false,
+        },
+        async progress => {
+          progress.report({ increment: 0 });
+
+          try {
+            const document = editor.document;
+            const text = document.getText();
+            const results = await vincianAnalyzer.analyzeCode(text, document.languageId);
+
+            // Créer les décorations pour chaque principe
+            const decorationTypes = createPrincipleDecorations();
+
+            // Analyser le code et créer des régions pour chaque principe
+            const decorationsMap = new Map<string, vscode.DecorationOptions[]>();
+            for (const type of Object.keys(decorationTypes)) {
+              decorationsMap.set(type, []);
+            }
+
+            // Simuler l'analyse du code ligne par ligne (idéalement à intégrer avec l'IA)
+            const lines = text.split('\n');
+            for (let i = 0; i < lines.length; i++) {
+              const line = lines[i];
+
+              // Analyser chaque ligne (simulation)
+              const lineNumber = i;
+              const principle = analyzeLineForPrinciple(line);
+
+              if (principle) {
+                const range = new vscode.Range(
+                  new vscode.Position(lineNumber, 0),
+                  new vscode.Position(lineNumber, line.length)
+                );
+
+                const decoration = {
+                  range,
+                  hoverMessage: new vscode.MarkdownString(
+                    `**${principle}** - ${getPrincipleDescription(principle)}`
+                  ),
+                };
+
+                const decorations = decorationsMap.get(principle);
+                if (decorations) {
+                  decorations.push(decoration);
+                }
+              }
+            }
+
+            // Appliquer les décorations
+            for (const [type, decorations] of decorationsMap.entries()) {
+              const decorationType = decorationTypes[type as keyof typeof decorationTypes];
+              if (decorationType) {
+                editor.setDecorations(decorationType, decorations);
+              }
+            }
+
+            // Créer une webview avec la légende et les contrôles
+            const panel = vscode.window.createWebviewPanel(
+              'vincianInteractiveAnalysis',
+              'Analyse Interactive Vincienne',
+              vscode.ViewColumn.Beside,
+              { enableScripts: true }
+            );
+
+            panel.webview.html = getInteractiveAnalysisHtml(results);
+
+            // Gérer la fermeture du panneau pour nettoyer les décorations
+            panel.onDidDispose(
+              () => {
+                for (const type of Object.values(decorationTypes)) {
+                  editor.setDecorations(type, []);
+                }
+              },
+              null,
+              context.subscriptions
+            );
+
+            // Gérer les messages du panneau
+            panel.webview.onDidReceiveMessage(
+              async message => {
+                if (message.command === 'toggle-principle') {
+                  const principle = message.principle;
+                  const show = message.show;
+
+                  const decorationType = decorationTypes[principle as keyof typeof decorationTypes];
+                  const decorations = show ? decorationsMap.get(principle) || [] : [];
+
+                  if (decorationType) {
+                    editor.setDecorations(decorationType, decorations);
+                  }
+                }
+              },
+              undefined,
+              context.subscriptions
+            );
+
+            progress.report({ increment: 100 });
+          } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            vscode.window.showErrorMessage(`Erreur lors de l'analyse interactive: ${errorMessage}`);
+          }
+        }
+      );
+    }
+  );
+
+  context.subscriptions.push(interactiveAnalysisCommand);
+
+  // Créer les types de décoration pour chaque principe
+  function createPrincipleDecorations() {
+    return {
+      Curiosità: vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(255, 99, 71, 0.2)',
+        border: '1px dashed rgb(255, 99, 71)',
+        overviewRulerColor: 'rgba(255, 99, 71, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(255, 99, 71, 0.1)' },
+      }),
+      Dimostrazione: vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(65, 105, 225, 0.2)',
+        border: '1px dashed rgb(65, 105, 225)',
+        overviewRulerColor: 'rgba(65, 105, 225, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(65, 105, 225, 0.1)' },
+      }),
+      Sensazione: vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(60, 179, 113, 0.2)',
+        border: '1px dashed rgb(60, 179, 113)',
+        overviewRulerColor: 'rgba(60, 179, 113, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(60, 179, 113, 0.1)' },
+      }),
+      Sfumato: vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(138, 43, 226, 0.2)',
+        border: '1px dashed rgb(138, 43, 226)',
+        overviewRulerColor: 'rgba(138, 43, 226, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(138, 43, 226, 0.1)' },
+      }),
+      'Arte/Scienza': vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(255, 165, 0, 0.2)',
+        border: '1px dashed rgb(255, 165, 0)',
+        overviewRulerColor: 'rgba(255, 165, 0, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(255, 165, 0, 0.1)' },
+      }),
+      Corporalità: vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(70, 130, 180, 0.2)',
+        border: '1px dashed rgb(70, 130, 180)',
+        overviewRulerColor: 'rgba(70, 130, 180, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(70, 130, 180, 0.1)' },
+      }),
+      Connessione: vscode.window.createTextEditorDecorationType({
+        backgroundColor: 'rgba(50, 205, 50, 0.2)',
+        border: '1px dashed rgb(50, 205, 50)',
+        overviewRulerColor: 'rgba(50, 205, 50, 0.8)',
+        overviewRulerLane: vscode.OverviewRulerLane.Right,
+        light: { backgroundColor: 'rgba(50, 205, 50, 0.1)' },
+      }),
+    };
+  }
+
+  // Fonctions d'analyse (simulation à remplacer par IA)
+  function analyzeLineForPrinciple(line: string): string | null {
+    // Simulation simple - à remplacer par une analyse IA réelle
+    if (line.includes('class') || line.includes('interface')) {
+      return 'Corporalità';
+    } else if (line.includes('import') || line.includes('require')) {
+      return 'Connessione';
+    } else if (line.includes('if') || line.includes('switch') || line.includes('try')) {
+      return 'Sfumato';
+    } else if (line.includes('test') || line.includes('assert')) {
+      return 'Dimostrazione';
+    } else if (line.includes('//') || line.includes('/*') || line.includes('*')) {
+      return 'Sensazione';
+    } else if (line.includes('new') || line.includes('function')) {
+      return 'Arte/Scienza';
+    } else if (line.includes('for') || line.includes('while') || line.includes('forEach')) {
+      return 'Curiosità';
+    }
+    return null;
+  }
+
+  // Obtenir la description d'un principe
+  function getPrincipleDescription(principle: string): string {
+    const descriptions: Record<string, string> = {
+      Curiosità: 'Exploration, expérimentation et découverte',
+      Dimostrazione: 'Validation, test et preuve',
+      Sensazione: 'Clarté, lisibilité et esthétique du code',
+      Sfumato: "Gestion de l'ambiguïté et des cas limites",
+      'Arte/Scienza': 'Équilibre entre créativité et rigueur technique',
+      Corporalità: 'Structure, robustesse et cohésion',
+      Connessione: 'Interconnexion, modularité et réutilisabilité',
+    };
+
+    return descriptions[principle] || 'Principe vincien';
+  }
+
+  // Interface HTML pour l'analyse interactive
+  function getInteractiveAnalysisHtml(results: any) {
+    const principles = [
+      { id: 'Curiosità', color: 'rgb(255, 99, 71)' },
+      { id: 'Dimostrazione', color: 'rgb(65, 105, 225)' },
+      { id: 'Sensazione', color: 'rgb(60, 179, 113)' },
+      { id: 'Sfumato', color: 'rgb(138, 43, 226)' },
+      { id: 'Arte/Scienza', color: 'rgb(255, 165, 0)' },
+      { id: 'Corporalità', color: 'rgb(70, 130, 180)' },
+      { id: 'Connessione', color: 'rgb(50, 205, 50)' },
+    ];
+
+    // Créer les contrôles pour chaque principe
+    const principlesControls = principles
+      .map(
+        p => `
             <div class="principle-control">
                 <input type="checkbox" id="${p.id}" checked>
                 <label for="${p.id}" style="color: ${p.color}">
@@ -556,9 +615,11 @@ export function activate(context: vscode.ExtensionContext) {
                     ${p.id}
                 </label>
             </div>
-        `).join('');
-        
-        return `
+        `
+      )
+      .join('');
+
+    return `
         <!DOCTYPE html>
         <html>
         <head>
@@ -608,28 +669,34 @@ export function activate(context: vscode.ExtensionContext) {
         </body>
         </html>
         `;
-    }
+  }
 
-    // Évaluer l'équilibre des principes
-    function getBalanceDescription(results: any): string {
-        const scores = results.insights.map((i: any) => i.score);
-        const max = Math.max(...scores);
-        const min = Math.min(...scores);
-        const diff = max - min;
-        
-        if (diff <= 2) {return "Excellent";}
-        if (diff <= 4) {return "Bon";}
-        if (diff <= 6) {return "Moyen";}
-        return "Déséquilibré";
-    }
+  // Évaluer l'équilibre des principes
+  function getBalanceDescription(results: any): string {
+    const scores = results.insights.map((i: any) => i.score);
+    const max = Math.max(...scores);
+    const min = Math.min(...scores);
+    const diff = max - min;
 
-    // Fonction helper pour générer le HTML des résultats
-    function getResultsHtml(results: any) {
-        // Données pour le graphique radar
-        const radarData = results.insights.map((insight: any) => insight.score);
-        const radarLabels = results.insights.map((insight: any) => insight.category.split(' ')[0]);
-        
-        return `
+    if (diff <= 2) {
+      return 'Excellent';
+    }
+    if (diff <= 4) {
+      return 'Bon';
+    }
+    if (diff <= 6) {
+      return 'Moyen';
+    }
+    return 'Déséquilibré';
+  }
+
+  // Fonction helper pour générer le HTML des résultats
+  function getResultsHtml(results: any) {
+    // Données pour le graphique radar
+    const radarData = results.insights.map((insight: any) => insight.score);
+    const radarLabels = results.insights.map((insight: any) => insight.category.split(' ')[0]);
+
+    return `
             <!DOCTYPE html>
             <html>
             <head>
@@ -662,7 +729,9 @@ export function activate(context: vscode.ExtensionContext) {
                 
                 <h2>Insights Vinciens</h2>
                 
-                ${results.insights.map((insight: any) => `
+                ${results.insights
+                  .map(
+                    (insight: any) => `
                     <div class="insight-card">
                         <h3>${insight.category}</h3>
                         <p>${insight.description}</p>
@@ -671,7 +740,9 @@ export function activate(context: vscode.ExtensionContext) {
                         </div>
                         <p style="text-align: right; margin-top: 5px;">${insight.score}/10</p>
                     </div>
-                `).join('')}
+                `
+                  )
+                  .join('')}
                 
                 <div class="recommendation">
                     <h3>Recommandation principale</h3>
@@ -707,11 +778,11 @@ export function activate(context: vscode.ExtensionContext) {
             </body>
             </html>
         `;
-    }
-    
-    // Fonction pour générer le HTML du tableau de bord
-    function getDashboardHtml() {
-        return `
+  }
+
+  // Fonction pour générer le HTML du tableau de bord
+  function getDashboardHtml() {
+    return `
         <!DOCTYPE html>
         <html>
         <head>
@@ -982,20 +1053,20 @@ export function activate(context: vscode.ExtensionContext) {
         </body>
         </html>
         `;
-    }
-    
-    // Fonction pour générer des exemples de code basés sur Curiosità
-    function generateCuriositaCode(text: string, languageId: string): string {
-        // Simulation - à remplacer par un appel à une API d'IA
-        let generatedCode = `// Code optimisé selon le principe Curiosità (exploration et expérimentation)
+  }
+
+  // Fonction pour générer des exemples de code basés sur Curiosità
+  function generateCuriositaCode(text: string, languageId: string): string {
+    // Simulation - à remplacer par un appel à une API d'IA
+    let generatedCode = `// Code optimisé selon le principe Curiosità (exploration et expérimentation)
 // Encourageant l'exploration de plusieurs approches et la découverte
 
 `;
 
-        if (languageId === 'javascript' || languageId === 'typescript') {
-            // Si c'est une fonction ou une méthode
-            if (text.includes('function') || text.includes('=>')) {
-                generatedCode += `// Version avec plus d'exploration et d'adaptabilité
+    if (languageId === 'javascript' || languageId === 'typescript') {
+      // Si c'est une fonction ou une méthode
+      if (text.includes('function') || text.includes('=>')) {
+        generatedCode += `// Version avec plus d'exploration et d'adaptabilité
 ${text.replace(/function\s+([a-zA-Z0-9_]+)\s*\(([^)]*)\)/, 'function $1($2, options = {}')}
 
 // Alternative avec un pattern Strategy pour plus d'expérimentation
@@ -1020,9 +1091,9 @@ ExploratoryStrategy.registerStrategy('default', ${text});
 
 // Exemple d'utilisation:
 // ExploratoryStrategy.execute('default', ...args);`;
-            } else {
-                // Pour d'autres types de code JavaScript/TypeScript
-                generatedCode += `// Ajout d'instrumentation pour l'exploration et la découverte
+      } else {
+        // Pour d'autres types de code JavaScript/TypeScript
+        generatedCode += `// Ajout d'instrumentation pour l'exploration et la découverte
 console.time('performance');
 
 ${text}
@@ -1044,10 +1115,10 @@ const handler = {
 
 // Créer une version observable pour l'exploration
 // const observable = new Proxy(yourObject, handler);`;
-            }
-        } else if (languageId === 'python') {
-            // Exemple pour Python
-            generatedCode += `# Version avec décorateurs pour l'exploration et la découverte
+      }
+    } else if (languageId === 'python') {
+      // Exemple pour Python
+      generatedCode += `# Version avec décorateurs pour l'exploration et la découverte
 import time
 import functools
 import random
@@ -1077,9 +1148,9 @@ def experimental_variation(func):
             pass
         return func(*args, **kwargs)
     return wrapper`;
-        } else {
-            // Pour les autres langages, ajouter simplement des commentaires
-            generatedCode += `/* 
+    } else {
+      // Pour les autres langages, ajouter simplement des commentaires
+      generatedCode += `/* 
  * Version encourageant l'exploration et la découverte
  * Suggestions:
  * 1. Ajouter des logs/traces pour observer le comportement
@@ -1096,43 +1167,46 @@ ${text}
  * - Utiliser des variantes paramétrables
  * - Intégrer des mécanismes d'apprentissage/adaptation
  */`;
-        }
-        
-        return generatedCode;
     }
-    
-    // Fonction pour générer des exemples de code basés sur Sensazione
-    function generateSensazioneCode(text: string, languageId: string): string {
-        // Simulation - à remplacer par un appel à une API d'IA
-        let generatedCode = `// Code optimisé selon le principe Sensazione (clarté et esthétique)
+
+    return generatedCode;
+  }
+
+  // Fonction pour générer des exemples de code basés sur Sensazione
+  function generateSensazioneCode(text: string, languageId: string): string {
+    // Simulation - à remplacer par un appel à une API d'IA
+    let generatedCode = `// Code optimisé selon le principe Sensazione (clarté et esthétique)
 // Mettant l'accent sur la lisibilité, la beauté du code et la clarté d'intention
 
 `;
-        
-        if (languageId === 'javascript' || languageId === 'typescript') {
-            // Nettoyer le format
-            generatedCode += text
-                // Ajouter des espaces cohérents
-                .replace(/([{([])\s*/g, '$1 ') // Pour les ouvrants : { ( [
-                .replace(/\s*([\])}])/g, ' $1') // Pour les fermants : ] ) }
-                .replace(/,\s*/g, ', ')
-                .replace(/;\s*/g, '; ')
-                .replace(/\s*=\s*/g, ' = ')
-                .replace(/\s*=>\s*/g, ' => ')
-                .replace(/\s*:\s*/g, ': ')
-                // Améliorer les noms de variables/fonctions (simulé)
-                .replace(/function\s+([a-z])[a-z]*/g, 'function describe$1')
-                .replace(/const\s+([a-z])[a-z]*/g, 'const meaningful$1')
-                .replace(/let\s+([a-z])[a-z]*/g, 'let readable$1');
-            
-            // Ajouter des commentaires explicatifs (simulé)
-            generatedCode = generatedCode
-                .replace(/for\s*\(/, '// Boucle élégante qui itère à travers les éléments\nfor (')
-                .replace(/if\s*\(/, '// Condition claire et précise\nif (')
-                .replace(/function/, '/**\n * Fonction au nom explicite qui décrit clairement son intention\n * Les paramètres sont nommés de manière significative\n */\nfunction');
-            
-            // Ajouter un style visuel cohérent
-            generatedCode += `
+
+    if (languageId === 'javascript' || languageId === 'typescript') {
+      // Nettoyer le format
+      generatedCode += text
+        // Ajouter des espaces cohérents
+        .replace(/([{([])\s*/g, '$1 ') // Pour les ouvrants : { ( [
+        .replace(/\s*([\])}])/g, ' $1') // Pour les fermants : ] ) }
+        .replace(/,\s*/g, ', ')
+        .replace(/;\s*/g, '; ')
+        .replace(/\s*=\s*/g, ' = ')
+        .replace(/\s*=>\s*/g, ' => ')
+        .replace(/\s*:\s*/g, ': ')
+        // Améliorer les noms de variables/fonctions (simulé)
+        .replace(/function\s+([a-z])[a-z]*/g, 'function describe$1')
+        .replace(/const\s+([a-z])[a-z]*/g, 'const meaningful$1')
+        .replace(/let\s+([a-z])[a-z]*/g, 'let readable$1');
+
+      // Ajouter des commentaires explicatifs (simulé)
+      generatedCode = generatedCode
+        .replace(/for\s*\(/, '// Boucle élégante qui itère à travers les éléments\nfor (')
+        .replace(/if\s*\(/, '// Condition claire et précise\nif (')
+        .replace(
+          /function/,
+          '/**\n * Fonction au nom explicite qui décrit clairement son intention\n * Les paramètres sont nommés de manière significative\n */\nfunction'
+        );
+
+      // Ajouter un style visuel cohérent
+      generatedCode += `
 
 /**
  * Exemples de principes Sensazione appliqués:
@@ -1142,17 +1216,18 @@ ${text}
  * 4. Structure visuelle harmonieuse
  * 5. Espacement cohérent pour faciliter la lecture
  */`;
-        } else if (languageId === 'python') {
-            // Exemples pour Python
-            generatedCode += `"""
+    } else if (languageId === 'python') {
+      // Exemples pour Python
+      generatedCode += `"""
 Implémentation élégante et claire suivant le principe Sensazione.
 Les noms, l'espacement et la structure sont optimisés pour la clarté.
 """
 
-${text
-    .replace(/#([^\\n]*)/g, '# $1')  // Espacer les commentaires
-    .replace(/def ([a-z_]+)/g, 'def descriptive_$1')  // Noms plus descriptifs
-    .replace(/([a-z_]+) =/g, 'meaningful_$1 =')  // Variables plus explicites
+${
+  text
+    .replace(/#([^\\n]*)/g, '# $1') // Espacer les commentaires
+    .replace(/def ([a-z_]+)/g, 'def descriptive_$1') // Noms plus descriptifs
+    .replace(/([a-z_]+) =/g, 'meaningful_$1 =') // Variables plus explicites
 }
 
 """
@@ -1163,9 +1238,9 @@ Principes Sensazione appliqués:
 4. Structure visuelle harmonieuse
 5. Commentaires alignés et informatifs
 """`;
-        } else {
-            // Pour les autres langages
-            generatedCode += `/*
+    } else {
+      // Pour les autres langages
+      generatedCode += `/*
  * Version optimisée pour la clarté et l'esthétique
  * 
  * Améliorations apportées:
@@ -1177,28 +1252,28 @@ Principes Sensazione appliqués:
  */
  
 ${text}`;
-        }
-        
-        return generatedCode;
     }
-    
-    // Fonction pour générer l'interface HTML de comparaison de code
-    function getGeneratedCodeHtml(originalCode: string, newCode: string, principle: string): string {
-        // Obtenir la description du principe
-        const descriptions: Record<string, string> = {
-            "Curiosità": "Exploration, expérimentation et découverte",
-            "Dimostrazione": "Validation, test et preuve",
-            "Sensazione": "Clarté, lisibilité et esthétique du code",
-            "Sfumato": "Gestion de l'ambiguïté et des cas limites",
-            "Arte/Scienza": "Équilibre entre créativité et rigueur technique",
-            "Corporalità": "Structure, robustesse et cohésion",
-            "Connessione": "Interconnexion, modularité et réutilisabilité"
-        };
-        
-        const principleDescription = descriptions[principle] || principle;
-        
-        // Créer le HTML avec une mise en page en deux colonnes
-        return `
+
+    return generatedCode;
+  }
+
+  // Fonction pour générer l'interface HTML de comparaison de code
+  function getGeneratedCodeHtml(originalCode: string, newCode: string, principle: string): string {
+    // Obtenir la description du principe
+    const descriptions: Record<string, string> = {
+      Curiosità: 'Exploration, expérimentation et découverte',
+      Dimostrazione: 'Validation, test et preuve',
+      Sensazione: 'Clarté, lisibilité et esthétique du code',
+      Sfumato: "Gestion de l'ambiguïté et des cas limites",
+      'Arte/Scienza': 'Équilibre entre créativité et rigueur technique',
+      Corporalità: 'Structure, robustesse et cohésion',
+      Connessione: 'Interconnexion, modularité et réutilisabilité',
+    };
+
+    const principleDescription = descriptions[principle] || principle;
+
+    // Créer le HTML avec une mise en page en deux colonnes
+    return `
         <!DOCTYPE html>
         <html>
         <head>
@@ -1254,17 +1329,17 @@ ${text}`;
         </body>
         </html>
         `;
-    }
-    
-    // Fonction utilitaire pour échapper les caractères HTML
-    function escapeHtml(text: string): string {
-        return text
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
+  }
+
+  // Fonction utilitaire pour échapper les caractères HTML
+  function escapeHtml(text: string): string {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 }
 
 // Cette méthode est appelée lorsque votre extension est désactivée

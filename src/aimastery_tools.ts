@@ -69,7 +69,7 @@ export class AIMasteryApp implements AIMasteryIntegratedApp {
 
   async createNewProject(): Promise<void> {
     // Implémentation de base - à compléter selon les besoins
-    vscode.window.showInformationMessage('Création d\'un nouveau projet...');
+    vscode.window.showInformationMessage("Création d'un nouveau projet...");
   }
 
   getProjectManager(): any {
@@ -79,13 +79,13 @@ export class AIMasteryApp implements AIMasteryIntegratedApp {
 
   async exportAnalysisResults(): Promise<void> {
     // Implémentation de base - à compléter selon les besoins
-    vscode.window.showInformationMessage('Exportation des résultats d\'analyse...');
+    vscode.window.showInformationMessage("Exportation des résultats d'analyse...");
   }
 
   initialize(context: vscode.ExtensionContext): void {
     // Initialisation des fournisseurs de vues
     this.webviewProvider = new VincianWebviewProvider(context.extensionUri);
-    
+
     // Enregistrement des commandes
     const disposable = vscode.commands.registerCommand('aimastery.analyze', () => {
       vscode.window.showInformationMessage('Analyse démarrée avec AIMastery!');
@@ -109,16 +109,16 @@ export function activate(context: vscode.ExtensionContext) {
   const extensionUri = context.extensionUri;
   app = new AIMasteryApp(extensionUri);
   app.initialize(context);
-  
+
   // Enregistrement des fournisseurs de vues
   vscode.window.registerTreeDataProvider('vincianAnalysis', new VincianAnalysisProvider());
-  
+
   // Enregistrement des commandes
   context.subscriptions.push(
     vscode.commands.registerCommand('aimastery.refresh', () => {
       vscode.window.showInformationMessage('Rafraîchissement des analyses...');
     })
   );
-  
+
   console.log('Extension AIMastery est maintenant active!');
 }

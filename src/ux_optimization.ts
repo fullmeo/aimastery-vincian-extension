@@ -24,7 +24,7 @@ class WelcomeExperienceManager {
   async showWelcomeFlow() {
     // Vérifier si c'est la première fois
     const isFirstTime = this.context.globalState.get('firstTime', true);
-    
+
     if (isFirstTime) {
       await this.startWelcomeSequence();
       await this.context.globalState.update('firstTime', false);
@@ -39,14 +39,14 @@ class WelcomeExperienceManager {
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        retainContextWhenHidden: true
+        retainContextWhenHidden: true,
       }
     );
 
     panel.webview.html = this.getWelcomeHTML();
-    
+
     // Handle user interactions
-    panel.webview.onDidReceiveMessage(async (message) => {
+    panel.webview.onDidReceiveMessage(async message => {
       switch (message.command) {
         case 'nextStep':
           this.currentStep++;
@@ -96,7 +96,7 @@ class WelcomeExperienceManager {
             </div>
           </div>
         `,
-        cta: 'Découvrir les fonctionnalités →'
+        cta: 'Découvrir les fonctionnalités →',
       },
       {
         title: '🎯 Comment ça marche ?',
@@ -128,7 +128,7 @@ class WelcomeExperienceManager {
             </div>
           </div>
         `,
-        cta: 'Essayer maintenant →'
+        cta: 'Essayer maintenant →',
       },
       {
         title: '💎 Pourquoi AIMastery est Unique ?',
@@ -157,7 +157,7 @@ class WelcomeExperienceManager {
             </div>
           </div>
         `,
-        cta: 'Voir la démonstration →'
+        cta: 'Voir la démonstration →',
       },
       {
         title: '🎁 Offre de Lancement Exclusive !',
@@ -191,12 +191,12 @@ class WelcomeExperienceManager {
             </div>
           </div>
         `,
-        cta: 'Réserver ma place (9€/mois à vie) →'
-      }
+        cta: 'Réserver ma place (9€/mois à vie) →',
+      },
     ];
 
     const currentStepData = steps[this.currentStep];
-    
+
     return `
     <!DOCTYPE html>
     <html>
@@ -547,23 +547,31 @@ class WelcomeExperienceManager {
                 ${currentStepData.content}
                 
                 <div class="buttons-container">
-                    ${this.currentStep === this.totalSteps - 1 ? `
+                    ${
+                      this.currentStep === this.totalSteps - 1
+                        ? `
                         <button class="cta-button" onclick="upgradePremium()">
                             ${currentStepData.cta}
                         </button>
                         <button class="secondary-button" onclick="startDemo()">
                             🎁 Commencer l'essai gratuit
                         </button>
-                    ` : `
+                    `
+                        : `
                         <button class="cta-button" onclick="nextStep()">
                             ${currentStepData.cta}
                         </button>
-                        ${this.currentStep === 1 ? `
+                        ${
+                          this.currentStep === 1
+                            ? `
                             <button class="secondary-button" onclick="startDemo()">
                                 🚀 Essayer tout de suite
                             </button>
-                        ` : ''}
-                    `}
+                        `
+                            : ''
+                        }
+                    `
+                    }
                 </div>
             </div>
             
@@ -608,23 +616,25 @@ class WelcomeExperienceManager {
 
   private async startGuidedDemo() {
     // Ouvrir un fichier audio exemple ou guider vers l'analyse
-    vscode.window.showInformationMessage(
-      '🎯 Parfait ! Sélectionnez un fichier audio (MP3, WAV, M4A) et faites clic droit → "AIMastery: Analyze Audio"',
-      'Ouvrir fichier exemple'
-    ).then(choice => {
-      if (choice) {
-        // Vous pouvez ajouter un fichier exemple dans l'extension
-        vscode.commands.executeCommand('vscode.open');
-      }
-    });
-    
+    vscode.window
+      .showInformationMessage(
+        '🎯 Parfait ! Sélectionnez un fichier audio (MP3, WAV, M4A) et faites clic droit → "AIMastery: Analyze Audio"',
+        'Ouvrir fichier exemple'
+      )
+      .then(choice => {
+        if (choice) {
+          // Vous pouvez ajouter un fichier exemple dans l'extension
+          vscode.commands.executeCommand('vscode.open');
+        }
+      });
+
     await this.trackEvent('demo_started');
   }
 
   private async completeOnboarding() {
     await this.context.globalState.update('onboardingCompleted', true);
     await this.trackEvent('onboarding_completed');
-    
+
     vscode.window.showInformationMessage(
       '🎉 Configuration terminée ! Vous êtes prêt à révolutionner vos contenus !',
       'Faire ma première analyse'
@@ -638,7 +648,7 @@ class WelcomeExperienceManager {
         event,
         data,
         userId: vscode.env.machineId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       // Fail silently
@@ -655,11 +665,11 @@ class WelcomeExperienceManager {
 
 class UserProgressionTracker {
   private context: vscode.ExtensionContext;
-  
+
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
   }
-  
+
   async trackUserAction(action: string, data?: any) {
     const progress = this.context.globalState.get('userProgress', {
       firstInstall: Date.now(),
@@ -668,16 +678,16 @@ class UserProgressionTracker {
       conversionScore: 0,
       totalAnalyses: 0,
       totalSocialPacks: 0,
-      highScoreAnalyses: 0
+      highScoreAnalyses: 0,
     });
-    
+
     // Ajouter l'action
     (progress.actionsCompleted as UserAction[]).push({
       action,
       data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
-    
+
     // Mettre à jour les compteurs
     if (action === 'audio_analyzed') {
       progress.totalAnalyses++;
@@ -685,23 +695,23 @@ class UserProgressionTracker {
         progress.highScoreAnalyses++;
       }
     }
-    
+
     if (action === 'social_pack_generated') {
       progress.totalSocialPacks++;
     }
-    
+
     // Calculer le score de conversion
     progress.conversionScore = this.calculateConversionScore(progress);
-    
+
     // Trigger upgrade prompts basés sur le comportement
     await this.checkForUpgradeOpportunities(progress);
-    
+
     await this.context.globalState.update('userProgress', progress);
   }
-  
+
   private calculateConversionScore(progress: any): number {
     let score = 0;
-    
+
     // Points pour actions
     (progress.actionsCompleted as UserAction[]).forEach((item: UserAction) => {
       const actionPoints: { [key: string]: number } = {
@@ -710,91 +720,103 @@ class UserProgressionTracker {
         content_copied: 15,
         premium_feature_attempted: 20,
         shared_content: 25,
-        high_score_achieved: 30
+        high_score_achieved: 30,
       };
       score += actionPoints[item.action] || 0;
     });
-    
+
     // Bonus pour usage régulier
     const daysSinceInstall = (Date.now() - progress.firstInstall) / (1000 * 60 * 60 * 24);
     const usageFrequency = progress.actionsCompleted.length / Math.max(daysSinceInstall, 1);
-    
+
     if (usageFrequency > 2) score += 20; // Usage quotidien
     if (progress.highScoreAnalyses > 2) score += 25; // Talent détecté
     if (progress.totalSocialPacks > 5) score += 30; // User engagé
-    
+
     return Math.min(score, 100);
   }
-  
+
   private async checkForUpgradeOpportunities(progress: any) {
     const { conversionScore, currentTier, totalAnalyses, highScoreAnalyses } = progress;
-    
+
     if (currentTier !== 'free') return;
-    
+
     // Trigger basé sur engagement élevé
     if (conversionScore > 70 && totalAnalyses > 3) {
       await this.triggerUpgradePrompt('high-engagement');
     }
-    
+
     // Trigger basé sur talent détecté
     if (highScoreAnalyses > 2) {
       await this.triggerUpgradePrompt('talent-detected');
     }
-    
+
     // Trigger basé sur usage fréquent
     if (totalAnalyses > 10) {
       await this.triggerUpgradePrompt('power-user');
     }
   }
-  
+
   private async triggerUpgradePrompt(context: string) {
     const lastPrompt = this.context.globalState.get('lastUpgradePrompt', 0);
     const now = Date.now();
-    
+
     // Ne pas spammer - minimum 24h entre prompts
     if (now - lastPrompt < 24 * 60 * 60 * 1000) return;
-    
+
     await this.context.globalState.update('lastUpgradePrompt', now);
-    
+
     const messageTypes: { [key: string]: any } = {
-      'high-engagement': { title: 'High Engagement!', description: 'You are using this a lot!', urgency: 'Limited time offer' },
-      'talent-detected': { title: 'Talent Detected!', description: 'You have natural ability!', urgency: 'Exclusive access' },
-      'power-user': { title: 'Power User!', description: 'You are a professional!', urgency: 'Professional discount' }
+      'high-engagement': {
+        title: 'High Engagement!',
+        description: 'You are using this a lot!',
+        urgency: 'Limited time offer',
+      },
+      'talent-detected': {
+        title: 'Talent Detected!',
+        description: 'You have natural ability!',
+        urgency: 'Exclusive access',
+      },
+      'power-user': {
+        title: 'Power User!',
+        description: 'You are a professional!',
+        urgency: 'Professional discount',
+      },
     };
     const message = messageTypes[context] || messageTypes['high-engagement'];
-    
+
     const choice = await vscode.window.showInformationMessage(
       message.title,
       {
         detail: `${message.description}\n\n${message.urgency}`,
-        modal: true
+        modal: true,
       },
       '💎 Débloquer Premium (9€/mois)',
       '🎁 Essai gratuit 7 jours',
       'Plus tard'
     );
-    
+
     if (choice?.includes('Premium') || choice?.includes('Essai')) {
       await this.showPremiumUpgrade(context);
     }
   }
-  
+
   private async showPremiumUpgrade(context: string) {
     // Analytics
     await this.trackEvent('upgrade_prompt_shown', { context });
-    
+
     // Ouvrir checkout optimisé
     const upgradeManager = new PremiumUpgradeManager(this.context);
     await upgradeManager.showUpgradeFlow(context);
   }
-  
+
   private async trackEvent(event: string, data?: any) {
     try {
       await axios.post('https://your-vercel-app.vercel.app/api/analytics/track', {
         event,
         data,
         userId: vscode.env.machineId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       // Fail silently
@@ -806,11 +828,11 @@ class UserProgressionTracker {
 
 class PremiumUpgradeManager {
   private context: vscode.ExtensionContext;
-  
+
   constructor(context: vscode.ExtensionContext) {
     this.context = context;
   }
-  
+
   async showUpgradeFlow(context: string) {
     const panel = vscode.window.createWebviewPanel(
       'aimasteryUpgrade',
@@ -818,13 +840,13 @@ class PremiumUpgradeManager {
       vscode.ViewColumn.One,
       {
         enableScripts: true,
-        retainContextWhenHidden: true
+        retainContextWhenHidden: true,
       }
     );
-    
+
     panel.webview.html = this.getUpgradeHTML(context);
-    
-    panel.webview.onDidReceiveMessage(async (message) => {
+
+    panel.webview.onDidReceiveMessage(async message => {
       switch (message.command) {
         case 'upgradePremium':
           await this.processUpgrade(message.plan);
@@ -841,17 +863,17 @@ class PremiumUpgradeManager {
       }
     });
   }
-  
+
   private getUpgradeHTML(context: string): string {
     const contextMessages: { [key: string]: any } = {
       'high-engagement': { badge: '🔥', title: 'High Engagement!', subtitle: 'You are active!' },
       'talent-detected': { badge: '⭐', title: 'Talent Detected!', subtitle: 'Natural ability!' },
       'power-user': { badge: '💎', title: 'Power User!', subtitle: 'Professional level!' },
-      'welcome': { badge: '🎉', title: 'Welcome!', subtitle: 'Let\'s get started!' }
+      welcome: { badge: '🎉', title: 'Welcome!', subtitle: "Let's get started!" },
     };
-    
+
     const message = contextMessages[context] || contextMessages['welcome'];
-    
+
     return `
     <!DOCTYPE html>
     <html>
@@ -1140,11 +1162,11 @@ class PremiumUpgradeManager {
     </body>
     </html>`;
   }
-  
+
   private async processUpgrade(plan: string) {
     try {
       await this.trackEvent('upgrade_initiated', { plan });
-      
+
       // Appel API pour créer session Stripe
       const response = await axios.post('https://your-vercel-app.vercel.app/api/create-checkout', {
         priceId: plan === 'monthly_9' ? 'price_social_pack_monthly' : 'price_pro_monthly',
@@ -1153,52 +1175,51 @@ class PremiumUpgradeManager {
         cancelUrl: 'https://your-app.vercel.app/cancel',
         metadata: {
           source: 'vscode_extension',
-          plan: plan
-        }
+          plan: plan,
+        },
       });
-      
+
       // Ouvrir Stripe Checkout
       await vscode.env.openExternal(vscode.Uri.parse(response.data.url));
-      
-      vscode.window.showInformationMessage(
-        '💳 Redirection vers le paiement sécurisé...',
-        'OK'
-      );
-      
+
+      vscode.window.showInformationMessage('💳 Redirection vers le paiement sécurisé...', 'OK');
     } catch (error) {
-      vscode.window.showErrorMessage(`Erreur: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      vscode.window.showErrorMessage(
+        `Erreur: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
-  
+
   private async startFreeTrial() {
     try {
       await this.trackEvent('trial_started');
-      
+
       // Activer essai gratuit local
       await this.context.globalState.update('trialStatus', {
         active: true,
         startDate: new Date().toISOString(),
         endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        tier: 'premium'
+        tier: 'premium',
       });
-      
+
       vscode.window.showInformationMessage(
         '🎉 Essai gratuit activé ! Profitez de toutes les fonctionnalités premium pendant 7 jours.',
         'Génerer mon premier Social Pack Premium'
       );
-      
     } catch (error) {
-      vscode.window.showErrorMessage(`Erreur: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      vscode.window.showErrorMessage(
+        `Erreur: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
     }
   }
-  
+
   private async trackEvent(event: string, data?: any) {
     try {
       await axios.post('https://your-vercel-app.vercel.app/api/analytics/track', {
         event,
         data,
         userId: vscode.env.machineId,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
     } catch (error) {
       // Fail silently
@@ -1208,54 +1229,60 @@ class PremiumUpgradeManager {
 
 // ===== 4. INTÉGRATION DANS L'EXTENSION PRINCIPALE =====
 
-export function activateUXOptimization(context: vscode.ExtensionContext): { progressTracker: { trackUserAction: (action: string, data: any) => Promise<void> } } {
-    const progressTracker = {
-        async trackUserAction(action: string, data: any) {
-            console.log(`🎯 User Action: ${action}`, data);
-            
-            // Analytics simple et robuste
-            const progress = context.globalState.get('userProgress', { 
-                totalActions: 0, 
-                firstUse: Date.now(),
-                lastAction: Date.now()
+export function activateUXOptimization(context: vscode.ExtensionContext): {
+  progressTracker: { trackUserAction: (action: string, data: any) => Promise<void> };
+} {
+  const progressTracker = {
+    async trackUserAction(action: string, data: any) {
+      console.log(`🎯 User Action: ${action}`, data);
+
+      // Analytics simple et robuste
+      const progress = context.globalState.get('userProgress', {
+        totalActions: 0,
+        firstUse: Date.now(),
+        lastAction: Date.now(),
+      });
+
+      progress.totalActions++;
+      progress.lastAction = Date.now();
+      await context.globalState.update('userProgress', progress);
+
+      // Welcome message après première analyse
+      if (action === 'audio_analyzed' && progress.totalActions === 1) {
+        setTimeout(() => {
+          vscode.window
+            .showInformationMessage(
+              '🎉 Félicitations ! Première analyse Da Vinci réussie ! Découvrez les fonctionnalités premium.',
+              'Voir Social Pack',
+              'Continuer'
+            )
+            .then(selection => {
+              if (selection === 'Voir Social Pack') {
+                vscode.commands.executeCommand('aimastery.generateSocialPack');
+              }
             });
-            
-            progress.totalActions++;
-            progress.lastAction = Date.now();
-            await context.globalState.update('userProgress', progress);
-            
-            // Welcome message après première analyse
-            if (action === 'audio_analyzed' && progress.totalActions === 1) {
-                setTimeout(() => {
-                    vscode.window.showInformationMessage(
-                        '🎉 Félicitations ! Première analyse Da Vinci réussie ! Découvrez les fonctionnalités premium.',
-                        'Voir Social Pack',
-                        'Continuer'
-                    ).then(selection => {
-                        if (selection === 'Voir Social Pack') {
-                            vscode.commands.executeCommand('aimastery.generateSocialPack');
-                        }
-                    });
-                }, 2000);
-            }
-            
-            // Power user detection (après 5 analyses)
-            if (action === 'audio_analyzed' && progress.totalActions >= 5) {
-                setTimeout(() => {
-                    vscode.window.showInformationMessage(
-                        '🔥 Expert détecté ! Vous maîtrisez AIMastery ! Débloquez le Social Media Pack automatique.',
-                        '💎 Upgrade Premium',
-                        'Plus tard'
-                    ).then(selection => {
-                        if (selection === '💎 Upgrade Premium') {
-                            // Handle premium upgrade
-                            vscode.commands.executeCommand('aimastery.showPremiumUpgrade');
-                        }
-                    });
-                }, 2000);
-            }
-        }
-    };
-    
-    return { progressTracker };
+        }, 2000);
+      }
+
+      // Power user detection (après 5 analyses)
+      if (action === 'audio_analyzed' && progress.totalActions >= 5) {
+        setTimeout(() => {
+          vscode.window
+            .showInformationMessage(
+              '🔥 Expert détecté ! Vous maîtrisez AIMastery ! Débloquez le Social Media Pack automatique.',
+              '💎 Upgrade Premium',
+              'Plus tard'
+            )
+            .then(selection => {
+              if (selection === '💎 Upgrade Premium') {
+                // Handle premium upgrade
+                vscode.commands.executeCommand('aimastery.showPremiumUpgrade');
+              }
+            });
+        }, 2000);
+      }
+    },
+  };
+
+  return { progressTracker };
 }

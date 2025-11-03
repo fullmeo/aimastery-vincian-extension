@@ -1,0 +1,131 @@
+/* Reset et styles de base */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+/* Polices */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Variables CSS */
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #7c3aed;
+    --text-color: #1f2937;
+    --light-bg: #f9fafb;
+    --white: #ffffff;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Styles généraux */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    min-height: 90vh;
+}
+
+/* En-tête */
+.header {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #1a1d29 0%, #2d3748 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.header h1 {
+    font-size: 2.5em;
+    margin-bottom: 15px;
+    font-weight: 700;
+    position: relative;
+    z-index: 1;
+}
+
+.header-subtitle {
+    background: rgba(255,255,255,0.15);
+    padding: 10px 20px;
+    border-radius: 20px;
+    display: inline-block;
+    margin: 10px 0;
+    font-size: 1em;
+    position: relative;
+    z-index: 1;
+}
+
+/* Barre latérale */
+.sidebar {
+    background: var(--light-bg);
+    padding: 30px 20px;
+    border-right: 1px solid #e5e7eb;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar .nav-item {
+    display: block;
+    padding: 12px 15px;
+    margin: 8px 0;
+    color: var(--text-color);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.sidebar .nav-item:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* Contenu principal */
+.content {
+    padding: 40px;
+    background: var(--white);
+    overflow-y: auto;
+    max-height: calc(100vh - 200px);
+}
+
+/* Styles responsifs */
+@media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+    
+    .sidebar {
+        display: none;
+    }
+    
+    .content {
+        padding: 20px;
+    }
+}
+
+/* Animation de base */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.content > * {
+    animation: fadeIn 0.5s ease-out forwards;
+}

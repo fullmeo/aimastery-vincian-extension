@@ -2,113 +2,127 @@
 import * as vscode from 'vscode';
 
 export class TrialManager {
-    private static readonly TRIAL_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 jours
-    private static readonly TRIAL_ANALYSES_LIMIT = 3; // 3 analyses gratuites
-    
-    // 🎺 Informations personnelles de Serigne Diagne
-    private static readonly PERSONAL_ACCOUNTS = {
-        instagram: '@serigne.diagnepro',
-        linkedin: 'Serigne Diagne',
-        linkedin_url: 'https://www.linkedin.com/in/serigne-diagne-ab3b9981',
-        facebook: 'serignetrumpet1',
-        tiktok: '@serigne.diagne',
-        creator_name: 'Serigne Diagne',
-        instrument: 'Trompette',
-        extension_marketplace: 'https://marketplace.visualstudio.com/items?itemName=Serigne-Diagne.aimastery-vincian-analysis',
-        creator_email: 'serignetrumpet@gmail.com',
-        is_creator: true
-    };
+  private static readonly TRIAL_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 jours
+  private static readonly TRIAL_ANALYSES_LIMIT = 3; // 3 analyses gratuites
 
-    // 💎 Plans disponibles avec Creator Pro
-    private static readonly PLANS: { [key: string]: any } = {
-        free_trial: { name: 'Free Trial', analyses: 3, duration_days: 7, price: 0 },
-        social_pack: { name: 'Social Pack', analyses: 50, duration_days: 30, price: 9 },
-        pro_vincien: { name: 'Pro Vincien', analyses: -1, duration_days: 30, price: 15 },
-        creator_pro: { name: 'Creator Pro', analyses: -1, duration_days: -1, price: 0, exclusive: true }
-    };
+  // 🎺 Informations personnelles de Serigne Diagne
+  private static readonly PERSONAL_ACCOUNTS = {
+    instagram: '@serigne.diagnepro',
+    linkedin: 'Serigne Diagne',
+    linkedin_url: 'https://www.linkedin.com/in/serigne-diagne-ab3b9981',
+    facebook: 'serignetrumpet1',
+    tiktok: '@serigne.diagne',
+    creator_name: 'Serigne Diagne',
+    instrument: 'Trompette',
+    extension_marketplace:
+      'https://marketplace.visualstudio.com/items?itemName=Serigne-Diagne.aimastery-vincian-analysis',
+    creator_email: 'serignetrumpet@gmail.com',
+    is_creator: true,
+  };
 
-    // ✅ Vérifier si l'utilisateur est le créateur
-    static isCreator(): boolean {
-        const config = vscode.workspace.getConfiguration('aimastery');
-        const userEmail = config.get('userEmail') as string;
-        const creatorKey = config.get('creatorKey') as string;
-        
-        return (
-            userEmail === 'serignetrumpet@gmail.com' ||
-            creatorKey === 'SERIGNE_CREATOR_2024' ||
-            this.PERSONAL_ACCOUNTS.is_creator === true
-        );
+  // 💎 Plans disponibles avec Creator Pro
+  private static readonly PLANS: { [key: string]: any } = {
+    free_trial: { name: 'Free Trial', analyses: 3, duration_days: 7, price: 0 },
+    social_pack: { name: 'Social Pack', analyses: 50, duration_days: 30, price: 9 },
+    pro_vincien: { name: 'Pro Vincien', analyses: -1, duration_days: 30, price: 15 },
+    creator_pro: {
+      name: 'Creator Pro',
+      analyses: -1,
+      duration_days: -1,
+      price: 0,
+      exclusive: true,
+    },
+  };
+
+  // ✅ Vérifier si l'utilisateur est le créateur
+  static isCreator(): boolean {
+    const config = vscode.workspace.getConfiguration('aimastery');
+    const userEmail = config.get('userEmail') as string;
+    const creatorKey = config.get('creatorKey') as string;
+
+    return (
+      userEmail === 'serignetrumpet@gmail.com' ||
+      creatorKey === 'SERIGNE_CREATOR_2024' ||
+      this.PERSONAL_ACCOUNTS.is_creator === true
+    );
+  }
+
+  // 💎 Activer le plan Creator Pro
+  static activateCreatorPro(): void {
+    if (!this.isCreator()) {
+      vscode.window.showErrorMessage('❌ Accès réservé au créateur Serigne Diagne');
+      return;
     }
 
-    // 💎 Activer le plan Creator Pro
-    static activateCreatorPro(): void {
-        if (!this.isCreator()) {
-            vscode.window.showErrorMessage('❌ Accès réservé au créateur Serigne Diagne');
-            return;
+    const config = vscode.workspace.getConfiguration('aimastery');
+    config.update('currentPlan', 'creator_pro', true);
+    config.update('creatorProActivated', Date.now(), true);
+    config.update('unlimitedAnalyses', true, true);
+    config.update('exclusiveFeatures', true, true);
+
+    vscode.window
+      .showInformationMessage(
+        '👑 Creator Pro activé ! Fonctionnalités exclusives débloquées',
+        'Voir Privilèges Creator',
+        'Dashboard Creator',
+        'Analytics Avancées'
+      )
+      .then(selection => {
+        if (selection === 'Voir Privilèges Creator') {
+          this.showCreatorPrivileges();
+        } else if (selection === 'Dashboard Creator') {
+          this.openCreatorDashboard();
+        } else if (selection === 'Analytics Avancées') {
+          this.showAdvancedAnalytics();
         }
+      });
+  }
 
-        const config = vscode.workspace.getConfiguration('aimastery');
-        config.update('currentPlan', 'creator_pro', true);
-        config.update('creatorProActivated', Date.now(), true);
-        config.update('unlimitedAnalyses', true, true);
-        config.update('exclusiveFeatures', true, true);
-
-        vscode.window.showInformationMessage(
-            '👑 Creator Pro activé ! Fonctionnalités exclusives débloquées',
-            'Voir Privilèges Creator',
-            'Dashboard Creator',
-            'Analytics Avancées'
-        ).then(selection => {
-            if (selection === 'Voir Privilèges Creator') {
-                this.showCreatorPrivileges();
-            } else if (selection === 'Dashboard Creator') {
-                this.openCreatorDashboard();
-            } else if (selection === 'Analytics Avancées') {
-                this.showAdvancedAnalytics();
-            }
-        });
+  // 💎 Dashboard créateur
+  static openCreatorDashboard(): void {
+    if (!this.isCreator()) {
+      vscode.window.showErrorMessage('❌ Dashboard Creator réservé à Serigne Diagne');
+      return;
     }
 
-    // 💎 Dashboard créateur
-    static openCreatorDashboard(): void {
-        if (!this.isCreator()) {
-            vscode.window.showErrorMessage('❌ Dashboard Creator réservé à Serigne Diagne');
-            return;
-        }
+    vscode.env.openExternal(
+      vscode.Uri.parse('https://aimastery.com/creator-dashboard/serigne-diagne')
+    );
 
-        vscode.env.openExternal(vscode.Uri.parse('https://aimastery.com/creator-dashboard/serigne-diagne'));
-        
-        vscode.window.showInformationMessage(
-            '📊 Creator Dashboard ouvert dans le navigateur',
-            'Revenue Analytics',
-            'User Metrics',
-            'Local Analytics'
-        ).then(selection => {
-            if (selection === 'Local Analytics') {
-                this.showAdvancedAnalytics();
-            }
-        });
+    vscode.window
+      .showInformationMessage(
+        '📊 Creator Dashboard ouvert dans le navigateur',
+        'Revenue Analytics',
+        'User Metrics',
+        'Local Analytics'
+      )
+      .then(selection => {
+        if (selection === 'Local Analytics') {
+          this.showAdvancedAnalytics();
+        }
+      });
+  }
+
+  // 📈 Analytics avancées
+  static showAdvancedAnalytics(): void {
+    if (!this.isCreator()) {
+      vscode.window.showErrorMessage('❌ Analytics avancées réservées au créateur');
+      return;
     }
 
-    // 📈 Analytics avancées
-    static showAdvancedAnalytics(): void {
-        if (!this.isCreator()) {
-            vscode.window.showErrorMessage('❌ Analytics avancées réservées au créateur');
-            return;
-        }
+    const panel = vscode.window.createWebviewPanel(
+      'creatorAnalytics',
+      '📊 Creator Analytics Dashboard',
+      vscode.ViewColumn.Two,
+      { enableScripts: true, retainContextWhenHidden: true }
+    );
 
-        const panel = vscode.window.createWebviewPanel(
-            'creatorAnalytics',
-            '📊 Creator Analytics Dashboard',
-            vscode.ViewColumn.Two,
-            { enableScripts: true, retainContextWhenHidden: true }
-        );
+    const personalUsage =
+      (vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number) || 0;
+    const conversionRate = this.getConversionRate();
+    const totalRevenue = this.getTotalRevenue();
 
-        const personalUsage = vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number || 0;
-        const conversionRate = this.getConversionRate();
-        const totalRevenue = this.getTotalRevenue();
-
-        panel.webview.html = `
+    panel.webview.html = `
         <!DOCTYPE html>
         <html>
         <head>
@@ -139,36 +153,39 @@ export class TrialManager {
             </div>
         </body>
         </html>`;
-    }
+  }
 
-    // 💎 Afficher privilèges créateur
-    static showCreatorPrivileges(): void {
-        vscode.window.showInformationMessage(
-            '👑 Creator Pro Privileges Active:\n\n• Unlimited analyses\n• Real-time analytics\n• Exclusive algorithms\n• Advanced NFT generation\n• Revenue dashboard\n• Beta features access',
-            'Open Dashboard',
-            'View Analytics',
-            'Generate Content'
-        ).then(selection => {
-            if (selection === 'Open Dashboard') {
-                this.openCreatorDashboard();
-            } else if (selection === 'View Analytics') {
-                this.showAdvancedAnalytics();
-            } else if (selection === 'Generate Content') {
-                this.generateCreatorSocialContent({
-                    score: 8.7,
-                    principles: ['Mouvement', 'Équilibre', 'Harmonie']
-                });
-            }
-        });
-    }
+  // 💎 Afficher privilèges créateur
+  static showCreatorPrivileges(): void {
+    vscode.window
+      .showInformationMessage(
+        '👑 Creator Pro Privileges Active:\n\n• Unlimited analyses\n• Real-time analytics\n• Exclusive algorithms\n• Advanced NFT generation\n• Revenue dashboard\n• Beta features access',
+        'Open Dashboard',
+        'View Analytics',
+        'Generate Content'
+      )
+      .then(selection => {
+        if (selection === 'Open Dashboard') {
+          this.openCreatorDashboard();
+        } else if (selection === 'View Analytics') {
+          this.showAdvancedAnalytics();
+        } else if (selection === 'Generate Content') {
+          this.generateCreatorSocialContent({
+            score: 8.7,
+            principles: ['Mouvement', 'Équilibre', 'Harmonie'],
+          });
+        }
+      });
+  }
 
-    // 🎺 Génération de contenu social créateur
-    static generateCreatorSocialContent(analysisResult: any): void {
-        const conversionRate = this.getConversionRate();
-        const totalRevenue = this.getTotalRevenue();
-        const personalUsage = vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number || 0;
+  // 🎺 Génération de contenu social créateur
+  static generateCreatorSocialContent(analysisResult: any): void {
+    const conversionRate = this.getConversionRate();
+    const totalRevenue = this.getTotalRevenue();
+    const personalUsage =
+      (vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number) || 0;
 
-        const creatorContent = `🎺 Creator Update - Extension AIMastery v5.3
+    const creatorContent = `🎺 Creator Update - Extension AIMastery v5.3
 
 Analyse personnelle trompette :
 📊 Score : ${analysisResult.score || '8.7'}/10
@@ -180,30 +197,34 @@ Building in public avec ma propre extension ! 🚀
 
 #CreatorLife #BuildInPublic #VSCode #TrompetteAI`;
 
-        vscode.window.showInformationMessage(
-            '👑 Contenu Creator généré !',
-            'Copier Instagram',
-            'Copier LinkedIn',
-            'Voir Dashboard'
-        ).then(selection => {
-            if (selection === 'Copier Instagram' || selection === 'Copier LinkedIn') {
-                vscode.env.clipboard.writeText(creatorContent);
-                vscode.window.showInformationMessage('📋 Contenu copié pour Serigne Diagne !');
-            } else if (selection === 'Voir Dashboard') {
-                this.showAdvancedAnalytics();
-            }
-        });
-    }
+    vscode.window
+      .showInformationMessage(
+        '👑 Contenu Creator généré !',
+        'Copier Instagram',
+        'Copier LinkedIn',
+        'Voir Dashboard'
+      )
+      .then(selection => {
+        if (selection === 'Copier Instagram' || selection === 'Copier LinkedIn') {
+          vscode.env.clipboard.writeText(creatorContent);
+          vscode.window.showInformationMessage('📋 Contenu copié pour Serigne Diagne !');
+        } else if (selection === 'Voir Dashboard') {
+          this.showAdvancedAnalytics();
+        }
+      });
+  }
 
-    // Méthode existante generatePersonalSocialContent
-    static generatePersonalSocialContent(analysisResult: any): void {
-        const conversionRate = this.getConversionRate();
-        const totalRevenue = this.getTotalRevenue();
-        const personalUsage = vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number || 0;
-        
-        const personalPosts = [{
-            platform: 'Instagram (@serigne.diagnepro)',
-            content: `🎺 Audio → Art Da Vinci avec mon extension VS Code ✨
+  // Méthode existante generatePersonalSocialContent
+  static generatePersonalSocialContent(analysisResult: any): void {
+    const conversionRate = this.getConversionRate();
+    const totalRevenue = this.getTotalRevenue();
+    const personalUsage =
+      (vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number) || 0;
+
+    const personalPosts = [
+      {
+        platform: 'Instagram (@serigne.diagnepro)',
+        content: `🎺 Audio → Art Da Vinci avec mon extension VS Code ✨
 
 Analyse de mon dernier enregistrement de trompette avec AIMastery Vincian Analysis !
 
@@ -215,221 +236,252 @@ Analyse de mon dernier enregistrement de trompette avec AIMastery Vincian Analys
 
 Building my own product and using it daily = ultimate validation ! 🚀
 
-#Trompette #IAMusique #DaVinci #VSCode #BuildInPublic #SerigneDiagne`
-        }];
+#Trompette #IAMusique #DaVinci #VSCode #BuildInPublic #SerigneDiagne`,
+      },
+    ];
 
-        vscode.window.showInformationMessage(
-            `🎺 Contenu social généré pour ${this.PERSONAL_ACCOUNTS.creator_name}! Usage: ${personalUsage} analyses`,
-            'Copier Instagram',
-            'Voir Analytics'
-        ).then(selection => {
-            if (selection === 'Copier Instagram') {
-                vscode.env.clipboard.writeText(personalPosts[0].content);
-                vscode.window.showInformationMessage('📋 Contenu Instagram copié !');
-            } else if (selection === 'Voir Analytics') {
-                this.showAdvancedAnalytics();
-            }
+    vscode.window
+      .showInformationMessage(
+        `🎺 Contenu social généré pour ${this.PERSONAL_ACCOUNTS.creator_name}! Usage: ${personalUsage} analyses`,
+        'Copier Instagram',
+        'Voir Analytics'
+      )
+      .then(selection => {
+        if (selection === 'Copier Instagram') {
+          vscode.env.clipboard.writeText(personalPosts[0].content);
+          vscode.window.showInformationMessage('📋 Contenu Instagram copié !');
+        } else if (selection === 'Voir Analytics') {
+          this.showAdvancedAnalytics();
+        }
+      });
+  }
+
+  static isTrialActive(): boolean {
+    const trialStart = vscode.workspace
+      .getConfiguration('aimastery')
+      .get('trialStartDate') as number;
+    if (!trialStart) return false;
+    const now = Date.now();
+    const timeLeft = this.TRIAL_DURATION - (now - trialStart);
+    return timeLeft > 0;
+  }
+
+  static getTrialDaysLeft(): number {
+    const trialStart = vscode.workspace
+      .getConfiguration('aimastery')
+      .get('trialStartDate') as number;
+    if (!trialStart) return 0;
+    const now = Date.now();
+    const timeLeft = this.TRIAL_DURATION - (now - trialStart);
+    return Math.max(0, Math.ceil(timeLeft / (24 * 60 * 60 * 1000)));
+  }
+
+  static getTrialAnalysesLeft(): number {
+    const used =
+      (vscode.workspace.getConfiguration('aimastery').get('trialAnalysesUsed') as number) || 0;
+    return Math.max(0, this.TRIAL_ANALYSES_LIMIT - used);
+  }
+
+  static canUseFreeTrial(): boolean {
+    if (this.isCreator()) {
+      return true;
+    }
+    return this.isTrialActive() && this.getTrialAnalysesLeft() > 0;
+  }
+
+  static startTrial(): void {
+    const config = vscode.workspace.getConfiguration('aimastery');
+    config.update('trialStartDate', Date.now(), true);
+    config.update('trialAnalysesUsed', 0, true);
+
+    vscode.window
+      .showInformationMessage(
+        '🎉 Free Trial Started! 7 days + 3 free Vincian analyses',
+        'Start Analyzing',
+        'View Features'
+      )
+      .then(selection => {
+        if (selection === 'Start Analyzing') {
+          vscode.commands.executeCommand('aimastery.freeAnalyze');
+        } else if (selection === 'View Features') {
+          vscode.commands.executeCommand('aimastery.upgradePrompt');
+        }
+      });
+  }
+
+  static useTrialAnalysis(analysisResult?: any): boolean {
+    if (this.isCreator()) {
+      const personalUsage =
+        (vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number) || 0;
+      vscode.workspace
+        .getConfiguration('aimastery')
+        .update('personalUsageCount', personalUsage + 1, true);
+
+      if (analysisResult) {
+        this.generateCreatorSocialContent(analysisResult);
+      }
+
+      vscode.window
+        .showInformationMessage(
+          `👑 Analyse Creator Pro complétée ! Usage personnel : ${personalUsage + 1}`,
+          'Generate Creator Content',
+          'Analytics Dashboard',
+          'Revenue Metrics'
+        )
+        .then(selection => {
+          if (selection === 'Generate Creator Content') {
+            this.generateCreatorSocialContent(analysisResult);
+          } else if (selection === 'Analytics Dashboard') {
+            this.openCreatorDashboard();
+          } else if (selection === 'Revenue Metrics') {
+            this.showAdvancedAnalytics();
+          }
         });
+
+      return true;
     }
 
-    static isTrialActive(): boolean {
-        const trialStart = vscode.workspace.getConfiguration('aimastery').get('trialStartDate') as number;
-        if (!trialStart) return false;
-        const now = Date.now();
-        const timeLeft = this.TRIAL_DURATION - (now - trialStart);
-        return timeLeft > 0;
+    if (!this.canUseFreeTrial()) {
+      this.showUpgradePrompt();
+      return false;
     }
-    
-    static getTrialDaysLeft(): number {
-        const trialStart = vscode.workspace.getConfiguration('aimastery').get('trialStartDate') as number;
-        if (!trialStart) return 0;
-        const now = Date.now();
-        const timeLeft = this.TRIAL_DURATION - (now - trialStart);
-        return Math.max(0, Math.ceil(timeLeft / (24 * 60 * 60 * 1000)));
+
+    const used =
+      (vscode.workspace.getConfiguration('aimastery').get('trialAnalysesUsed') as number) || 0;
+    vscode.workspace.getConfiguration('aimastery').update('trialAnalysesUsed', used + 1, true);
+
+    const personalUsage =
+      (vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number) || 0;
+    vscode.workspace
+      .getConfiguration('aimastery')
+      .update('personalUsageCount', personalUsage + 1, true);
+
+    if (analysisResult) {
+      this.generatePersonalSocialContent(analysisResult);
     }
-    
-    static getTrialAnalysesLeft(): number {
-        const used = vscode.workspace.getConfiguration('aimastery').get('trialAnalysesUsed') as number || 0;
-        return Math.max(0, this.TRIAL_ANALYSES_LIMIT - used);
-    }
-    
-    static canUseFreeTrial(): boolean {
-        if (this.isCreator()) {
-            return true;
-        }
-        return this.isTrialActive() && this.getTrialAnalysesLeft() > 0;
-    }
-    
-    static startTrial(): void {
-        const config = vscode.workspace.getConfiguration('aimastery');
-        config.update('trialStartDate', Date.now(), true);
-        config.update('trialAnalysesUsed', 0, true);
-        
-        vscode.window.showInformationMessage(
-            '🎉 Free Trial Started! 7 days + 3 free Vincian analyses',
-            'Start Analyzing',
-            'View Features'
-        ).then(selection => {
-            if (selection === 'Start Analyzing') {
-                vscode.commands.executeCommand('aimastery.freeAnalyze');
-            } else if (selection === 'View Features') {
-                vscode.commands.executeCommand('aimastery.upgradePrompt');
-            }
+
+    const remaining = this.getTrialAnalysesLeft();
+    if (remaining === 0) {
+      vscode.window
+        .showWarningMessage(
+          '🎯 Trial analyses used up! Ready to upgrade?',
+          'Social Pack (€9)',
+          'Pro Vincien (€15)',
+          'Maybe later'
+        )
+        .then(selection => {
+          if (selection === 'Social Pack (€9)') {
+            vscode.commands.executeCommand('aimastery.testSocialPack');
+          } else if (selection === 'Pro Vincien (€15)') {
+            vscode.commands.executeCommand('aimastery.testProVincien');
+          }
         });
-    }
-    
-    static useTrialAnalysis(analysisResult?: any): boolean {
-        if (this.isCreator()) {
-            const personalUsage = vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number || 0;
-            vscode.workspace.getConfiguration('aimastery').update('personalUsageCount', personalUsage + 1, true);
-            
-            if (analysisResult) {
-                this.generateCreatorSocialContent(analysisResult);
-            }
-            
-            vscode.window.showInformationMessage(
-                `👑 Analyse Creator Pro complétée ! Usage personnel : ${personalUsage + 1}`,
-                'Generate Creator Content',
-                'Analytics Dashboard',
-                'Revenue Metrics'
-            ).then(selection => {
-                if (selection === 'Generate Creator Content') {
-                    this.generateCreatorSocialContent(analysisResult);
-                } else if (selection === 'Analytics Dashboard') {
-                    this.openCreatorDashboard();
-                } else if (selection === 'Revenue Metrics') {
-                    this.showAdvancedAnalytics();
-                }
-            });
-            
-            return true;
-        }
-
-        if (!this.canUseFreeTrial()) {
-            this.showUpgradePrompt();
-            return false;
-        }
-        
-        const used = vscode.workspace.getConfiguration('aimastery').get('trialAnalysesUsed') as number || 0;
-        vscode.workspace.getConfiguration('aimastery').update('trialAnalysesUsed', used + 1, true);
-        
-        const personalUsage = vscode.workspace.getConfiguration('aimastery').get('personalUsageCount') as number || 0;
-        vscode.workspace.getConfiguration('aimastery').update('personalUsageCount', personalUsage + 1, true);
-        
-        if (analysisResult) {
+    } else {
+      vscode.window
+        .showInformationMessage(
+          `✅ Analysis completed! ${remaining} free analyses remaining`,
+          'Generate Social Content',
+          'Continue Analyzing'
+        )
+        .then(selection => {
+          if (selection === 'Generate Social Content' && analysisResult) {
             this.generatePersonalSocialContent(analysisResult);
-        }
-        
-        const remaining = this.getTrialAnalysesLeft();
-        if (remaining === 0) {
-            vscode.window.showWarningMessage(
-                '🎯 Trial analyses used up! Ready to upgrade?',
-                'Social Pack (€9)',
-                'Pro Vincien (€15)',
-                'Maybe later'
-            ).then(selection => {
-                if (selection === 'Social Pack (€9)') {
-                    vscode.commands.executeCommand('aimastery.testSocialPack');
-                } else if (selection === 'Pro Vincien (€15)') {
-                    vscode.commands.executeCommand('aimastery.testProVincien');
-                }
-            });
-        } else {
-            vscode.window.showInformationMessage(
-                `✅ Analysis completed! ${remaining} free analyses remaining`,
-                'Generate Social Content',
-                'Continue Analyzing'
-            ).then(selection => {
-                if (selection === 'Generate Social Content' && analysisResult) {
-                    this.generatePersonalSocialContent(analysisResult);
-                }
-            });
-        }
-        
-        return true;
-    }
-
-    static showTrialStatus(): void {
-        const daysLeft = this.getTrialDaysLeft();
-        const analysesLeft = this.getTrialAnalysesLeft();
-        
-        if (this.isCreator()) {
-            vscode.window.showInformationMessage(
-                '👑 Creator Pro Status: Unlimited access',
-                'Analytics Dashboard',
-                'Generate Content',
-                'View Privileges'
-            ).then(selection => {
-                if (selection === 'Analytics Dashboard') {
-                    this.showAdvancedAnalytics();
-                } else if (selection === 'Generate Content') {
-                    this.generateCreatorSocialContent({
-                        score: 8.7,
-                        principles: ['Mouvement', 'Équilibre', 'Harmonie']
-                    });
-                } else if (selection === 'View Privileges') {
-                    this.showCreatorPrivileges();
-                }
-            });
-            return;
-        }
-        
-        if (!this.isTrialActive()) {
-            vscode.window.showWarningMessage(
-                '⏰ Free trial expired. Upgrade to continue!',
-                'Social Pack (€9)',
-                'Pro Vincien (€15)'
-            ).then(selection => {
-                if (selection === 'Social Pack (€9)') {
-                    vscode.commands.executeCommand('aimastery.testSocialPack');
-                } else if (selection === 'Pro Vincien (€15)') {
-                    vscode.commands.executeCommand('aimastery.testProVincien');
-                }
-            });
-        } else {
-            vscode.window.showInformationMessage(
-                `📊 Trial Status: ${daysLeft} days, ${analysesLeft} analyses left`,
-                'Use Free Analysis',
-                'Upgrade Now'
-            ).then(selection => {
-                if (selection === 'Use Free Analysis') {
-                    vscode.commands.executeCommand('aimastery.freeAnalyze');
-                } else if (selection === 'Upgrade Now') {
-                    vscode.commands.executeCommand('aimastery.upgradePrompt');
-                }
-            });
-        }
-    }
-
-    static showUpgradePrompt(): void {
-        vscode.window.showInformationMessage(
-            '💎 Upgrade to unlock unlimited Vincian analysis!',
-            'Social Pack (€9) - 50 analyses/month',
-            'Pro Vincien (€15) - Unlimited + NFT + Social',
-            'Compare Plans'
-        ).then(selection => {
-            if (selection?.includes('Social Pack')) {
-                vscode.commands.executeCommand('aimastery.testSocialPack');
-            } else if (selection?.includes('Pro Vincien')) {
-                vscode.commands.executeCommand('aimastery.testProVincien');
-            } else if (selection === 'Compare Plans') {
-                vscode.env.openExternal(vscode.Uri.parse('https://aimastery.com/pricing'));
-            }
+          }
         });
     }
 
-    private static getConversionRate(): string {
-        const config = vscode.workspace.getConfiguration('aimastery');
-        const totalTrials = config.get('totalTrialsStarted') as number || 1;
-        const conversions = config.get('totalConversions') as number || 0;
-        return ((conversions / totalTrials) * 100).toFixed(1);
+    return true;
+  }
+
+  static showTrialStatus(): void {
+    const daysLeft = this.getTrialDaysLeft();
+    const analysesLeft = this.getTrialAnalysesLeft();
+
+    if (this.isCreator()) {
+      vscode.window
+        .showInformationMessage(
+          '👑 Creator Pro Status: Unlimited access',
+          'Analytics Dashboard',
+          'Generate Content',
+          'View Privileges'
+        )
+        .then(selection => {
+          if (selection === 'Analytics Dashboard') {
+            this.showAdvancedAnalytics();
+          } else if (selection === 'Generate Content') {
+            this.generateCreatorSocialContent({
+              score: 8.7,
+              principles: ['Mouvement', 'Équilibre', 'Harmonie'],
+            });
+          } else if (selection === 'View Privileges') {
+            this.showCreatorPrivileges();
+          }
+        });
+      return;
     }
 
-    private static getTotalRevenue(): string {
-        const config = vscode.workspace.getConfiguration('aimastery');
-        const socialPackSales = config.get('socialPackSales') as number || 0;
-        const proVincienSales = config.get('proVincienSales') as number || 0;
-        const totalRevenue = (socialPackSales * 9) + (proVincienSales * 15);
-        return totalRevenue.toString();
+    if (!this.isTrialActive()) {
+      vscode.window
+        .showWarningMessage(
+          '⏰ Free trial expired. Upgrade to continue!',
+          'Social Pack (€9)',
+          'Pro Vincien (€15)'
+        )
+        .then(selection => {
+          if (selection === 'Social Pack (€9)') {
+            vscode.commands.executeCommand('aimastery.testSocialPack');
+          } else if (selection === 'Pro Vincien (€15)') {
+            vscode.commands.executeCommand('aimastery.testProVincien');
+          }
+        });
+    } else {
+      vscode.window
+        .showInformationMessage(
+          `📊 Trial Status: ${daysLeft} days, ${analysesLeft} analyses left`,
+          'Use Free Analysis',
+          'Upgrade Now'
+        )
+        .then(selection => {
+          if (selection === 'Use Free Analysis') {
+            vscode.commands.executeCommand('aimastery.freeAnalyze');
+          } else if (selection === 'Upgrade Now') {
+            vscode.commands.executeCommand('aimastery.upgradePrompt');
+          }
+        });
     }
+  }
+
+  static showUpgradePrompt(): void {
+    vscode.window
+      .showInformationMessage(
+        '💎 Upgrade to unlock unlimited Vincian analysis!',
+        'Social Pack (€9) - 50 analyses/month',
+        'Pro Vincien (€15) - Unlimited + NFT + Social',
+        'Compare Plans'
+      )
+      .then(selection => {
+        if (selection?.includes('Social Pack')) {
+          vscode.commands.executeCommand('aimastery.testSocialPack');
+        } else if (selection?.includes('Pro Vincien')) {
+          vscode.commands.executeCommand('aimastery.testProVincien');
+        } else if (selection === 'Compare Plans') {
+          vscode.env.openExternal(vscode.Uri.parse('https://aimastery.com/pricing'));
+        }
+      });
+  }
+
+  private static getConversionRate(): string {
+    const config = vscode.workspace.getConfiguration('aimastery');
+    const totalTrials = (config.get('totalTrialsStarted') as number) || 1;
+    const conversions = (config.get('totalConversions') as number) || 0;
+    return ((conversions / totalTrials) * 100).toFixed(1);
+  }
+
+  private static getTotalRevenue(): string {
+    const config = vscode.workspace.getConfiguration('aimastery');
+    const socialPackSales = (config.get('socialPackSales') as number) || 0;
+    const proVincienSales = (config.get('proVincienSales') as number) || 0;
+    const totalRevenue = socialPackSales * 9 + proVincienSales * 15;
+    return totalRevenue.toString();
+  }
 }

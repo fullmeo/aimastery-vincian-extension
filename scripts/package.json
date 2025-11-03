@@ -1,0 +1,109 @@
+{
+  "name": "aimastery-vincian-analysis",
+  "displayName": "AIMastery - Vincian Analysis",
+  "description": "🧬 Revolutionary Code + Audio Analysis inspired by Leonardo da Vinci. Auto-improve your code, analyze audio frequencies, and generate viral social media content.",
+  "version": "1.0.0",
+  "publisher": "aimastery",
+  "author": {
+    "name": "AIMastery Team",
+    "email": "support@aimastery.dev"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Data Science",
+    "Formatters",
+    "Linters"
+  ],
+  "keywords": [
+    "code analysis",
+    "audio analysis",
+    "leonardo da vinci",
+    "cymatic",
+    "social media",
+    "ai",
+    "vincian",
+    "frequency analysis",
+    "code health",
+    "auto improvement"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension_final_unified.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aimastery.selfAnalysis",
+        "title": "🧬 Self Analysis"
+      },
+      {
+        "command": "aimastery.analyzeAudio",
+        "title": "🎵 Analyze Audio"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "aimastery-unified",
+          "name": "AI Mastery - Unified",
+          "when": "true"
+        },
+        {
+          "id": "aimastery-vincian",
+          "name": "AI Mastery - Vincian",
+          "when": "true"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "deploy": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "eslint": "^8.39.0",
+    "typescript": "^5.0.4",
+    "@vscode/test-electron": "^2.3.0",
+    "@vscode/vsce": "^2.19.0"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimastery/vincian-analysis-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aimastery/vincian-analysis-extension/issues"
+  },
+  "homepage": "https://aimastery.dev",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#667eea",
+    "theme": "dark"
+  },
+  "preview": false,
+  "qna": "marketplace",
+  "badges": [
+    {
+      "url": "https://img.shields.io/badge/AIMastery-Innovative-blue",
+      "href": "https://aimastery.dev",
+      "description": "AIMastery Innovation Badge"
+    }
+  ]
+}

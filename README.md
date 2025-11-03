@@ -12,7 +12,7 @@
 
 [![GitHub](https://img.shields.io/badge/GitHub-fullmeo-181717?logo=github)](https://github.com/fullmeo)
 [![VS Code](https://img.shields.io/badge/VS%20Code-Marketplace-007ACC?logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=Serigne-Diagne.aimastery-vincian-analysis)
-[![Version](https://img.shields.io/badge/Version-7.1.1-brightgreen)](#)
+[![Version](https://img.shields.io/badge/Version-7.1.2-brightgreen)](#)
 
 </div>
 
@@ -22,7 +22,7 @@
 
 | | |
 |---|---|
-| **🔢 Version** | 7.1.1 |
+| **🔢 Version** | 7.1.2 |
 | **👨‍💻 Éditeur** | Serigne-Diagne |
 | **📦 ID** | `aimastery-vincian-analysis` |
 | **🎯 Catégorie** | Analyse de Code & Outils IA |
@@ -40,7 +40,7 @@ function analyzeCode() {
 }
 ```
 
-## 🚀 **Nouveautés v7.1.1**
+## 🚀 **Nouveautés v7.1.2**
 
 ### 🎨 **Renaissance Interface**
 - 🖼️ Logo professionnel Leonardo-inspired
